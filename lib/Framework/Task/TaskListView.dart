@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:time_river/Pages/TaskDetails.dart';
-import 'Task.dart';
-import 'TaskView.dart';
+import 'package:time_river/Models/Task.dart';
+import 'package:time_river/Framework/Task/TaskListItem.dart';
 
 class TaskListView extends StatelessWidget {
   final List<Task> _tasks;
@@ -15,7 +15,7 @@ class TaskListView extends StatelessWidget {
         itemBuilder: (BuildContext context, int index) {
           var task = _tasks[index];
           return GestureDetector(
-              child: TaskView(task),
+              child: TaskListItem(task),
               onTap: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context)=>TaskDetails(task)));
               });

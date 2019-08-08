@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:time_river/Framework/Task.dart';
-import 'package:time_river/Framework/TaskListView.dart';
-import 'package:time_river/Framework/TaskView.dart';
-
-import 'package:time_river/Pages/AddTask/AddTask.dart';
+import 'package:time_river/Models/Task.dart';
+import 'package:time_river/Framework/Task/TaskListView.dart';
 
 var tasks = <Task>[
   Task('خرید تخم مرغ', TaskType.buy),

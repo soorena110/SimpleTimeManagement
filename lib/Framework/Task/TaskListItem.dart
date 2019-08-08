@@ -1,23 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:time_river/Models/Task.dart';
+import '../StaggerIcon.dart';
 
-import 'StaggerIcon.dart';
-import 'Task.dart';
-
-class TaskView extends StatelessWidget {
+class TaskListItem extends StatelessWidget {
   final Task _task;
 
-  TaskView(this._task, {Key key}) : super(key: key);
+  TaskListItem(this._task, {Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(_task.getTitle()),
+      title: Text(_task.title),
       leading: CircleAvatar(
         backgroundColor: _task.getColor(),
         foregroundColor: Colors.white,
         child: StaggerIcon(
           _task.getIcon(),
-          isActive: true  ,
+          isActive: true,
         ),
       ),
     );
