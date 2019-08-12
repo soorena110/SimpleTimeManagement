@@ -6,7 +6,7 @@ import 'package:time_river/Framework/Task/TaskListItem.dart';
 class TaskListView extends StatelessWidget {
   final List<Task> _tasks;
 
-  const TaskListView(this._tasks, {Key key}) : super(key: key);
+  const TaskListView(this._tasks);
 
   @override
   Widget build(BuildContext context) {

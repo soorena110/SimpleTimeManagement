@@ -3,5 +3,5 @@ import 'TaskTable.dart';
 
 databaseInit(){
   var provider = Provider();
-  TaskTable.createTable(provider);
+  TaskTable.addTable(provider);
 }
