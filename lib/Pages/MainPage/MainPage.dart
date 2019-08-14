@@ -4,9 +4,7 @@ import 'package:time_river/Pages/AddTask/AddTask.dart';
 import 'MainPage_DailyTasks.dart';
 
 class MainPage extends StatefulWidget {
-  final String title;
-
-  MainPage({Key key, this.title}) : super(key: key);
+  MainPage();
 
   @override
   State<StatefulWidget> createState() {
@@ -57,19 +55,19 @@ class MainPageState extends State<MainPage>
                             Column(
                               children: <Widget>[
                                 Icon(Icons.calendar_today),
-                                Text('Today')
-                              ],
-                            ),
-                            Column(
-                              children: <Widget>[
-                                Icon(Icons.date_range),
-                                Text('Week')
+                                Text('امروز')
                               ],
                             ),
                             Column(
                               children: <Widget>[
                                 Icon(Icons.calendar_today),
-                                Text('NextDay')
+                                Text('فردا')
+                              ],
+                            ),
+                            Column(
+                              children: <Widget>[
+                                Icon(Icons.date_range),
+                                Text('هفته')
                               ],
                             ),
                             Column(

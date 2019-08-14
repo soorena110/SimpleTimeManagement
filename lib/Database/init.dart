@@ -1,7 +1,13 @@
 import 'Provider.dart';
 import 'TaskTable.dart';
 
+var provider = Provider();
+
 databaseInit(){
-  var provider = Provider();
   TaskTable.addTable(provider);
+  provider.open();
+}
+
+databaseClose(){
+  provider.close();
 }

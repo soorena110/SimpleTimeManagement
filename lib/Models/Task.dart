@@ -12,6 +12,13 @@ class Task {
   Task(this.title, this.taskType,
       {this.description, this.startTime, this.endTime});
 
+  Task.from(Map<String, dynamic> map)
+      : title = map['title'],
+        taskType = map['taskType'],
+        description = map['description'],
+        startTime = map['startTime'],
+        endTime = map['endTime'];
+
   getIcon() {
     switch (taskType) {
       case TaskType.today:
@@ -28,5 +35,10 @@ class Task {
       case TaskType.buy:
         return Colors.green;
     }
+  }
+
+  @override
+  String toString() {
+    return title;
   }
 }

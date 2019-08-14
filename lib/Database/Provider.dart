@@ -17,7 +17,6 @@ class Provider {
   }
 
   close() async {
-    if (db.isOpen)
       await db.close();
   }
 

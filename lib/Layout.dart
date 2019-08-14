@@ -9,7 +9,9 @@ class Layout extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MainPage(title: 'Flutter Demo Home Page'),
+      home: Directionality(
+          textDirection: TextDirection.rtl,
+          child: MainPage()),
     );
   }
 }
