@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:time_river/Pages/TaskDetails.dart';
 import 'package:time_river/Models/Task.dart';
-import 'package:time_river/Framework/Task/TaskListItem.dart';
 
 class TaskView extends StatelessWidget {
   final Task _task;
