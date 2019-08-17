@@ -3,42 +3,32 @@ import 'package:flutter/material.dart';
 enum TaskType { today, buy }
 
 class Task {
-  final String title;
-  final TaskType taskType;
+  final String name;
+  final String start;
+  final String end;
   final String description;
-  final DateTime startTime;
-  final DateTime endTime;
 
-  Task(this.title, this.taskType,
-      {this.description, this.startTime, this.endTime});
+  Task(this.name,
+      {this.description,
+      this.start,
+      this.end});
 
   Task.from(Map<String, dynamic> map)
-      : title = map['title'],
-        taskType = map['taskType'],
+      : name = map['name'],
         description = map['description'],
-        startTime = map['startTime'],
-        endTime = map['endTime'];
+        start = map['start'],
+        end = map['end'];
 
   getIcon() {
-    switch (taskType) {
-      case TaskType.today:
-        return Icons.today;
-      case TaskType.buy:
-        return Icons.add_shopping_cart;
-    }
+    return Icons.tag_faces;
   }
 
   getColor() {
-    switch (taskType) {
-      case TaskType.today:
-        return Colors.lightBlue;
-      case TaskType.buy:
-        return Colors.green;
-    }
+    return Colors.lightBlue;
   }
 
   @override
   String toString() {
-    return title;
+    return name;
   }
 }

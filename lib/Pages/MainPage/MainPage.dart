@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:time_river/Pages/AddTask/AddTask.dart';
 import 'MainPage_DailyTasks.dart';
 
 class MainPage extends StatefulWidget {
@@ -32,9 +31,12 @@ class MainPageState extends State<MainPage>
                       title: Text('Exit ??!'),
                       content: Text('Wanna Exit ??'),
                       actions: <Widget>[
-                        FlatButton(child: Text('Yes', style:TextStyle(color: Colors.orangeAccent)), onPressed: () {
-                          exit(0);
-                        }),
+                        FlatButton(
+                            child: Text('Yes',
+                                style: TextStyle(color: Colors.orangeAccent)),
+                            onPressed: () {
+                              exit(0);
+                            }),
                         FlatButton(child: Text('No'), onPressed: () {})
                       ]));
         },
@@ -82,13 +84,6 @@ class MainPageState extends State<MainPage>
                   Text('hellow !!'),
                   Text('hellow !!'),
                   MainPage_DailyTasks()
-                ])),
-            floatingActionButton: FloatingActionButton(
-                child: Icon(Icons.add),
-                backgroundColor: Colors.orangeAccent[700],
-                onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => AddTask()));
-                })));
+                ]))));
   }
 }

@@ -9,16 +9,10 @@ class TaskView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(children: <Widget>[
-      Item('Title : ', Text(_task.title)),
-      Item(
-          'Type : ',
-          Row(children: [
-            Text(_task.taskType.toString()),
-            Icon(_task.getIcon())
-          ])),
-      Item('Start : ', Text(_task.startTime.toString())),
-      Item('End : ', Text(_task.endTime.toString())),
-      Item('Description : ', Text(_task.description.toString()))
+      Item('نام : ', Text(_task.name)),
+      Item('شروع : ', Text(_task.start.toString())),
+      Item('پایان : ', Text(_task.end.toString())),
+      Item('توضیح : ', Text(_task.description.toString()))
     ]);
   }
 }
@@ -32,7 +26,7 @@ class Item extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+        margin: const EdgeInsets.fromLTRB(30, 20, 30, 0),
         child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [Text(_title), _value]));

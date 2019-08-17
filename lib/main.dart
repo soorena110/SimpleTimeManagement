@@ -11,7 +11,15 @@ void main() {
 class LifecycleEventHandler extends WidgetsBindingObserver {
   @override
   Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
-    if (state == AppLifecycleState.suspending) databaseClose();
+    switch (state) {
+      case AppLifecycleState.inactive:
+      case AppLifecycleState.paused:
+      case AppLifecycleState.suspending:
+        databaseClose();
+        break;
+      case AppLifecycleState.resumed:
+        databaseOpen();
+    }
     print('=== $state');
   }
 }

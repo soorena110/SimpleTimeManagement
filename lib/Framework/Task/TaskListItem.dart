@@ -10,7 +10,7 @@ class TaskListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(_task.title),
+      title: Text(_task.name),
       leading: CircleAvatar(
         backgroundColor: _task.getColor(),
         foregroundColor: Colors.white,

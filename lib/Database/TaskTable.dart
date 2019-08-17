@@ -12,19 +12,16 @@ class TaskTable {
     _provider = provider;
     provider.addTable(_sqlTableName, [
       Row('id', RowType.integer, isAutoIncrement: true, isPrimaryKey: true),
-      Row('title', RowType.text),
-      Row('startTime', RowType.text, isNullable: true),
-      Row('endTime', RowType.text, isNullable: true),
-      Row('description', RowType.text),
+      Row('name', RowType.text),
+      Row('start', RowType.text, isNullable: true),
+      Row('end', RowType.text, isNullable: true),
+      Row('description', RowType.text, isNullable: true),
     ]);
   }
 
   static addOrEdit(Map<String, dynamic> task) {
-//    _provider.open();
-    print(task);
     _provider.db.insert(_sqlTableName, task,
         conflictAlgorithm: ConflictAlgorithm.replace);
-//    _provider.close();
   }
 
   static Future<List<Task>> queryTodayTasks() async {
@@ -32,15 +29,12 @@ class TaskTable {
     final lastMidnight = new DateTime(now.year, now.month, now.day);
 
     try {
-//      _provider.open();
       var result = await _provider.db.query(_sqlTableName);
 //          where: 'endTime < ?', whereArgs: [lastMidnight]);
       return result.map((r) => Task.from(r)).toList();
     } catch (e) {
       print(e);
       return null;
-    } finally {
-//      _provider.close();
     }
   }
 }

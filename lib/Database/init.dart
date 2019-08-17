@@ -11,3 +11,7 @@ databaseInit(){
 databaseClose(){
   provider.close();
 }
+
+databaseOpen(){
+  provider.close();
+}

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:time_river/Database/TaskTable.dart';
 import 'package:time_river/Framework/Task/TaskListView.dart';
 import 'package:time_river/Models/Task.dart';
+import 'package:colorize/colorize.dart';
 
 class MainPage_DailyTasks extends StatefulWidget {
   @override
@@ -15,15 +16,16 @@ class MainPage_DailyTasksState extends State<MainPage_DailyTasks> {
 
   @override
   void initState() {
+    super.initState();
+
     tasks = <Task>[];
     TaskTable.queryTodayTasks().then((res) {
       setState(() => tasks = res ?? <Task>[]);
-    }).catchError((r) => print(r));
+    }).catchError((r) => print(Colorize(r)..red()));
   }
 
   @override
   Widget build(BuildContext context) {
-    print(tasks);
     return TaskListView(tasks);
   }
 }
