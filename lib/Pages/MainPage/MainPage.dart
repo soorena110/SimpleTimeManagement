@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'MainPage_DailyTasks.dart';
+import 'MainPageDailyTasks.dart';
 
 class MainPage extends StatefulWidget {
   MainPage();
@@ -80,10 +80,10 @@ class MainPageState extends State<MainPage>
                   ];
                 },
                 body: TabBarView(controller: this._tabController, children: [
-                  MainPage_DailyTasks(),
+                  MainPageDailyTasks(),
                   Text('hellow !!'),
                   Text('hellow !!'),
-                  MainPage_DailyTasks()
+                  MainPageDailyTasks()
                 ]))));
   }
 }

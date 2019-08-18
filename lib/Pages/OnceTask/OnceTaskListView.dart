@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:time_river/Pages/TaskDetails.dart';
-import 'package:time_river/Models/Task.dart';
-import 'package:time_river/Framework/Task/TaskListItem.dart';
+import 'package:time_river/Models/OnceTask.dart';
+import 'OnceTaskListItem.dart';
 
-class TaskListView extends StatelessWidget {
-  final List<Task> _tasks;
+class OnceTaskListView extends StatelessWidget {
+  final List<OnceTask> _tasks;
 
-  const TaskListView(this._tasks);
+  const OnceTaskListView(this._tasks);
 
   @override
   Widget build(BuildContext context) {
@@ -15,9 +15,10 @@ class TaskListView extends StatelessWidget {
         itemBuilder: (BuildContext context, int index) {
           var task = _tasks[index];
           return GestureDetector(
-              child: TaskListItem(task),
+              child: OnceTaskListItem(task),
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>TaskDetails(task)));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => TaskDetails(task)));
               });
         });
   }

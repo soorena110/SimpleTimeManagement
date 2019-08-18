@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:time_river/Models/Task.dart';
+import 'package:time_river/Models/OnceTask.dart';
 
-class TaskView extends StatelessWidget {
-  final Task _task;
+class OnceTaskView extends StatelessWidget {
+  final OnceTask _task;
 
-  const TaskView(this._task);
+  const OnceTaskView(this._task);
 
   @override
   Widget build(BuildContext context) {

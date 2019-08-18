@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'Database/init.dart';
 import 'Layout.dart';
 
-void main() {
-  databaseInit();
+void main() async {
+  await databaseInit();
   runApp(Layout());
   WidgetsBinding.instance.addObserver(LifecycleEventHandler());
 }
@@ -15,10 +15,10 @@ class LifecycleEventHandler extends WidgetsBindingObserver {
       case AppLifecycleState.inactive:
       case AppLifecycleState.paused:
       case AppLifecycleState.suspending:
-        databaseClose();
+        await databaseClose();
         break;
       case AppLifecycleState.resumed:
-        databaseOpen();
+        await databaseOpen();
     }
     print('=== $state');
   }

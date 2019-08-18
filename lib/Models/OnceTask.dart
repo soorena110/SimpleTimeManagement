@@ -1,20 +1,17 @@
 import 'package:flutter/material.dart';
 
-enum TaskType { today, buy }
-
-class Task {
+class OnceTask {
+  final int id;
   final String name;
   final String start;
   final String end;
   final String description;
 
-  Task(this.name,
-      {this.description,
-      this.start,
-      this.end});
+  OnceTask(this.name, {this.id, this.description, this.start, this.end});
 
-  Task.from(Map<String, dynamic> map)
-      : name = map['name'],
+  OnceTask.from(Map<String, dynamic> map)
+      : id = map['id'],
+        name = map['name'],
         description = map['description'],
         start = map['start'],
         end = map['end'];
@@ -29,6 +26,6 @@ class Task {
 
   @override
   String toString() {
-    return name;
+    return id ?? name;
   }
 }

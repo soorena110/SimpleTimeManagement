@@ -1,8 +1,8 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
-import 'Row.dart';
-import 'Table.dart';
+import 'package:time_river/Database/_common/Row.dart';
+import 'package:time_river/Database/_common/Table.dart';
 
 const dbName = 'timeManagement.db';
 
@@ -17,7 +17,7 @@ class Provider {
   }
 
   close() async {
-      await db.close();
+    await db.close();
   }
 
   _onCreate(Database db, int version) async {
@@ -32,8 +32,9 @@ class Provider {
     _registeredInitSqls.add(sql);
   }
 
-  addTable(String name, List<Row> rows) {
-    var sql = Table(name, rows).toString();
+  addTable(String name, List<Row> rows,
+      {List<String> uniquesFields = const []}) {
+    var sql = Table(name, rows, uniquesFields: uniquesFields).toString();
     registerInitSql(sql);
   }
 }

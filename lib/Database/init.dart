@@ -1,17 +1,20 @@
 import 'Provider.dart';
-import 'TaskTable.dart';
+import 'package:time_river/Database/Tables/OnceTaskTable.dart';
+
+import 'Tables/OnceTaskTickTable.dart';
 
 var provider = Provider();
 
-databaseInit(){
-  TaskTable.addTable(provider);
-  provider.open();
+databaseInit() async {
+  OnceTaskTable.init(provider);
+  OnceTaskTickTable.init(provider);
+  await provider.open();
 }
 
-databaseClose(){
-  provider.close();
+databaseClose() async {
+  await provider.close();
 }
 
-databaseOpen(){
-  provider.close();
+databaseOpen() async {
+  await provider.open();
 }

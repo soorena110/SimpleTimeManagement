@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:time_river/Models/Task.dart';
-import '../StaggerIcon.dart';
+import 'package:time_river/Framework/StaggerIcon.dart';
+import 'package:time_river/Models/OnceTask.dart';
 
-class TaskListItem extends StatelessWidget {
-  final Task _task;
+class OnceTaskListItem extends StatelessWidget {
+  final OnceTask _task;
 
-  TaskListItem(this._task, {Key key}) : super(key: key);
+  OnceTaskListItem(this._task, {Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
