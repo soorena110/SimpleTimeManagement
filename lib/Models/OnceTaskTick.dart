@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 
 enum OnceTaskTickStatus { done, canceled, postponed }
 
+const statusesNamesMap = {
+  OnceTaskTickStatus.done: 'DONE',
+  OnceTaskTickStatus.canceled: 'CANCELED',
+  OnceTaskTickStatus.postponed: 'POSTPONED'
+};
+
 const OnceTaskTickStatusIcons = {
   OnceTaskTickStatus.done: Icons.check_circle,
   OnceTaskTickStatus.canceled: Icons.remove_circle,
@@ -17,20 +23,24 @@ const OnceTaskTickStatusColors = {
 class OnceTaskTick {
   final int id;
   final int onceTaskId;
-  final OnceTaskTickStatus onceTaskTickStatus;
+  final OnceTaskTickStatus status;
   final String description;
+  final String lastUpdate;
 
-  OnceTaskTick(this.onceTaskId, this.onceTaskTickStatus,
-      {this.id, this.description});
+  OnceTaskTick(this.onceTaskId, this.status,
+      {this.id, this.description, this.lastUpdate});
 
   OnceTaskTick.from(Map<String, dynamic> map)
       : id = map['id'],
         onceTaskId = map['onceTaskId'],
-        onceTaskTickStatus = map['onceTaskTickStatus'],
-        description = map['description'];
+        status = map['status'],
+        description = map['description'],
+        lastUpdate = map['lastUpdate'];
 
-  getIcon() => OnceTaskTickStatusIcons[this.onceTaskTickStatus];
-  getColor() => OnceTaskTickStatusColors[this.onceTaskTickStatus];
+  getIcon() => OnceTaskTickStatusIcons[this.status];
+
+  getColor() => OnceTaskTickStatusColors[this.status];
+
   @override
   String toString() => onceTaskId.toString();
 }
