@@ -20,7 +20,7 @@ class Row {
       this.isPrimaryKey = false,
       this.isNullable = true,
       this.defaultValue,
-      this.isUnique});
+      this.isUnique = true});
 
   @override
   String toString() {
