@@ -23,7 +23,7 @@ class Provider {
   _onCreate(Database db, int version) async {
     for (var i = 0; i < _registeredInitSqls.length; i++) {
       var sql = _registeredInitSqls[i];
-      print(sql);
+      print('====>>> ' + sql);
       await db.execute(sql);
     }
   }
@@ -33,7 +33,7 @@ class Provider {
   }
 
   addTable(String name, List<Row> rows,
-      {List<String> uniquesFields = const []}) {
+      {List<String> uniquesFields = const [], bool ifNotExists}) {
     var sql = Table(name, rows, uniquesFields: uniquesFields).toString();
     registerInitSql(sql);
   }

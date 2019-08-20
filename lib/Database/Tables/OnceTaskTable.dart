@@ -11,10 +11,12 @@ class OnceTaskTable {
   static init(Provider provider) {
     _provider = provider;
     provider.addTable(_sqlTableName, [
-      Row('id', RowType.integer, isPrimaryKey: true),
+      Row('id', RowType.integer, isPrimaryKey: true, isAutoIncrement: true,
+          isUnique: true),
       Row('name', RowType.text),
       Row('start', RowType.text, isNullable: true),
       Row('end', RowType.text, isNullable: true),
+      Row('estimate', RowType.real, isNullable: true),
       Row('description', RowType.text, isNullable: true),
     ]);
   }
