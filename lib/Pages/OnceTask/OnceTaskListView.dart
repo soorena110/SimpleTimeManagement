@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:time_river/Pages/TaskDetails.dart';
 import 'package:time_river/Models/OnceTask.dart';
 import 'OnceTaskListItem.dart';
 
 class OnceTaskListView extends StatelessWidget {
-  final List<OnceTask> _tasks;
+  final List<OnceTask> _onceTasks;
+  final void Function(OnceTask onceTask) onItemSelected;
 
-  const OnceTaskListView(this._tasks);
+  const OnceTaskListView(this._onceTasks, {this.onItemSelected});
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-        itemCount: _tasks.length,
+        itemCount: _onceTasks.length,
         itemBuilder: (BuildContext context, int index) {
-          var task = _tasks[index];
+          var task = _onceTasks[index];
           return GestureDetector(
               child: OnceTaskListItem(task),
               onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => TaskDetails(task)));
+                if(this.onItemSelected != null)
+                  this.onItemSelected(task);
               });
         });
   }

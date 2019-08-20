@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 enum OnceTaskTickStatus { done, canceled, postponed }
 
-const statusesNamesMap = {
-  OnceTaskTickStatus.done: 'DONE',
-  OnceTaskTickStatus.canceled: 'CANCELED',
-  OnceTaskTickStatus.postponed: 'POSTPONED'
+const StringToOnceTaskTickStatus = {
+  'done': OnceTaskTickStatus.done,
+  'canceled': OnceTaskTickStatus.canceled,
+  'postponed': OnceTaskTickStatus.postponed
 };
 
 const OnceTaskTickStatusIcons = {
@@ -30,10 +30,10 @@ class OnceTaskTick {
   OnceTaskTick(this.onceTaskId, this.status,
       {this.id, this.description, this.lastUpdate});
 
-  OnceTaskTick.from(Map<String, dynamic> map)
+  OnceTaskTick.fromJson(Map<String, dynamic> map)
       : id = map['id'],
         onceTaskId = map['onceTaskId'],
-        status = map['status'],
+        status = StringToOnceTaskTickStatus[map['status']],
         description = map['description'],
         lastUpdate = map['lastUpdate'];
 

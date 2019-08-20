@@ -24,19 +24,24 @@ class OnceTaskTickTable {
   }
 
   static insertOrUpdate(Map<String, dynamic> task) {
+    print(' ===> OnceTaskTickTable.insertOrUpdate');
+    print(task);
+
     _provider.db.insert(_sqlTableName, task,
         conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   static Future<List<OnceTaskTick>> query(
       List<int> ids, List<OnceTaskTickStatus> statuses) async {
-    var statusesNames = statuses.map((s) => statusesNamesMap[s]);
+    print(' ===> OnceTaskTable.query');
+
+    var statusesNames = statuses.map((s) => s.toString().split('.')[1]);
 
     try {
       var result = await _provider.db.query(_sqlTableName,
           where: 'onceTaskId IN (${ids.join(',')})'
-              ' AND onceTaskTickStatus IN (${statusesNames.join(',')})');
-      return result.map((r) => OnceTaskTick.from(r)).toList();
+              ' AND status IN (${statusesNames.map((s) => '"$s"').join(',')})');
+      return result.map((r) => OnceTaskTick.fromJson(r)).toList();
     } catch (e) {
       print(e);
       return null;

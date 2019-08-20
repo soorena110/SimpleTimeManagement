@@ -22,19 +22,23 @@ class OnceTaskTable {
   }
 
   static insertOrUpdate(Map<String, dynamic> task) {
+    print(' ===> OnceTaskTable.insertOrUpdate');
+    print(task);
+
     _provider.db.insert(_sqlTableName, task,
         conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   static Future<List<OnceTask>> queryTodayTasks() async {
-    final now = DateTime.now();
+    print(' ===> OnceTaskTable.queryTodayTasks');
 
-    var d = Gregorian(now.year, now.month, now.day).toJalali();
-    var start = '$d 00:00';
-    var end = '$d 24:00';
+    final now = DateTime.now();
+    final d = Gregorian(now.year, now.month, now.day).toJalali();
+    final start = '$d 00:00';
+    final end = '$d 24:00';
 
     try {
-      var result = await _provider.db.query(_sqlTableName,
+      final result = await _provider.db.query(_sqlTableName,
           where: '(start IS NULL OR start >= "$start") '
               'AND (end IS NULL OR end <= "$end")');
       return result.map((r) => OnceTask.from(r)).toList();
