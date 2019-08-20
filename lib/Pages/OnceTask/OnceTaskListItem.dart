@@ -7,6 +7,10 @@ class OnceTaskListItem extends StatelessWidget {
 
   OnceTaskListItem(this._task, {Key key}) : super(key: key);
 
+  _getIsStaggering() {
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListTile(
@@ -14,10 +18,9 @@ class OnceTaskListItem extends StatelessWidget {
       leading: CircleAvatar(
         backgroundColor: _task.getColor(),
         foregroundColor: Colors.white,
-        child: StaggerIcon(
-          _task.getIcon(),
-          isActive: true,
-        ),
+        child: this._getIsStaggering()
+            ? StaggerIcon(_task.getIcon())
+            : Icon(_task.getIcon()),
       ),
     );
   }
