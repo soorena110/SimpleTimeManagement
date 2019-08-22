@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:time_river/Models/OnceTask.dart';
-import 'package:time_river/Models/OnceTaskTick.dart';
+
 import 'OnceTaskListItem.dart';
 
 class OnceTaskListView extends StatelessWidget {

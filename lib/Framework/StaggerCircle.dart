@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 
-class StaggerIcon extends StatefulWidget {
-  final IconData icon;
+import 'CircleIcon.dart';
 
-  StaggerIcon(this.icon);
+class StaggerCircle extends StatefulWidget {
+  final IconData icon;
+  final Color backgroundColor;
+
+  StaggerCircle(this.icon, this.backgroundColor);
 
   @override
   State<StatefulWidget> createState() {
-    return StaggerIconState();
+    return StaggerCircleState();
   }
 }
 
-class StaggerIconState extends State<StaggerIcon>
+class StaggerCircleState extends State<StaggerCircle>
     with SingleTickerProviderStateMixin {
   AnimationController _animationController;
   Animation<double> _rotationAnimation;
@@ -42,16 +45,18 @@ class StaggerIconState extends State<StaggerIcon>
     super.dispose();
   }
 
-  Widget _alarmingIcon(BuildContext context, Widget child) {
+  Widget _alarmingCircle(BuildContext context, Widget child) {
     return Transform.scale(
         scale: .5 + _scaleAnimation.value.abs(),
         child: Transform.rotate(
-            angle: _rotationAnimation.value, child: Icon(widget.icon)));
+          angle: _rotationAnimation.value,
+          child: CircleIcon(widget.icon, widget.backgroundColor),
+        ));
   }
 
   @override
   Widget build(BuildContext context) {
-      return AnimatedBuilder(
-          animation: _animationController, builder: _alarmingIcon);
+    return AnimatedBuilder(
+        animation: _animationController, builder: _alarmingCircle);
   }
 }

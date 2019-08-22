@@ -1,7 +1,8 @@
 import 'package:sqflite/sql.dart';
-import 'package:time_river/Models/OnceTask.dart';
-import 'package:shamsi_date/shamsi_date.dart';
 import 'package:time_river/Database/_common/Row.dart';
+import 'package:time_river/Libraries/datetime.dart';
+import 'package:time_river/Models/OnceTask.dart';
+
 import '../Provider.dart';
 
 class OnceTaskTable {
@@ -18,11 +19,9 @@ class OnceTaskTable {
       Row('end', RowType.text, isNullable: true),
       Row('estimate', RowType.real, isNullable: true),
       Row('description', RowType.text, isNullable: true),
-
       Row('tick', RowType.text,
           defaultValue: StringToOnceTaskTick[OnceTaskTick.todo]),
       Row('tickDescription', RowType.text, isNullable: true),
-
       Row('lastUpdate', RowType.text),
     ]);
   }
@@ -38,15 +37,13 @@ class OnceTaskTable {
   static Future<Iterable<OnceTask>> queryTodayTasks() async {
     print('ESC[36m ===> OnceTaskTable.queryTodayTasks');
 
-    final now = DateTime.now();
-    final d = Gregorian(now.year, now.month, now.day).toJalali();
+    final d = getNowDate();
     final start = '$d 00:00';
     final end = '$d 24:00';
 
     try {
       final result = await _provider.db.query(_sqlTableName,
-          where: '(start IS NULL OR start >= "$start") '
-              'AND (end IS NULL OR end <= "$end")');
+          where: 'start IS NULL OR end <= "$end" OR start > "$start"');
       return result.map((r) => OnceTask.from(r));
     } catch (e) {
       print(e);

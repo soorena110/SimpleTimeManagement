@@ -1,5 +1,7 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
+
 import 'MainPageDailyTasks.dart';
 
 class MainPage extends StatefulWidget {
@@ -37,7 +39,9 @@ class MainPageState extends State<MainPage>
                             onPressed: () {
                               exit(0);
                             }),
-                        FlatButton(child: Text('No'), onPressed: () {})
+                        FlatButton(child: Text('No'), onPressed: () {
+                          Navigator.pop(context);
+                        })
                       ]));
         },
         child: Scaffold(

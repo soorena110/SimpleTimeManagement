@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:time_river/Database/Tables/OnceTaskTable.dart';
-import 'package:time_river/Database/Tables/OnceTaskTickTable.dart';
+import 'package:time_river/Libraries/datetime.dart';
 import 'package:time_river/Models/OnceTask.dart';
-import 'package:time_river/Models/OnceTaskTick.dart';
 import 'package:time_river/Pages/OnceTask/OnceTaskListView.dart';
+
 import '../TaskDetails.dart';
 
 class MainPageDailyTasks extends StatefulWidget {
@@ -28,10 +28,19 @@ class MainPageDailyTasksState extends State<MainPageDailyTasks> {
     final todosOrPostpone = [OnceTaskTick.todo, OnceTaskTick.postponed];
     var todayTasks = await OnceTaskTable.queryTodayTasks();
     var todayTasksTodoOrPostpone =
-        todayTasks.where((t) => todosOrPostpone.contains(t.tick));
+    todayTasks.where((t) => todosOrPostpone.contains(t.tick)).toList();
+
+    todayTasksTodoOrPostpone.sort((r, s) {
+      final endDateDiff = compareDateTime(r.end, s.end);
+      if (endDateDiff != 0) return endDateDiff;
+      final startDateDiff = compareDateTime(r.start, s.start);
+      if (startDateDiff != 0) return startDateDiff;
+
+      return 0;
+    });
 
     setState(() {
-      showingTasks = todayTasksTodoOrPostpone.toList();
+      showingTasks = todayTasksTodoOrPostpone;
     });
   }
 

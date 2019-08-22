@@ -1,7 +1,6 @@
-import 'Provider.dart';
 import 'package:time_river/Database/Tables/OnceTaskTable.dart';
 
-import 'Tables/OnceTaskTickTable.dart';
+import 'Provider.dart';
 
 var provider = Provider();
 

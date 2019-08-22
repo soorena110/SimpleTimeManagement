@@ -11,15 +11,29 @@ class OnceTaskView extends StatelessWidget {
     return Column(children: <Widget>[
       Item('نام : ', Text(_task.name)),
       _task.start != null
-          ? Item('شروع : ', Text(_task.start.toString()))
-          : null,
-      _task.end != null ? Item('پایان : ', Text(_task.end.toString())) : null,
+          ? Item('شروع : ', Text(_task.getStartDateDiff()))
+          : Container(),
+      _task.end != null
+          ? Item('پایان : ', Text(_task.getEndDateDiff()))
+          : Container(),
+      _task.estimate != null
+          ? Item('تعداد ساعت : ', Text(_task.getEstimateString()))
+          : Container(),
       _task.description != null
           ? Item('توضیح : ', Text(_task.description.toString()))
-          : null,
-      _task.estimate != null
-          ? Item('تعداد ساعت : ', Text(_task.end.toString()))
-          : null
+          : Container(),
+      Row(children: [
+        Expanded(
+            child: Container(
+              color: Colors.grey[400],
+              height: 1,
+              margin: const EdgeInsets.all(25),
+            ))
+      ]),
+
+      _task.tickDescription != null
+          ? Item('توضیح تیک : ', Text(_task.tickDescription.toString()))
+          : Container(),
     ]);
   }
 }
