@@ -11,26 +11,32 @@ class OnceTaskTable {
   static init(Provider provider) {
     _provider = provider;
     provider.addTable(_sqlTableName, [
-      Row('id', RowType.integer, isPrimaryKey: true, isAutoIncrement: true,
-          isUnique: true),
+      Row('id', RowType.integer,
+          isPrimaryKey: true, isAutoIncrement: true, isUnique: true),
       Row('name', RowType.text),
       Row('start', RowType.text, isNullable: true),
       Row('end', RowType.text, isNullable: true),
       Row('estimate', RowType.real, isNullable: true),
       Row('description', RowType.text, isNullable: true),
+
+      Row('tick', RowType.text,
+          defaultValue: StringToOnceTaskTick[OnceTaskTick.todo]),
+      Row('tickDescription', RowType.text, isNullable: true),
+
+      Row('lastUpdate', RowType.text),
     ]);
   }
 
   static insertOrUpdate(Map<String, dynamic> task) {
-    print(' ===> OnceTaskTable.insertOrUpdate');
+    print('ESC[33m ===> OnceTaskTable.insertOrUpdate');
     print(task);
 
     _provider.db.insert(_sqlTableName, task,
         conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
-  static Future<List<OnceTask>> queryTodayTasks() async {
-    print(' ===> OnceTaskTable.queryTodayTasks');
+  static Future<Iterable<OnceTask>> queryTodayTasks() async {
+    print('ESC[36m ===> OnceTaskTable.queryTodayTasks');
 
     final now = DateTime.now();
     final d = Gregorian(now.year, now.month, now.day).toJalali();
@@ -41,7 +47,7 @@ class OnceTaskTable {
       final result = await _provider.db.query(_sqlTableName,
           where: '(start IS NULL OR start >= "$start") '
               'AND (end IS NULL OR end <= "$end")');
-      return result.map((r) => OnceTask.from(r)).toList();
+      return result.map((r) => OnceTask.from(r));
     } catch (e) {
       print(e);
       return null;

@@ -25,20 +25,20 @@ class MainPageDailyTasksState extends State<MainPageDailyTasks> {
   }
 
   void _fetchTasksAndTheirTicks() async {
-    var tasks = await OnceTaskTable.queryTodayTasks();
-    var taskTicks = await OnceTaskTickTable.query(tasks.map((t) => t.id).toList(),
-        [OnceTaskTickStatus.done, OnceTaskTickStatus.canceled]);
-    var taskTicksId = taskTicks.map((tt) => tt.onceTaskId);
+    final todosOrPostpone = [OnceTaskTick.todo, OnceTaskTick.postponed];
+    var todayTasks = await OnceTaskTable.queryTodayTasks();
+    var todayTasksTodoOrPostpone =
+        todayTasks.where((t) => todosOrPostpone.contains(t.tick));
 
     setState(() {
-      showingTasks = tasks.where((t) => !taskTicksId.contains(t.id)).toList();
+      showingTasks = todayTasksTodoOrPostpone.toList();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return OnceTaskListView(showingTasks, onItemSelected: (task) =>
-        Navigator.push(context,
+    return OnceTaskListView(showingTasks,
+        onItemSelected: (task) => Navigator.push(context,
             MaterialPageRoute(builder: (context) => TaskDetails(task))));
   }
 }

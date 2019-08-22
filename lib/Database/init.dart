@@ -7,7 +7,6 @@ var provider = Provider();
 
 databaseInit() async {
   OnceTaskTable.init(provider);
-  OnceTaskTickTable.init(provider);
   await provider.open();
 }
 

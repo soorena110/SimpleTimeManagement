@@ -10,9 +10,16 @@ class OnceTaskView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(children: <Widget>[
       Item('نام : ', Text(_task.name)),
-      Item('شروع : ', Text(_task.start.toString())),
-      Item('پایان : ', Text(_task.end.toString())),
-      Item('توضیح : ', Text(_task.description.toString()))
+      _task.start != null
+          ? Item('شروع : ', Text(_task.start.toString()))
+          : null,
+      _task.end != null ? Item('پایان : ', Text(_task.end.toString())) : null,
+      _task.description != null
+          ? Item('توضیح : ', Text(_task.description.toString()))
+          : null,
+      _task.estimate != null
+          ? Item('تعداد ساعت : ', Text(_task.end.toString()))
+          : null
     ]);
   }
 }

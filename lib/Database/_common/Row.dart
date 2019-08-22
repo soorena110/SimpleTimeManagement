@@ -19,15 +19,15 @@ class Row {
       {this.isAutoIncrement = false,
       this.isPrimaryKey = false,
       this.isNullable = true,
-      this.defaultValue,
-      this.isUnique = true});
+      this.isUnique = false,
+      this.defaultValue});
 
   @override
   String toString() {
     return '$name ${RowSqlType[type]}' +
         (isPrimaryKey ? ' PRIMARY KEY' : '') +
         (isAutoIncrement ? ' AUTOINCREMENT' : '') +
-        (isUnique ? 'UNIQUE' : '') +
+        (isUnique ? ' UNIQUE' : '') +
         (isNullable ? '' : ' NOT NULL') +
         (defaultValue != null ? ' DEFAULT ' + defaultValue : '');
   }
