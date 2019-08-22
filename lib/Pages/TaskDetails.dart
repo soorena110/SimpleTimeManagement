@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:time_river/Database/Tables/OnceTaskTable.dart';
 import 'package:time_river/Framework/CircleIcon.dart';
+import 'package:time_river/Framework/InputFields/DateInputField.dart';
+import 'package:time_river/Framework/InputFields/TextInputField.dart';
+import 'package:time_river/Framework/InputFields/TimeInputField.dart';
 import 'package:time_river/Models/OnceTask.dart';
 
 import 'OnceTask/OnceTaskView.dart';
@@ -18,26 +21,23 @@ class TaskDetails extends StatefulWidget {
 }
 
 class TaskDetailsState extends State<TaskDetails> {
-  TextEditingController textController;
+  TextEditingController tickDescriptionController;
+  TextEditingController tickDateController;
+  TextEditingController tickTimeController;
 
   _changeTick(OnceTaskTick tickType) async {
-    final tickDescription = textController.value.text;
+    final tickDescription = tickDescriptionController.value.text;
 
     this.setState(() {
       widget._task.tick = tickType;
       widget._task.tickDescription =
       tickDescription != '' ? tickDescription : null;
+      if (widget._task.tick == OnceTaskTick.postponed) {
+        widget._task.end =
+            tickDateController.value.text + ' ' + tickTimeController.value.text;
+      }
     });
     OnceTaskTable.insertOrUpdate(widget._task.toMap());
-  }
-
-  TextField _renderTickDesctiptionField() {
-    return TextField(
-        autofocus: true,
-        minLines: 2,
-        maxLines: 3,
-        controller: textController,
-        decoration: InputDecoration(labelText: 'توضیح تیک'));
   }
 
   RaisedButton _renderTickChangeButton(OnceTaskTick tickType) {
@@ -56,9 +56,20 @@ class TaskDetailsState extends State<TaskDetails> {
         });
   }
 
+  _resetInputControllers() {
+    if (tickDescriptionController != null) tickDescriptionController.dispose();
+    tickDescriptionController =
+        TextEditingController(text: widget._task.tickDescription);
+    if (tickDateController != null) tickDateController.dispose();
+    tickDateController =
+        TextEditingController(text: widget._task.end.split(' ')[0]);
+    if (tickTimeController != null) tickTimeController.dispose();
+    tickTimeController =
+        TextEditingController(text: widget._task.end.split(' ')[1]);
+  }
+
   _showChangingTickDialogBox(OnceTaskTick tick) {
-    if (textController != null) textController.dispose();
-    textController = TextEditingController(text: widget._task.tickDescription);
+    this._resetInputControllers();
 
     final title = Row(
       children: <Widget>[
@@ -78,7 +89,22 @@ class TaskDetailsState extends State<TaskDetails> {
                 title: title,
                 contentPadding: const EdgeInsets.all(20),
                 children: <Widget>[
-                  this._renderTickDesctiptionField(),
+                  tick == OnceTaskTick.postponed
+                      ? DateInputField(
+                    'تاریخ تعویق',
+                    controller: tickDateController,
+                  )
+                      : Container(),
+                  tick == OnceTaskTick.postponed
+                      ? TimeInputField(
+                    'زمان تعویق',
+                    controller: tickTimeController,
+                  )
+                      : Container(),
+                  TextInputField('توضیح تیک',
+                      controller: tickDescriptionController,
+                      minLines: 2,
+                      maxLines: 3),
                   this._renderTickChangeButton(tick)
                 ],
               ));
@@ -86,8 +112,8 @@ class TaskDetailsState extends State<TaskDetails> {
   }
 
   Widget _tickStateFloatingButton() {
-    final availableTicks =
-    OnceTaskTick.values.where((v) => v != widget._task.tick);
+    final availableTicks = OnceTaskTick.values
+        .where((v) => v != widget._task.tick || v == OnceTaskTick.postponed);
 
     final subItems = availableTicks
         .map((v) =>

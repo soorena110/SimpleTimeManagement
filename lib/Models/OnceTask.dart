@@ -28,7 +28,7 @@ class OnceTask {
   final int id;
   final String name;
   final String start;
-  final String end;
+  String end;
   final double estimate;
   final String description;
 
@@ -128,8 +128,8 @@ class OnceTask {
     if (this.end == null) return false;
 
     final now = getNow();
-    final remainingTime = getDateDiff(this.end, now).inMinutes;
-    return remainingTime - (estimate ?? 0) < 30;
+    final remainingTime = getDateTimeDiff(this.end, now).inMinutes;
+    return remainingTime - (estimate ?? 0) * 60 < 30;
   }
 
   String getTickName() {

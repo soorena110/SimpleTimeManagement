@@ -7,6 +7,10 @@ import 'package:time_river/Pages/OnceTask/OnceTaskListView.dart';
 import '../TaskDetails.dart';
 
 class MainPageDailyTasks extends StatefulWidget {
+  final Function(bool isCritical) onStateChanged;
+
+  const MainPageDailyTasks(this.onStateChanged);
+
   @override
   State<StatefulWidget> createState() {
     return MainPageDailyTasksState();
@@ -42,12 +46,22 @@ class MainPageDailyTasksState extends State<MainPageDailyTasks> {
     setState(() {
       showingTasks = todayTasksTodoOrPostpone;
     });
+    widget.onStateChanged(
+        showingTasks
+            .where((t) => t.getIsCritical())
+            .length > 0)
+    ;
+  }
+
+  _selectATask(OnceTask task) async {
+    await Navigator.push(
+        context, MaterialPageRoute(builder: (context) => TaskDetails(task)));
+    this.setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     return OnceTaskListView(showingTasks,
-        onItemSelected: (task) => Navigator.push(context,
-            MaterialPageRoute(builder: (context) => TaskDetails(task))));
+        onItemSelected: (task) => this._selectATask(task));
   }
 }
