@@ -1,10 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:time_river/Framework/CircleIcon.dart';
-import 'package:time_river/Pages/AllOnceTasksPage/AllOnceTasksPage.dart';
+import 'package:time_river/Libraries/datetime.dart';
 
 import 'MainPageDailyTasks.dart';
+import '_Drawer.dart';
 
 class MainPage extends StatefulWidget {
   MainPage();
@@ -24,21 +24,6 @@ class MainPageState extends State<MainPage>
   void initState() {
     _tabController = TabController(length: 3, vsync: this);
     super.initState();
-  }
-
-  _buildDrawer() {
-    return Drawer(
-      child: ListView(children: [
-        ListTile(
-          title: Text('همه تسک‌های تکی'),
-          leading: CircleIcon(Icons.done_all, Colors.pinkAccent),
-          onTap: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => AllOnceTasksPage()));
-          },
-        )
-      ]),
-    );
   }
 
   _getBackgroundColor() {
@@ -75,6 +60,40 @@ class MainPageState extends State<MainPage>
     });
   }
 
+  _getTodayView() {
+    final today = getNowDate();
+    final start = '$today 00:00';
+    final end = '$today 24:00';
+
+    return MainPageDailyTasks(
+        onStateChanged: this._handleStateChange, start: start, end: end);
+  }
+
+  _getTomorrowView() {
+    final tomorrow = getJalaliOf(DateTime.now().add(Duration(days: 1)));
+    final start = '$tomorrow 00:00';
+    final end = '$tomorrow 24:00';
+
+    return MainPageDailyTasks(
+        onStateChanged: this._handleStateChange, start: start, end: end);
+  }
+
+  _getCurrentWeekView() {
+    final now = DateTime.now();
+    final currentWeekDay = (now.weekday + 1) % 7;
+
+    final saturday =
+    getJalaliOf(DateTime.now().add(Duration(days: -currentWeekDay)));
+    final start = '$saturday 00:00';
+
+    final friday =
+    getJalaliOf(DateTime.now().add(Duration(days: 6 - currentWeekDay)));
+    final end = '$friday 24:00';
+
+    return MainPageDailyTasks(
+        onStateChanged: this._handleStateChange, start: start, end: end);
+  }
+
   _buildBody() {
     return NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
@@ -82,7 +101,8 @@ class MainPageState extends State<MainPage>
             SliverAppBar(
               backgroundColor: this._getBackgroundColor(),
               title: Text('Time is a river with many eddies',
-                  style: TextStyle(fontSize: 15)),
+                  style: TextStyle(fontSize: 18),
+                  textDirection: TextDirection.ltr),
               pinned: true,
               floating: true,
               bottom: TabBar(
@@ -109,9 +129,9 @@ class MainPageState extends State<MainPage>
           ];
         },
         body: TabBarView(controller: this._tabController, children: [
-          MainPageDailyTasks(this._handleStateChange),
-          Text('hellow !!'),
-          Text('hellow !!')
+          this._getTodayView(),
+          this._getTomorrowView(),
+          this._getCurrentWeekView()
         ]));
   }
 
@@ -119,7 +139,10 @@ class MainPageState extends State<MainPage>
   Widget build(BuildContext context) {
     return WillPopScope(
         onWillPop: _handlePopScopePop,
-        child:
-        Scaffold(body: this._buildBody(), endDrawer: this._buildDrawer()));
+        child: Directionality(
+            textDirection: TextDirection.rtl,
+            child: Scaffold(
+                body: this._buildBody(),
+                endDrawer: getMainPageDrawer(context))));
   }
 }

@@ -15,6 +15,10 @@ class OnceTaskListItem extends StatelessWidget {
         ? StaggerCircle(this._task.getIcon(), this._task.getColor())
         : CircleIcon(this._task.getIcon(), this._task.getColor());
 
+    final _trailing = Text(this._task.getRemainingTime(),
+        style: TextStyle(
+            color: this._task.getIsCritical() ? Colors.deepOrange : null));
+
     _subtitle() {
       if (this.showLastEdit && this._task.lastUpdate != null)
         return Text(this._task.lastUpdate.replaceFirst(' ', ' ساعت '));
@@ -30,7 +34,7 @@ class OnceTaskListItem extends StatelessWidget {
         child: ListTile(
             title: Text(_task.name),
             leading: _circleIcon,
-            trailing: Text(this._task.getRemainingTime()),
+            trailing: _trailing,
             subtitle: _subtitle()));
   }
 }

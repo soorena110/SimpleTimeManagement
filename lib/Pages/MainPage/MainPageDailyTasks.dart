@@ -8,8 +8,10 @@ import '../TaskDetailsPage/TaskDetailsPage.dart';
 
 class MainPageDailyTasks extends StatefulWidget {
   final Function(bool isCritical) onStateChanged;
+  final String start;
+  final String end;
 
-  const MainPageDailyTasks(this.onStateChanged);
+  const MainPageDailyTasks({this.onStateChanged, this.start, this.end});
 
   @override
   State<StatefulWidget> createState() {
@@ -30,7 +32,8 @@ class MainPageDailyTasksState extends State<MainPageDailyTasks> {
 
   void _fetchTasksAndTheirTicks() async {
     final todosOrPostpone = [OnceTaskTick.todo, OnceTaskTick.postponed];
-    var todayTasks = await OnceTaskTable.queryTodayTasks();
+    var todayTasks =
+    await OnceTaskTable.queryTasksBetweenDates(widget.start, widget.end);
     var todayTasksTodoOrPostpone =
     todayTasks.where((t) => todosOrPostpone.contains(t.tick)).toList();
 

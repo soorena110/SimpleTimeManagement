@@ -1,7 +1,11 @@
 import 'package:shamsi_date/shamsi_date.dart';
 
 String getNowDate() {
-  final j = Jalali.now();
+  return getJalaliOf(DateTime.now());
+}
+
+String getJalaliOf(DateTime datetime) {
+  final j = Gregorian.fromDateTime(datetime).toJalali();
   final m = j.month.toString().padLeft(2, '0');
   final d = j.day.toString().padLeft(2, '0');
   return '${j.year}/$m/$d';

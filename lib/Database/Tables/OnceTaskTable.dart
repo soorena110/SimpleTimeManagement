@@ -1,6 +1,5 @@
 import 'package:sqflite/sql.dart';
 import 'package:time_river/Database/_common/Row.dart';
-import 'package:time_river/Libraries/datetime.dart';
 import 'package:time_river/Models/OnceTask.dart';
 
 import '../Provider.dart';
@@ -46,12 +45,9 @@ class OnceTaskTable {
     }
   }
 
-  static Future<Iterable<OnceTask>> queryTodayTasks() async {
+  static Future<Iterable<OnceTask>> queryTasksBetweenDates(String start,
+      String end) async {
     print('ESC[36m ===> OnceTaskTable.queryTodayTasks');
-
-    final d = getNowDate();
-    final start = '$d 00:00';
-    final end = '$d 24:00';
 
     try {
       final result = await _provider.db.query(_sqlTableName,
