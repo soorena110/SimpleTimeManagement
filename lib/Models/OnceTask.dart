@@ -78,6 +78,7 @@ class OnceTask {
 
   String getEstimateString() {
     final hm = this.estimate;
+    if (hm == null) return '';
     final h = hm.floor();
     final m = ((hm - h) * 60).round();
 

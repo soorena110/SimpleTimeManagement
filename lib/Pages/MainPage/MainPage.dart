@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:time_river/Framework/CircleIcon.dart';
+import 'package:time_river/Pages/AllOnceTasksPage/AllOnceTasksPage.dart';
 
 import 'MainPageDailyTasks.dart';
 
@@ -20,34 +22,51 @@ class MainPageState extends State<MainPage>
 
   @override
   void initState() {
-    _tabController = TabController(length: 4, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
     super.initState();
+  }
+
+  _buildDrawer() {
+    return Drawer(
+      child: ListView(children: [
+        ListTile(
+          title: Text('همه تسک‌های تکی'),
+          leading: CircleIcon(Icons.done_all, Colors.pinkAccent),
+          onTap: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => AllOnceTasksPage()));
+          },
+        )
+      ]),
+    );
   }
 
   _getBackgroundColor() {
     return this._isCritical ? Colors.orange : Colors.lightGreen[200];
   }
 
-  Future<bool> _handlePopScopePop() {
-    return showDialog(
+  Future<bool> _handlePopScopePop() async {
+    return await showDialog(
         context: context,
         builder: (context) =>
-            AlertDialog(
-                title: Text('Exit ??!'),
-                content: Text('Wanna Exit ??'),
+            Directionality(
+                textDirection: TextDirection.rtl,
+                child: AlertDialog(
+                    title: Text('خروج ??!'),
+                    content: Text('آیا میخواهید خارج شوید ??'),
                 actions: <Widget>[
                   FlatButton(
-                      child: Text('Yes',
+                      child: Text('بله',
                           style: TextStyle(color: Colors.orangeAccent)),
                       onPressed: () {
                         exit(0);
                       }),
                   FlatButton(
-                      child: Text('No'),
+                      child: Text('خیر'),
                       onPressed: () {
                         Navigator.pop(context);
                       })
-                ]));
+                ])));
   }
 
   _handleStateChange(bool isCritical) {
@@ -62,7 +81,8 @@ class MainPageState extends State<MainPage>
           return [
             SliverAppBar(
               backgroundColor: this._getBackgroundColor(),
-              title: Text('Time is a river with many eddies'),
+              title: Text('Time is a river with many eddies',
+                  style: TextStyle(fontSize: 15)),
               pinned: true,
               floating: true,
               bottom: TabBar(
@@ -83,9 +103,6 @@ class MainPageState extends State<MainPage>
                     ),
                     Column(
                       children: <Widget>[Icon(Icons.date_range), Text('هفته')],
-                    ),
-                    Column(
-                      children: <Widget>[Icon(Icons.alarm), Text('')],
                     )
                   ]),
             ),
@@ -93,7 +110,6 @@ class MainPageState extends State<MainPage>
         },
         body: TabBarView(controller: this._tabController, children: [
           MainPageDailyTasks(this._handleStateChange),
-          Text('hellow !!'),
           Text('hellow !!'),
           Text('hellow !!')
         ]));
@@ -103,6 +119,7 @@ class MainPageState extends State<MainPage>
   Widget build(BuildContext context) {
     return WillPopScope(
         onWillPop: _handlePopScopePop,
-        child: Scaffold(body: this._buildBody()));
+        child:
+        Scaffold(body: this._buildBody(), endDrawer: this._buildDrawer()));
   }
 }

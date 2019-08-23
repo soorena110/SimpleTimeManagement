@@ -6,13 +6,12 @@ import 'package:time_river/Framework/InputFields/DateInputField.dart';
 import 'package:time_river/Framework/InputFields/TextInputField.dart';
 import 'package:time_river/Framework/InputFields/TimeInputField.dart';
 import 'package:time_river/Models/OnceTask.dart';
-
-import 'OnceTask/OnceTaskView.dart';
+import 'package:time_river/Pages/OnceTask/OnceTaskView.dart';
 
 class TaskDetails extends StatefulWidget {
   final OnceTask _task;
 
-  const TaskDetails(this._task, {Key key}) : super(key: key);
+  const TaskDetails(this._task);
 
   @override
   State<StatefulWidget> createState() {
@@ -24,6 +23,12 @@ class TaskDetailsState extends State<TaskDetails> {
   TextEditingController tickDescriptionController;
   TextEditingController tickDateController;
   TextEditingController tickTimeController;
+  bool _taskIsChanged = false;
+
+  Future<bool> _handlePopScopePop() async {
+    Navigator.pop(context, this._taskIsChanged);
+    return false;
+  }
 
   _changeTick(OnceTaskTick tickType) async {
     final tickDescription = tickDescriptionController.value.text;
@@ -36,6 +41,7 @@ class TaskDetailsState extends State<TaskDetails> {
         widget._task.end =
             tickDateController.value.text + ' ' + tickTimeController.value.text;
       }
+      _taskIsChanged = true;
     });
     OnceTaskTable.insertOrUpdate(widget._task.toMap());
   }
@@ -143,13 +149,15 @@ class TaskDetailsState extends State<TaskDetails> {
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-        textDirection: TextDirection.rtl,
-        child: Scaffold(
-            appBar: AppBar(
-                backgroundColor: widget._task.getColor(),
-                title: Text(widget._task.name)),
-            body: OnceTaskView(widget._task),
-            floatingActionButton: this._tickStateFloatingButton()));
+    return WillPopScope(
+        onWillPop: this._handlePopScopePop,
+        child: Directionality(
+            textDirection: TextDirection.rtl,
+            child: Scaffold(
+                appBar: AppBar(
+                    backgroundColor: widget._task.getColor(),
+                    title: Text(widget._task.name)),
+                body: OnceTaskView(widget._task),
+                floatingActionButton: this._tickStateFloatingButton())));
   }
 }

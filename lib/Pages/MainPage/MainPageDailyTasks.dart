@@ -4,7 +4,7 @@ import 'package:time_river/Libraries/datetime.dart';
 import 'package:time_river/Models/OnceTask.dart';
 import 'package:time_river/Pages/OnceTask/OnceTaskListView.dart';
 
-import '../TaskDetails.dart';
+import '../TaskDetailsPage/TaskDetailsPage.dart';
 
 class MainPageDailyTasks extends StatefulWidget {
   final Function(bool isCritical) onStateChanged;
@@ -37,10 +37,13 @@ class MainPageDailyTasksState extends State<MainPageDailyTasks> {
     todayTasksTodoOrPostpone.sort((r, s) {
       final endDateDiff = compareDateTime(r.end, s.end);
       if (endDateDiff != 0) return endDateDiff;
+
       final startDateDiff = compareDateTime(r.start, s.start);
       if (startDateDiff != 0) return startDateDiff;
 
-      return 0;
+      return ((r.estimate ?? 0) - (s.estimate ?? 0))
+          .toInt()
+          .sign;
     });
 
     setState(() {
@@ -49,14 +52,14 @@ class MainPageDailyTasksState extends State<MainPageDailyTasks> {
     widget.onStateChanged(
         showingTasks
             .where((t) => t.getIsCritical())
-            .length > 0)
-    ;
+            .length > 0);
   }
 
   _selectATask(OnceTask task) async {
-    await Navigator.push(
+    final taskIsChanged = await Navigator.push(
         context, MaterialPageRoute(builder: (context) => TaskDetails(task)));
-    this.setState(() {});
+
+    if (taskIsChanged) this._fetchTasksAndTheirTicks();
   }
 
   @override

@@ -34,6 +34,18 @@ class OnceTaskTable {
         conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
+  static Future<Iterable<OnceTask>> queryAllTasks() async {
+    print('ESC[36m ===> OnceTaskTable.queryAllTasks');
+
+    try {
+      final result = await _provider.db.query(_sqlTableName);
+      return result.map((r) => OnceTask.from(r));
+    } catch (e) {
+      print(e);
+      return null;
+    }
+  }
+
   static Future<Iterable<OnceTask>> queryTodayTasks() async {
     print('ESC[36m ===> OnceTaskTable.queryTodayTasks');
 

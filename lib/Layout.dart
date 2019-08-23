@@ -5,7 +5,7 @@ class Layout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Time Management App',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
