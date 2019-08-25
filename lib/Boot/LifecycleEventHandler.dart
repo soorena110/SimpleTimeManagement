@@ -10,6 +10,7 @@ var lightsOn = false;
 class LifecycleEventHandler extends WidgetsBindingObserver {
   LifecycleEventHandler() {
     methodChannel.setMethodCallHandler((call) async {
+      print(110);
       if (lightsOn)
         NotificationCenter().turnFlashOff();
       else
