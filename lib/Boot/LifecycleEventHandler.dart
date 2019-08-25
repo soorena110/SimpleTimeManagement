@@ -1,26 +1,5 @@
 import 'package:flutter/material.dart';
-
-import 'Database/init.dart';
-import 'Pages/MainPage/MainPage.dart';
-
-void main() async {
-  await databaseInit();
-  runApp(Layout());
-  WidgetsBinding.instance.addObserver(LifecycleEventHandler());
-}
-
-class Layout extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Time Management App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: MainPage(),
-    );
-  }
-}
+import 'package:time_river/Database/init.dart';
 
 class LifecycleEventHandler extends WidgetsBindingObserver {
   @override
