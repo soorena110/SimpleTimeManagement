@@ -21,6 +21,7 @@ class TimeInputFieldState extends State<TimeInputField> {
   Widget build(BuildContext context) {
     return inputFieldContainer(
       DateTimePickerFormField(
+        keyboardType: null,
         inputType: InputType.time,
         editable: false,
         controller: widget.controller,

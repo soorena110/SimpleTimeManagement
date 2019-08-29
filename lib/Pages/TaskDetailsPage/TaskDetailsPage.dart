@@ -6,6 +6,7 @@ import 'package:time_river/Framework/InputFields/DateInputField.dart';
 import 'package:time_river/Framework/InputFields/TextInputField.dart';
 import 'package:time_river/Framework/InputFields/TimeInputField.dart';
 import 'package:time_river/Models/OnceTask.dart';
+import 'package:time_river/Pages/AddTaskPage/AddOnceTaskPage.dart';
 import 'package:time_river/Pages/OnceTask/OnceTaskView.dart';
 
 class TaskDetails extends StatefulWidget {
@@ -140,11 +141,24 @@ class TaskDetailsState extends State<TaskDetails> {
           child: Icon(widget._task.getIcon()),
           backgroundColor: widget._task.getColor(),
           foregroundColor: Colors.white,
-          marginRight: 40,
-          marginBottom: 10,
+          marginRight: 35,
+          marginBottom: 35,
           overlayOpacity: 0,
           children: subItems,
         ));
+  }
+
+  _buildFloatingActionButton() {
+    return FloatingActionButton(
+        backgroundColor: widget._task.getColor(),
+        child: Icon(Icons.edit),
+        onPressed: () async {
+          final isChanged = await Navigator.push(context,
+              MaterialPageRoute(builder: (context) {
+                return AddOnceTaskPage(widget._task);
+              }));
+          if (isChanged) setState(() {});
+        });
   }
 
   @override
@@ -153,11 +167,14 @@ class TaskDetailsState extends State<TaskDetails> {
         onWillPop: this._handlePopScopePop,
         child: Directionality(
             textDirection: TextDirection.rtl,
-            child: Scaffold(
-                appBar: AppBar(
-                    backgroundColor: widget._task.getColor(),
-                    title: Text(widget._task.name)),
-                body: OnceTaskView(widget._task),
-                floatingActionButton: this._tickStateFloatingButton())));
+            child: Stack(alignment: Alignment.bottomLeft, children: [
+              Scaffold(
+                  appBar: AppBar(
+                      backgroundColor: widget._task.getColor(),
+                      title: Text(widget._task.name)),
+                  body: OnceTaskView(widget._task),
+                  floatingActionButton: this._buildFloatingActionButton()),
+              this._tickStateFloatingButton()
+            ])));
   }
 }

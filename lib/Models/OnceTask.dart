@@ -25,17 +25,17 @@ const OnceTaskTickColors = {
 };
 
 class OnceTask {
-  final int id;
-  final String name;
-  final String start;
+  int id;
+  String name;
+  String start;
   String end;
-  final double estimate;
-  final String description;
+  double estimate;
+  String description;
 
   OnceTaskTick tick;
   String tickDescription;
 
-  final String lastUpdate;
+  String lastUpdate;
 
   //#region Constructors
 

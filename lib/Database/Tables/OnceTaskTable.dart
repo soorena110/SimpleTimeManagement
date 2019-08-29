@@ -1,5 +1,6 @@
 import 'package:sqflite/sql.dart';
 import 'package:time_river/Database/_common/Row.dart';
+import 'package:time_river/Libraries/datetime.dart';
 import 'package:time_river/Models/OnceTask.dart';
 
 import '../Provider.dart';
@@ -28,6 +29,10 @@ class OnceTaskTable {
   static insertOrUpdate(Map<String, dynamic> task) {
     print('ESC[33m ===> OnceTaskTable.insertOrUpdate');
     print(task);
+
+    if (task['lastUpdate'] == null) task['lastUpdate'] = getNow();
+    if (task['tick'] == null)
+      task['tick'] = OnceTaskTick.todo.toString().split('.')[1];
 
     _provider.db.insert(_sqlTableName, task,
         conflictAlgorithm: ConflictAlgorithm.replace);

@@ -25,7 +25,7 @@ public class BackgroundService extends Service {
         handler = new Handler();
         runnable = () -> {
             Toast.makeText(context, "Service is still running", Toast.LENGTH_LONG).show();
-            handler.postDelayed(runnable, 5000);
+            handler.postDelayed(runnable, 50000);
         };
 
         handler.postDelayed(runnable, 15000);

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:time_river/Libraries/datetime.dart';
+import 'package:time_river/Pages/AddTaskPage/AddOnceTaskPage.dart';
 
 import 'MainPageDailyTasks.dart';
 import '_Drawer.dart';
@@ -143,6 +144,15 @@ class MainPageState extends State<MainPage>
             textDirection: TextDirection.rtl,
             child: Scaffold(
                 body: this._buildBody(),
-                endDrawer: getMainPageDrawer(context))));
+                endDrawer: getMainPageDrawer(context),
+                floatingActionButton: FloatingActionButton(
+                    backgroundColor: this._getBackgroundColor(),
+                    child: Icon(Icons.add),
+                    onPressed: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) {
+                            return AddOnceTaskPage();
+                          }));
+                    }))));
   }
 }

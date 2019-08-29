@@ -23,7 +23,7 @@ int compareDateTime(String d1, String d2) {
   if (d1 == null) return 1;
   if (d2 == null) return -1;
 
-  return getDateTimeDiff(d1, d2).inMilliseconds;
+  return getDateTimeDiff(d1, d2).inMilliseconds.sign;
 }
 
 Duration getDateTimeDiff(String d1, String d2) {
