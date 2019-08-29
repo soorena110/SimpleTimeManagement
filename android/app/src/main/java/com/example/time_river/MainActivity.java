@@ -1,5 +1,6 @@
 package com.example.time_river;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import io.flutter.app.FlutterActivity;
@@ -17,6 +18,9 @@ public class MainActivity extends FlutterActivity {
         super.onCreate(savedInstanceState);
         flutterView = getFlutterView();
         GeneratedPluginRegistrant.registerWith(this);
+
+        Intent service = new Intent(getApplicationContext(), BackgroundService.class);
+        this.startService(service);
     }
 
     static void callFlutter() {

@@ -34,26 +34,8 @@
             </intent-filter>
         </activity>
 
-
-        <receiver
-            android:name=".MyReceiver"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.TIME_TICK" />
-            </intent-filter>
-        </receiver>
-        <receiver
-            android:name=".MyServiceReceiver"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
-
         <service
-            android:name=".MyService"
+            android:name=".BackgroundService"
             android:enabled="true" />
 
     </application>
