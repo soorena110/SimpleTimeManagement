@@ -122,6 +122,7 @@ class AddOnceTaskPageState extends State<AddOnceTaskPage> {
                         controller: this._endTimeController)
                     : Container(),
                 TextInputField('تعداد ساعات',
+                    keyboardType: TextInputType.number,
                     controller: this._estimateController),
                 TextInputField('توضیح',
                     controller: this._descriptionController),
