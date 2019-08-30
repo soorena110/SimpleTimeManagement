@@ -13,6 +13,7 @@ class Row {
   final bool isAutoIncrement;
   final bool isNullable;
   final bool isUnique;
+  final bool isIndexed;
   final dynamic defaultValue;
 
   Row(this.name, this.type,
@@ -20,6 +21,7 @@ class Row {
       this.isPrimaryKey = false,
       this.isNullable = true,
       this.isUnique = false,
+        this.isIndexed = false,
       this.defaultValue});
 
   @override

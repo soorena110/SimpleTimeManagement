@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:time_river/Libraries/datetime.dart';
 
+import 'TaskBase.dart';
+
 enum OnceTaskTick { todo, done, canceled, postponed }
 
 const StringToOnceTaskTick = {
@@ -24,69 +26,44 @@ const OnceTaskTickColors = {
   OnceTaskTick.postponed: Colors.orange
 };
 
-class OnceTask {
-  int id;
-  String name;
-  String start;
-  String end;
-  double estimate;
-  String description;
-
+class OnceTask extends TaskBase {
   OnceTaskTick tick;
   String tickDescription;
 
-  String lastUpdate;
-
   //#region Constructors
 
-  OnceTask(this.name,
-      {this.id,
-      this.description,
-      this.start,
-      this.end,
-      this.estimate,
+  OnceTask(String name,
+      {int id,
+        String description,
+        String start,
+        String end,
+        double estimate,
       this.tick,
       this.tickDescription,
-      this.lastUpdate});
+        String lastUpdate})
+      : super(
+      id,
+      name,
+      start,
+      end,
+      description,
+      estimate,
+      lastUpdate);
 
-  OnceTask.from(Map<String, dynamic> map)
-      : id = map['id'],
-        name = map['name'],
-        description = map['description'],
-        start = map['start'],
-        end = map['end'],
-        estimate = map['estimate'],
-        tick = StringToOnceTaskTick[map['tick']],
-        tickDescription = map['tickDescription'],
-        lastUpdate = map['lastUpdate'];
+  OnceTask.fromJson(Map<String, dynamic> json)
+      : tick = StringToOnceTaskTick[json['tick']],
+        tickDescription = json['tickDescription'],
+        super.fromJson(json);
 
-  Map<String, dynamic> toMap() =>
-      {
-        'id': id,
-        'name': name,
-        'description': description,
-        'start': start,
-        'end': end,
-        'estimate': estimate,
-        'tick': tick.toString().split('.')[1],
-        'tickDescription': tickDescription,
-        'lastUpdate': getNow()
-      };
+  Map<String, dynamic> toJson() =>
+      super.toJson()
+        ..addAll({
+          'tick': tick.toString().split('.')[1],
+          'tickDescription': tickDescription,
+        });
 
   //#endregion
   //#region Apis
-
-  String getEstimateString() {
-    final hm = this.estimate;
-    if (hm == null) return '';
-    final h = hm.floor();
-    final m = ((hm - h) * 60).round();
-
-    var ret = '';
-    if (h != 0) ret = '${h}h';
-    if (m != 0) ret += (ret != '' ? ' & ' : '') + '${m}m';
-    return ret;
-  }
 
   String getRemainingTime() {
     var ret = this.getEndDateDiff();
@@ -139,8 +116,4 @@ class OnceTask {
 
   //#endregion
 
-  @override
-  String toString() {
-    return '${id ?? name}';
-  }
 }

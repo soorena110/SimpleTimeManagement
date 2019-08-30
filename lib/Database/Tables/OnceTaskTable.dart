@@ -1,4 +1,5 @@
 import 'package:sqflite/sql.dart';
+import 'package:time_river/Database/Tables/TaskBaseTable.dart';
 import 'package:time_river/Database/_common/Row.dart';
 import 'package:time_river/Libraries/datetime.dart';
 import 'package:time_river/Models/OnceTask.dart';
@@ -12,17 +13,10 @@ class OnceTaskTable {
   static init(Provider provider) {
     _provider = provider;
     provider.addTable(_sqlTableName, [
-      Row('id', RowType.integer,
-          isPrimaryKey: true, isAutoIncrement: true, isUnique: true),
-      Row('name', RowType.text),
-      Row('start', RowType.text, isNullable: true),
-      Row('end', RowType.text, isNullable: true),
-      Row('estimate', RowType.real, isNullable: true),
-      Row('description', RowType.text, isNullable: true),
+      ...TaskBaseTable.getCommonRowsInfo(),
       Row('tick', RowType.text,
           defaultValue: StringToOnceTaskTick[OnceTaskTick.todo]),
-      Row('tickDescription', RowType.text, isNullable: true),
-      Row('lastUpdate', RowType.text),
+      Row('tickDescription', RowType.text, isNullable: true)
     ]);
   }
 
@@ -30,7 +24,7 @@ class OnceTaskTable {
     print('ESC[33m ===> OnceTaskTable.insertOrUpdate');
     print(task);
 
-    if (task['lastUpdate'] == null) task['lastUpdate'] = getNow();
+    task['lastUpdate'] = getNow();
     if (task['tick'] == null)
       task['tick'] = OnceTaskTick.todo.toString().split('.')[1];
 
@@ -43,7 +37,7 @@ class OnceTaskTable {
 
     try {
       final result = await _provider.db.query(_sqlTableName);
-      return result.map((r) => OnceTask.from(r));
+      return result.map((r) => OnceTask.fromJson(r));
     } catch (e) {
       print(e);
       return null;
@@ -57,7 +51,7 @@ class OnceTaskTable {
     try {
       final result = await _provider.db.query(_sqlTableName,
           where: 'start IS NULL OR end <= "$end" OR start > "$start"');
-      return result.map((r) => OnceTask.from(r));
+      return result.map((r) => OnceTask.fromJson(r));
     } catch (e) {
       print(e);
       return null;

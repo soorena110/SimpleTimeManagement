@@ -1,6 +1,5 @@
-import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-
+import 'package:sqflite/sqflite.dart';
 import 'package:time_river/Database/_common/Row.dart';
 import 'package:time_river/Database/_common/Table.dart';
 
@@ -32,9 +31,8 @@ class Provider {
     _registeredInitSqls.add(sql);
   }
 
-  addTable(String name, List<Row> rows,
-      {List<String> uniquesFields = const [], bool ifNotExists}) {
-    var sql = Table(name, rows, uniquesFields: uniquesFields).toString();
+  addTable(String name, List<Row> rows, {bool ifNotExists}) {
+    var sql = Table(name, rows).toString();
     registerInitSql(sql);
   }
 }

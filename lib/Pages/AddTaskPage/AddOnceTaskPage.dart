@@ -98,7 +98,7 @@ class AddOnceTaskPageState extends State<AddOnceTaskPage> {
       return;
     }
 
-    await OnceTaskTable.insertOrUpdate(widget.task.toMap());
+    await OnceTaskTable.insertOrUpdate(widget.task.toJson());
     Navigator.pop(context, true);
     Scaffold.of(context).showSnackBar(SnackBar(
         backgroundColor: Colors.green, content: Text('با موفیت ثبت شد.')));

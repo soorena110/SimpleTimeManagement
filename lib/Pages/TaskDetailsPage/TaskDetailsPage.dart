@@ -44,7 +44,7 @@ class TaskDetailsState extends State<TaskDetails> {
       }
       _taskIsChanged = true;
     });
-    OnceTaskTable.insertOrUpdate(widget._task.toMap());
+    OnceTaskTable.insertOrUpdate(widget._task.toJson());
   }
 
   RaisedButton _renderTickChangeButton(OnceTaskTick tickType) {

@@ -4,10 +4,8 @@ class Table {
   final String name;
   final List<Row> rows;
   final bool isIfNotExist;
-  final List<String> uniquesFields;
 
-  Table(this.name, this.rows,
-      {this.isIfNotExist = true, this.uniquesFields = const <String>[]});
+  Table(this.name, this.rows, {this.isIfNotExist = true});
 
   _getTableToString() {
     return 'CREATE TABLE '
@@ -17,9 +15,11 @@ class Table {
   }
 
   _getTableUniqueIndexesToString() {
-    return uniquesFields
-        .map((field) =>
-            'CREATE UNIQUE INDEX ${this.name}_$field ON contacts ($field)')
+    return rows
+        .where((r) => r.isIndexed)
+        .map((r) =>
+    'CREATE ${r.isUnique ? 'UNIQUE INDEX' : 'INDEX'} ${this.name}_${r
+        .name} ON $name (${r.name})')
         .join(';');
   }
 
