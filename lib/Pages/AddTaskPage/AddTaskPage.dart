@@ -52,8 +52,9 @@ class AddOnceTaskPageState extends State<AddOnceTaskPage> {
     _weekOrMonth_hourController =
         TextEditingController(text: t.infos['hour'] ?? '');
 
-    _month_dayController =
-        TextEditingController(text: t.infos['dayOfMonth'].toString() ?? '1');
+    _month_dayController = TextEditingController(
+        text:
+            (t.infos == null ? '1' : t.infos['dayOfMonth']?.toString()) ?? '1');
 
     _startDateController.addListener(() => setState(() {}));
     _endDateController.addListener(() => setState(() {}));
