@@ -25,20 +25,20 @@ const TickColors = {
 
 class Tick {
   int id;
-  TickType tick;
+  TickType type;
   String description;
 
-  Tick(this.tick, {this.id, this.description});
+  Tick(this.type, {this.id, this.description});
 
   IconData getIcon() {
-    return TickIcons[tick];
+    return TickIcons[type];
   }
 
   Color getColor() {
-    return TickColors[tick];
+    return TickColors[type];
   }
 
   String getTickName() {
-    return tick.toString().split('.')[1];
+    return type.toString().split('.')[1];
   }
 }

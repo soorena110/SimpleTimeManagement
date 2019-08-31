@@ -71,13 +71,22 @@ class TaskBase {
     return '${id ?? name}';
   }
 
-  ViewableTask toViewableTask([Tick tick]) =>
-      ViewableTask(
-          id,
-          name,
-          start,
-          end,
-          description,
-          estimate,
-          lastUpdate);
+  ViewableTask toViewableTask([Tick tick]) => ViewableTask(
+      id: id,
+      name: name,
+      start: start,
+      end: end,
+      description: description,
+      estimate: estimate,
+      lastUpdate: lastUpdate);
 }
+
+const taskBaseKeys = const [
+  'id',
+  'name',
+  'start',
+  'end',
+  'description',
+  'estimate',
+  'lastUpdate'
+];

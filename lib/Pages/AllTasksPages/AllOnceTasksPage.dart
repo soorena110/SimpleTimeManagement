@@ -1,34 +1,52 @@
 import 'package:flutter/material.dart';
+import 'package:time_river/Database/Tables/MonthTaskTable.dart';
 import 'package:time_river/Database/Tables/OnceTaskTable.dart';
-import 'package:time_river/Libraries/datetime.dart';
-import 'package:time_river/Models/OnceTask.dart';
+import 'package:time_river/Database/Tables/TaskBaseTable.dart';
+import 'package:time_river/Database/Tables/WeekTaskTable.dart';
 import 'package:time_river/Models/ViewableTask.dart';
+import 'package:time_river/Pages/AddTaskPage/AddOnceTaskPage.dart';
+import 'package:time_river/Pages/TaskDetailsPage/TaskDetailsPage.dart';
 import 'package:time_river/Pages/ViewableTask/OnceTaskListView.dart';
 
-class AllOnceTasksPage extends StatefulWidget {
+class AllViewableTasksPage extends StatefulWidget {
+  ViewableTaskType taskType;
+
+  AllViewableTasksPage(this.taskType);
+
   @override
   State<StatefulWidget> createState() {
-    return AllOnceTasksPageState();
+    return AllViewableTasksPageState();
   }
 }
 
-class AllOnceTasksPageState extends State<AllOnceTasksPage> {
-  List<OnceTask> showingTasks;
+class AllViewableTasksPageState extends State<AllViewableTasksPage> {
+  List<ViewableTask> showingTasks;
 
   @override
   void initState() {
     super.initState();
 
-    showingTasks = <OnceTask>[];
+    showingTasks = <ViewableTask>[];
     this._fetchTasksAndTheirTicks();
   }
 
-  void _fetchTasksAndTheirTicks() async {
-    var tasks = (await OnceTaskTable.queryAllTasks()).toList();
+  TaskBaseTable _getRelatedRepository() {
+    switch (widget.taskType) {
+      case ViewableTaskType.once:
+        return onceTaskTable;
+      case ViewableTaskType.week:
+        return weekTaskTable;
+      case ViewableTaskType.month:
+        return monthTaskTable;
+    }
+  }
 
-    tasks.sort((r, s) {
-      return compareDateTime(r.lastUpdate, s.lastUpdate);
-    });
+  void _fetchTasksAndTheirTicks() async {
+    final repository = _getRelatedRepository();
+
+    var tasks = (await repository.queryAllTasks())
+        .map((json) => ViewableTask.fromJson(json, type: widget.taskType))
+        .toList();
 
     setState(() {
       showingTasks = tasks;
@@ -36,10 +54,10 @@ class AllOnceTasksPageState extends State<AllOnceTasksPage> {
   }
 
   _selectATask(ViewableTask task) async {
-//    final taskIsChanged = await Navigator.push(
-//        context, MaterialPageRoute(builder: (context) => TaskDetails(task)));
-//
-//    if (taskIsChanged) this._fetchTasksAndTheirTicks();
+    final taskIsChanged = await Navigator.push(context,
+        MaterialPageRoute(builder: (context) => TaskDetailsPage(task)));
+
+    if (taskIsChanged) this._fetchTasksAndTheirTicks();
   }
 
   _buildBody() {
@@ -56,6 +74,13 @@ class AllOnceTasksPageState extends State<AllOnceTasksPage> {
           backgroundColor: Colors.lightGreen[200],
           title: Text('همه تسک‌های تکی')),
       body: this._buildBody(),
+      floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.add),
+          onPressed: () async {
+            final taskIsChanged = await Navigator.push(context,
+                MaterialPageRoute(builder: (context) => AddOnceTaskPage()));
+            if (taskIsChanged) this._fetchTasksAndTheirTicks();
+          }),
     );
   }
 }

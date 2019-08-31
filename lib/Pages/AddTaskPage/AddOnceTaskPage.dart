@@ -4,12 +4,14 @@ import 'package:time_river/Framework/InputFields/DateInputField.dart';
 import 'package:time_river/Framework/InputFields/TextInputField.dart';
 import 'package:time_river/Framework/InputFields/TimeInputField.dart';
 import 'package:time_river/Libraries/datetime.dart';
-import 'package:time_river/Models/OnceTask.dart';
+import 'package:time_river/Models/ViewableTask.dart';
 
 class AddOnceTaskPage extends StatefulWidget {
-  final OnceTask task;
+  final ViewableTask task;
 
-  AddOnceTaskPage([OnceTask task]) : this.task = task ?? OnceTask('');
+  AddOnceTaskPage({ViewableTask task, ViewableTaskType taskType})
+      : this.task =
+            task ?? ViewableTask(type: taskType, infos: <String, dynamic>{});
 
   @override
   State<StatefulWidget> createState() {
@@ -25,6 +27,10 @@ class AddOnceTaskPageState extends State<AddOnceTaskPage> {
   TextEditingController _endDateController;
   TextEditingController _endTimeController;
   TextEditingController _estimateController;
+
+  TextEditingController _week_weekdayController;
+  TextEditingController _weekOrMonth_hourController;
+  TextEditingController _month_dayController;
 
   @override
   void initState() {
@@ -42,7 +48,12 @@ class AddOnceTaskPageState extends State<AddOnceTaskPage> {
     _endTimeController =
         TextEditingController(text: t?.end?.split(' ')?.last ?? '24:00');
     _estimateController =
-        TextEditingController(text: t?.estimate?.toString() ?? '');
+        TextEditingController(text: t.estimate?.toString() ?? '');
+
+    _weekOrMonth_hourController =
+        TextEditingController(text: t.infos['hour'] ?? '');
+    _week_weekdayController =
+        TextEditingController(text: t.infos['weekday'] ?? 0);
 
     _startDateController.addListener(() => setState(() {}));
     _endDateController.addListener(() => setState(() {}));
@@ -98,43 +109,62 @@ class AddOnceTaskPageState extends State<AddOnceTaskPage> {
       return;
     }
 
-    await OnceTaskTable.insertOrUpdate(widget.task.toJson());
+    await onceTaskTable.insertOrUpdate(widget.task.toJson());
     Navigator.pop(context, true);
     Scaffold.of(context).showSnackBar(SnackBar(
         backgroundColor: Colors.green, content: Text('با موفیت ثبت شد.')));
   }
 
+  List<Widget> _buildTaskBaseFields() {
+    return [
+      TextInputField('عنوان', controller: this._nameController),
+      DateInputField('تاریخ شروع', controller: this._startDateController),
+      this._startDateController.text != ''
+          ? TimeInputField('ساعت شروع', controller: this._startTimeController)
+          : Container(),
+      DateInputField('تاریخ پایان', controller: this._endDateController),
+      this._endDateController.text != ''
+          ? TimeInputField('ساعت پایان', controller: this._endTimeController)
+          : Container(),
+      TextInputField('تعداد ساعات',
+          keyboardType: TextInputType.number,
+          controller: this._estimateController),
+      TextInputField('توضیح', controller: this._descriptionController),
+      Container(
+          margin: const EdgeInsets.all(30),
+          child: RaisedButton(
+              child: Text('ثبت'),
+              onPressed: () {
+                this._submit(context);
+              }))
+    ];
+  }
+
+  List<Widget> _buildSpecialFields() {
+    switch (widget.task.type) {
+      case ViewableTaskType.once:
+        return [];
+      case ViewableTaskType.week:
+        return [
+          TimeInputField('ساعت اجرا',
+              controller: this._weekOrMonth_hourController),
+        ];
+      case ViewableTaskType.month:
+        return [
+          TimeInputField('ساعت اجرا',
+              controller: this._weekOrMonth_hourController),
+          TextInputField('روز ماه', controller: this._month_dayController),
+        ];
+    }
+    return [];
+  }
+
   _buildBodyContent() {
     return Builder(
-        builder: ((context) => Column(
-              children: <Widget>[
-                TextInputField('عنوان', controller: this._nameController),
-                DateInputField('تاریخ شروع',
-                    controller: this._startDateController),
-                this._startDateController.text != ''
-                    ? TimeInputField('ساعت شروع',
-                        controller: this._startTimeController)
-                    : Container(),
-                DateInputField('تاریخ پایان',
-                    controller: this._endDateController),
-                this._endDateController.text != ''
-                    ? TimeInputField('ساعت پایان',
-                        controller: this._endTimeController)
-                    : Container(),
-                TextInputField('تعداد ساعات',
-                    keyboardType: TextInputType.number,
-                    controller: this._estimateController),
-                TextInputField('توضیح',
-                    controller: this._descriptionController),
-                Container(
-                    margin: const EdgeInsets.all(30),
-                    child: RaisedButton(
-                        child: Text('ثبت'),
-                        onPressed: () {
-                          this._submit(context);
-                        }))
-              ],
-            )));
+        builder: ((context) => Column(children: [
+              ..._buildTaskBaseFields(),
+              ..._buildSpecialFields(),
+            ])));
   }
 
   @override

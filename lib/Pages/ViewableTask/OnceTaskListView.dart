@@ -4,20 +4,20 @@ import 'package:time_river/Models/ViewableTask.dart';
 import 'OnceTaskListItem.dart';
 
 class ViewableTaskListView extends StatelessWidget {
-  final List<ViewableTask> _onceTasks;
-  final void Function(ViewableTask onceTask) onItemSelected;
+  final List<ViewableTask> tasks;
+  final void Function(ViewableTask task) onItemSelected;
   final bool showLastEdit;
 
-  const ViewableTaskListView(this._onceTasks,
+  const ViewableTaskListView(this.tasks,
       {this.onItemSelected, this.showLastEdit = false});
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
         padding: const EdgeInsets.all(0),
-        itemCount: _onceTasks.length,
+        itemCount: tasks.length,
         itemBuilder: (BuildContext context, int index) {
-          var task = _onceTasks[index];
+          var task = tasks[index];
           return GestureDetector(
               child:
                   ViewableTaskListItem(task, showLastEdit: this.showLastEdit),

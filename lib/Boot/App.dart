@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:time_river/Models/ViewableTask.dart';
 import 'package:time_river/Pages/AllTasksPages/AllOnceTasksPage.dart';
 
 class App extends StatelessWidget {
@@ -11,7 +12,8 @@ class App extends StatelessWidget {
       ),
       builder: (context, child) =>
           Directionality(textDirection: TextDirection.rtl, child: child),
-      home: AllOnceTasksPage(),
+      home: AllViewableTasksPage(ViewableTaskType.once),
+      debugShowCheckedModeBanner: false,
     );
   }
 }

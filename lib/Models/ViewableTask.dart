@@ -10,9 +10,17 @@ class ViewableTask extends TaskBase {
   Map<String, dynamic> infos;
   Tick tick;
 
-  ViewableTask(int id, String name, String start, String end,
-      String description, double estimate, String lastUpdate,
-      [this.type, this.infos = const <String, dynamic>{}, this.tick])
+  ViewableTask(
+      {int id,
+      String name,
+      String start,
+      String end,
+      String description,
+      double estimate,
+      String lastUpdate,
+      this.type,
+      this.infos = const <String, dynamic>{},
+      this.tick})
       : super(id, name, start, end, description, estimate, lastUpdate);
 
   bool getIsCritical() {
@@ -32,5 +40,17 @@ class ViewableTask extends TaskBase {
         ret = this.getStartDateDiff();
     }
     return ret;
+  }
+
+  Map<String, dynamic> toJson() {
+    return super.toJson()..addAll(infos);
+  }
+
+  ViewableTask.fromJson(Map<String, dynamic> taskJson, {this.type})
+      : super.fromJson(taskJson) {
+    this.infos = <String, dynamic>{};
+    taskJson.forEach((key, value) {
+      if (!taskBaseKeys.contains(key)) infos[key] = value;
+    });
   }
 }

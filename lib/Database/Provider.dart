@@ -5,7 +5,7 @@ import 'package:time_river/Database/_common/Table.dart';
 
 const dbName = 'timeManagement.db';
 
-class Provider {
+class _Provider {
   Database db;
   final int _version = 1;
   final List<String> _registeredInitSqls = [];
@@ -36,3 +36,5 @@ class Provider {
     registerInitSql(sql);
   }
 }
+
+final databaseProvider = _Provider();

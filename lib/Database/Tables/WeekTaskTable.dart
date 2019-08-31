@@ -6,39 +6,29 @@ import 'package:time_river/Models/WeekTask.dart';
 import '../Provider.dart';
 import 'TaskBaseTable.dart';
 
-class WeekTaskTable {
-  static final _sqlTableName = 'WeekTask';
-  static Provider _provider;
+class _WeekTaskTable extends TaskBaseTable {
+  @override
+  String getSqlTableName() {
+    return 'MonthTask';
+  }
 
-  static init(Provider provider) {
-    _provider = provider;
-
-    provider.addTable(_sqlTableName, [
+  _WeekTaskTable() {
+    databaseProvider.addTable(getSqlTableName(), [
       ...TaskBaseTable.getCommonRowsInfo(),
       Row('weekday', RowType.integer, isNullable: false, isIndexed: true),
       Row('hour', RowType.text)
     ]);
   }
 
-  static insertOrUpdate(Map<String, dynamic> task) {
+  insertOrUpdate(Map<String, dynamic> task) {
     print('ESC[33m ===> WeekTaskTable.insertOrUpdate');
     print(task);
 
     task['lastUpdate'] = getNow();
 
-    _provider.db.insert(_sqlTableName, task,
+    databaseProvider.db.insert(getSqlTableName(), task,
         conflictAlgorithm: ConflictAlgorithm.replace);
   }
-
-  static Future<Iterable<WeekTask>> queryAllTasks() async {
-    print('ESC[36m ===> WeekTaskTable.queryAllTasks');
-
-    try {
-      final result = await _provider.db.query(_sqlTableName);
-      return result.map((r) => WeekTask.fromJson(r));
-    } catch (e) {
-      print(e);
-      return null;
-    }
-  }
 }
+
+final weekTaskTable = _WeekTaskTable();

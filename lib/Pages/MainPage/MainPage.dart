@@ -34,10 +34,9 @@ class MainPageState extends State<MainPage>
   Future<bool> _handlePopScopePop() async {
     return await showDialog(
         context: context,
-        builder: (context) =>
-            AlertDialog(
-                    title: Text('خروج ??!'),
-                    content: Text('آیا میخواهید خارج شوید ??'),
+        builder: (context) => AlertDialog(
+                title: Text('خروج ??!'),
+                content: Text('آیا میخواهید خارج شوید ??'),
                 actions: <Widget>[
                   FlatButton(
                       child: Text('بله',
@@ -82,11 +81,11 @@ class MainPageState extends State<MainPage>
     final currentWeekDay = (now.weekday + 1) % 7;
 
     final saturday =
-    getJalaliOf(DateTime.now().add(Duration(days: -currentWeekDay)));
+        getJalaliOf(DateTime.now().add(Duration(days: -currentWeekDay)));
     final start = '$saturday 00:00';
 
     final friday =
-    getJalaliOf(DateTime.now().add(Duration(days: 6 - currentWeekDay)));
+        getJalaliOf(DateTime.now().add(Duration(days: 6 - currentWeekDay)));
     final end = '$friday 24:00';
 
     return MainPageDailyTasks(
@@ -138,19 +137,16 @@ class MainPageState extends State<MainPage>
   Widget build(BuildContext context) {
     return WillPopScope(
         onWillPop: _handlePopScopePop,
-        child: Directionality(
-            textDirection: TextDirection.rtl,
-            child: Scaffold(
-                body: this._buildBody(),
-                endDrawer: getMainPageDrawer(context),
-                floatingActionButton: FloatingActionButton(
-                    backgroundColor: this._getBackgroundColor(),
-                    child: Icon(Icons.add),
-                    onPressed: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) {
-                            return AddOnceTaskPage();
-                          }));
-                    }))));
+        child: Scaffold(
+            body: this._buildBody(),
+            endDrawer: getMainPageDrawer(context),
+            floatingActionButton: FloatingActionButton(
+                backgroundColor: this._getBackgroundColor(),
+                child: Icon(Icons.add),
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return AddOnceTaskPage();
+                  }));
+                })));
   }
 }
