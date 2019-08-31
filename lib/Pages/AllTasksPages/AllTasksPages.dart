@@ -4,7 +4,7 @@ import 'package:time_river/Database/Tables/OnceTaskTable.dart';
 import 'package:time_river/Database/Tables/TaskBaseTable.dart';
 import 'package:time_river/Database/Tables/WeekTaskTable.dart';
 import 'package:time_river/Models/ViewableTask.dart';
-import 'package:time_river/Pages/AddTaskPage/AddOnceTaskPage.dart';
+import 'package:time_river/Pages/AddTaskPage/AddTaskPage.dart';
 import 'package:time_river/Pages/TaskDetailsPage/TaskDetailsPage.dart';
 import 'package:time_river/Pages/ViewableTask/OnceTaskListView.dart';
 
@@ -71,8 +71,10 @@ class AllViewableTasksPageState extends State<AllViewableTasksPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: Colors.lightGreen[200],
-          title: Text('همه تسک‌های تکی')),
+          title: Text('همه تسک‌های تکی',
+              style: TextStyle(
+                color: Colors.white,
+              ))),
       body: this._buildBody(),
       floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add),

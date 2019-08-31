@@ -7,7 +7,7 @@ import 'package:time_river/Framework/InputFields/TextInputField.dart';
 import 'package:time_river/Framework/InputFields/TimeInputField.dart';
 import 'package:time_river/Models/Tick.dart';
 import 'package:time_river/Models/ViewableTask.dart';
-import 'package:time_river/Pages/AddTaskPage/AddOnceTaskPage.dart';
+import 'package:time_river/Pages/AddTaskPage/AddTaskPage.dart';
 import 'package:time_river/Pages/ViewableTask/ViewableTaskView.dart';
 
 class TaskDetailsPage extends StatefulWidget {

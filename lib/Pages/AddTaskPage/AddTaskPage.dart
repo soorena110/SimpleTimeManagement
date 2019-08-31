@@ -28,7 +28,6 @@ class AddOnceTaskPageState extends State<AddOnceTaskPage> {
   TextEditingController _endTimeController;
   TextEditingController _estimateController;
 
-  TextEditingController _week_weekdayController;
   TextEditingController _weekOrMonth_hourController;
   TextEditingController _month_dayController;
 
@@ -52,8 +51,9 @@ class AddOnceTaskPageState extends State<AddOnceTaskPage> {
 
     _weekOrMonth_hourController =
         TextEditingController(text: t.infos['hour'] ?? '');
-    _week_weekdayController =
-        TextEditingController(text: t.infos['weekday'] ?? 0);
+
+    _month_dayController =
+        TextEditingController(text: t.infos['dayOfMonth'].toString() ?? '1');
 
     _startDateController.addListener(() => setState(() {}));
     _endDateController.addListener(() => setState(() {}));
@@ -75,6 +75,14 @@ class AddOnceTaskPageState extends State<AddOnceTaskPage> {
     if (widget.task.end != null &&
         compareDateTime(widget.task.end, getNow()) > 1)
       return 'تاریخ پایان باید بیشتر از زمان حال باشد.';
+
+    if (widget.task.type == ViewableTaskType.month) {
+      if (widget.task.infos != null || widget.task.infos['dayOfMonth'] == null)
+        return 'روز ماه تعیین نشده است.';
+      final value = int.tryParse(widget.task.infos['dayOfMonth']);
+      if (value == null || value < 1 || value > 31)
+        return 'روز ماه باید از 1 تا 31 باشد.';
+    }
 
     return null;
   }
@@ -172,8 +180,10 @@ class AddOnceTaskPageState extends State<AddOnceTaskPage> {
     return Scaffold(
       extendBody: true,
       appBar: AppBar(
-        backgroundColor: Colors.lightGreen[200],
-        title: Text('${widget.task == null ? 'ایجاد' : 'ویرایش'} تسک جدید'),
+        title: Text(
+          '${widget.task == null ? 'ایجاد' : 'ویرایش'} تسک جدید',
+          style: TextStyle(color: Colors.white),
+        ),
       ),
       body: _buildBodyContent(),
     );

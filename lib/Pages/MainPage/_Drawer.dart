@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:time_river/Framework/CircleIcon.dart';
 import 'package:time_river/Models/ViewableTask.dart';
-import 'package:time_river/Pages/AllTasksPages/AllOnceTasksPage.dart';
+import 'package:time_river/Pages/AllTasksPages/AllTasksPages.dart';
 
 getMainPageDrawer(context) {
   return Drawer(

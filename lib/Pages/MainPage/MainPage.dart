@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:time_river/Libraries/datetime.dart';
-import 'package:time_river/Pages/AddTaskPage/AddOnceTaskPage.dart';
+import 'package:time_river/Pages/AddTaskPage/AddTaskPage.dart';
 
 import 'MainPageDailyTasks.dart';
 import '_Drawer.dart';
@@ -28,7 +28,7 @@ class MainPageState extends State<MainPage>
   }
 
   _getBackgroundColor() {
-    return this._isCritical ? Colors.orange : Colors.lightGreen[200];
+    return this._isCritical ? Colors.orange : null;
   }
 
   Future<bool> _handlePopScopePop() async {

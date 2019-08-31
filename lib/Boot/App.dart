@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:time_river/Models/ViewableTask.dart';
-import 'package:time_river/Pages/AllTasksPages/AllOnceTasksPage.dart';
+import 'package:time_river/Pages/AllTasksPages/AllTasksPages.dart';
 
 class App extends StatelessWidget {
   @override
@@ -8,11 +8,13 @@ class App extends StatelessWidget {
     return MaterialApp(
       title: 'Time Management App',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+          primaryColor: Colors.lightGreen[200],
+          primaryIconTheme: IconThemeData(color: Colors.white),
+          floatingActionButtonTheme: FloatingActionButtonThemeData(
+              backgroundColor: Colors.lightGreen[200])),
       builder: (context, child) =>
           Directionality(textDirection: TextDirection.rtl, child: child),
-      home: AllViewableTasksPage(ViewableTaskType.once),
+      home: AllViewableTasksPage(ViewableTaskType.month),
       debugShowCheckedModeBanner: false,
     );
   }
