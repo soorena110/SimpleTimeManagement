@@ -1,5 +1,8 @@
 import 'package:time_river/Libraries/datetime.dart';
 
+import 'Tick.dart';
+import 'ViewableTask.dart';
+
 class TaskBase {
   int id;
   String name;
@@ -45,8 +48,36 @@ class TaskBase {
     return ret;
   }
 
+  String getStartDateDiff() {
+    final now = getNow();
+    if (this.start != null) {
+      final diff = getDiffrenceText(this.start, now);
+      return 'شروع: ' + diff;
+    }
+    return '';
+  }
+
+  String getEndDateDiff() {
+    final now = getNow();
+    if (this.end != null) {
+      final diff = getDiffrenceText(this.end, now);
+      return 'پایان: ' + diff;
+    }
+    return '';
+  }
+
   @override
   String toString() {
     return '${id ?? name}';
   }
+
+  ViewableTask toViewableTask([Tick tick]) =>
+      ViewableTask(
+          id,
+          name,
+          start,
+          end,
+          description,
+          estimate,
+          lastUpdate);
 }

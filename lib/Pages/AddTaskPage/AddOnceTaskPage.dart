@@ -139,15 +139,13 @@ class AddOnceTaskPageState extends State<AddOnceTaskPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-        textDirection: TextDirection.rtl,
-        child: Scaffold(
-          extendBody: true,
-          appBar: AppBar(
-            backgroundColor: Colors.lightGreen[200],
-            title: Text('${widget.task == null ? 'ایجاد' : 'ویرایش'} تسک جدید'),
-          ),
-          body: _buildBodyContent(),
-        ));
+    return Scaffold(
+      extendBody: true,
+      appBar: AppBar(
+        backgroundColor: Colors.lightGreen[200],
+        title: Text('${widget.task == null ? 'ایجاد' : 'ویرایش'} تسک جدید'),
+      ),
+      body: _buildBodyContent(),
+    );
   }
 }

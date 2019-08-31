@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:time_river/Database/Tables/OnceTaskTable.dart';
 import 'package:time_river/Libraries/datetime.dart';
 import 'package:time_river/Models/OnceTask.dart';
-import 'package:time_river/Pages/OnceTask/OnceTaskListView.dart';
-import 'package:time_river/Pages/TaskDetailsPage/TaskDetailsPage.dart';
+import 'package:time_river/Models/ViewableTask.dart';
+import 'package:time_river/Pages/ViewableTask/OnceTaskListView.dart';
 
 class AllOnceTasksPage extends StatefulWidget {
   @override
@@ -35,27 +35,27 @@ class AllOnceTasksPageState extends State<AllOnceTasksPage> {
     });
   }
 
-  _selectATask(OnceTask task) async {
-    final taskIsChanged = await Navigator.push(
-        context, MaterialPageRoute(builder: (context) => TaskDetails(task)));
-
-    if (taskIsChanged) this._fetchTasksAndTheirTicks();
+  _selectATask(ViewableTask task) async {
+//    final taskIsChanged = await Navigator.push(
+//        context, MaterialPageRoute(builder: (context) => TaskDetails(task)));
+//
+//    if (taskIsChanged) this._fetchTasksAndTheirTicks();
   }
 
   _buildBody() {
-    return OnceTaskListView(showingTasks,
-        showLastEdit: true, onItemSelected: (task) => this._selectATask(task));
+    return ViewableTaskListView(
+        showingTasks.map((r) => r.toViewableTask()).toList(),
+        showLastEdit: true,
+        onItemSelected: (task) => this._selectATask(task));
   }
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-        textDirection: TextDirection.rtl,
-        child: Scaffold(
-          appBar: AppBar(
-              backgroundColor: Colors.lightGreen[200],
-              title: Text('همه تسک‌های تکی')),
-          body: this._buildBody(),
-        ));
+    return Scaffold(
+      appBar: AppBar(
+          backgroundColor: Colors.lightGreen[200],
+          title: Text('همه تسک‌های تکی')),
+      body: this._buildBody(),
+    );
   }
 }

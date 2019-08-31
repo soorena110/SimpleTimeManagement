@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:time_river/Models/OnceTask.dart';
+import 'package:time_river/Models/ViewableTask.dart';
 
 import 'OnceTaskListItem.dart';
 
-class OnceTaskListView extends StatelessWidget {
-  final List<OnceTask> _onceTasks;
-  final void Function(OnceTask onceTask) onItemSelected;
+class ViewableTaskListView extends StatelessWidget {
+  final List<ViewableTask> _onceTasks;
+  final void Function(ViewableTask onceTask) onItemSelected;
   final bool showLastEdit;
 
-  const OnceTaskListView(this._onceTasks,
-      {this.onItemSelected,
-        this.showLastEdit = false});
+  const ViewableTaskListView(this._onceTasks,
+      {this.onItemSelected, this.showLastEdit = false});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +19,8 @@ class OnceTaskListView extends StatelessWidget {
         itemBuilder: (BuildContext context, int index) {
           var task = _onceTasks[index];
           return GestureDetector(
-              child: OnceTaskListItem(task, showLastEdit: this.showLastEdit),
+              child:
+                  ViewableTaskListItem(task, showLastEdit: this.showLastEdit),
               onTap: () {
                 if (this.onItemSelected != null) this.onItemSelected(task);
               });

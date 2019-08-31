@@ -35,9 +35,7 @@ class MainPageState extends State<MainPage>
     return await showDialog(
         context: context,
         builder: (context) =>
-            Directionality(
-                textDirection: TextDirection.rtl,
-                child: AlertDialog(
+            AlertDialog(
                     title: Text('خروج ??!'),
                     content: Text('آیا میخواهید خارج شوید ??'),
                 actions: <Widget>[
@@ -52,7 +50,7 @@ class MainPageState extends State<MainPage>
                       onPressed: () {
                         Navigator.pop(context);
                       })
-                ])));
+                ]));
   }
 
   _handleStateChange(bool isCritical) {

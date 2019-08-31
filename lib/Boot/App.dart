@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:time_river/Pages/MainPage/MainPage.dart';
+import 'package:time_river/Pages/AllTasksPages/AllOnceTasksPage.dart';
 
 class App extends StatelessWidget {
   @override
@@ -9,7 +9,9 @@ class App extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MainPage(),
+      builder: (context, child) =>
+          Directionality(textDirection: TextDirection.rtl, child: child),
+      home: AllOnceTasksPage(),
     );
   }
 }

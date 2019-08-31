@@ -3,7 +3,7 @@ import 'Tick.dart';
 import 'ViewableTask.dart';
 
 class WeekTask extends TaskBase {
-  int weekdays;
+  int dayOfMonth;
   String hour;
 
   WeekTask(String name,
@@ -12,28 +12,27 @@ class WeekTask extends TaskBase {
       String start,
       String end,
       double estimate,
-      this.weekdays,
+      this.dayOfMonth,
       this.hour,
       String lastUpdate})
       : super(id, name, start, end, description, estimate, lastUpdate);
 
   WeekTask.fromJson(Map<String, dynamic> json)
-      : weekdays = int.parse(json['weekdays']),
+      : dayOfMonth = int.parse(json['dayOfMonth']),
         hour = json['hour'],
         super.fromJson(json);
 
   Map<String, dynamic> toJson() => super.toJson()
     ..addAll({
-      'weekdays': weekdays,
+      'dayOfMonth': dayOfMonth,
       'hour': hour,
     });
-
 
   ViewableTask toViewableTask([Tick tick]) {
     final viewable = super.toViewableTask();
     viewable.type = ViewableTaskType.month;
     viewable.tick = tick;
-    viewable.infos = {'weekdays': weekdays, 'hour': hour};
+    viewable.infos = {'dayOfMonth': dayOfMonth, 'hour': hour};
     return viewable;
   }
 }
