@@ -1,7 +1,4 @@
-import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-
 import '_commons.dart';
 
 class TimeInputField extends StatefulWidget {
@@ -17,16 +14,29 @@ class TimeInputField extends StatefulWidget {
 }
 
 class TimeInputFieldState extends State<TimeInputField> {
+  _getCurrentSelectedTime() {
+    final selectedTimeString = widget.controller.text;
+    if (selectedTimeString == null) return null;
+
+    final selectedTimeParts =
+        selectedTimeString.split(':').map((s) => int.parse(s)).toList();
+    return TimeOfDay(hour: selectedTimeParts[0], minute: selectedTimeParts[1]);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return inputFieldContainer(
-      DateTimePickerFormField(
-        inputType: InputType.time,
-        editable: false,
-        controller: widget.controller,
-        decoration: inputFieldDecorator('', Icons.access_time),
-        format: DateFormat('HH:mm'),
-      ),
-    );
+    return inputFieldContainer(TextField(
+      readOnly: true,
+      controller: widget.controller,
+      decoration: inputFieldDecorator('', Icons.access_time),
+      onTap: () async {
+        final newVal = await showTimePicker(
+            context: context, initialTime: this._getCurrentSelectedTime());
+        widget.controller.value = TextEditingValue(
+            text: newVal.hour.toString().padLeft(2, '0') +
+                ':' +
+                newVal.minute.toString().padLeft(2, '0'));
+      },
+    ));
   }
 }
