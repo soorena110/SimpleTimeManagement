@@ -18,7 +18,7 @@ class App extends StatelessWidget {
               backgroundColor: Colors.lightGreen[200])),
       builder: (context, child) =>
           Directionality(textDirection: TextDirection.rtl, child: child),
-      home: AllViewableTasksPage(ViewableTaskType.week),
+      home: AllViewableTasksPage(ViewableTaskType.month),
       debugShowCheckedModeBanner: false,
     );
   }

@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:time_river/Database/Tables/MonthTaskTable.dart';
-import 'package:time_river/Database/Tables/OnceTaskTable.dart';
-import 'package:time_river/Database/Tables/TaskBaseTable.dart';
-import 'package:time_river/Database/Tables/WeekTaskTable.dart';
+import 'package:time_river/Database/Tables/methods.dart';
 import 'package:time_river/Models/ViewableTask.dart';
 import 'package:time_river/Pages/AddTaskPage/AddTaskPage.dart';
 import 'package:time_river/Pages/TaskDetailsPage/TaskDetailsPage.dart';
@@ -30,19 +27,8 @@ class AllViewableTasksPageState extends State<AllViewableTasksPage> {
     this._fetchTasksAndTheirTicks();
   }
 
-  TaskBaseTable _getRelatedRepository() {
-    switch (widget.taskType) {
-      case ViewableTaskType.once:
-        return onceTaskTable;
-      case ViewableTaskType.week:
-        return weekTaskTable;
-      case ViewableTaskType.month:
-        return monthTaskTable;
-    }
-  }
-
   void _fetchTasksAndTheirTicks() async {
-    final repository = _getRelatedRepository();
+    final repository = getRelatedRepositoryOfType(widget.taskType);
 
     var tasks = (await repository.queryAllTasks())
         .map((json) => ViewableTask.fromJson(json, type: widget.taskType))

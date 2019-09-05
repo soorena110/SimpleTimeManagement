@@ -151,8 +151,8 @@ class AddTaskPageState extends State<AddTaskPage> {
       return;
     }
 
-    await getRelatedRepositoryOfType(widget.task.type).insertOrUpdate(
-        widget.task.toJson());
+    await getRelatedRepositoryOfType(widget.task.type)
+        .insertOrUpdate(widget.task.toJson());
     Navigator.pop(context, true);
     _scafold.currentState.showSnackBar(SnackBar(
         backgroundColor: Colors.green, content: Text('با موفیت ثبت شد.')));
@@ -236,9 +236,8 @@ class AddTaskPageState extends State<AddTaskPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scafold,
-      extendBody: true,
       appBar: _buildAppBar(),
-      body: _buildBodyContent(),
+      body: SingleChildScrollView(child: _buildBodyContent()),
     );
   }
 }
