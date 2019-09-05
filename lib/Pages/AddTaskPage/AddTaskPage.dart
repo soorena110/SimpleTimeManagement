@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:time_river/Database/Tables/MonthTaskTable.dart';
 import 'package:time_river/Database/Tables/OnceTaskTable.dart';
+import 'package:time_river/Database/Tables/TaskBaseTable.dart';
+import 'package:time_river/Database/Tables/WeekTaskTable.dart';
 import 'package:time_river/Framework/InputFields/DateInputField.dart';
 import 'package:time_river/Framework/InputFields/TextInputField.dart';
 import 'package:time_river/Framework/InputFields/TimeInputField.dart';
@@ -11,7 +14,10 @@ class AddOnceTaskPage extends StatefulWidget {
 
   AddOnceTaskPage({ViewableTask task, ViewableTaskType taskType})
       : this.task =
-            task ?? ViewableTask(type: taskType, infos: <String, dynamic>{});
+      task ?? ViewableTask(type: taskType, infos: <String, dynamic>{}) {
+    if (task == null && taskType == null)
+      throw 'Both task and taskType is empty, one of them must be filled.';
+  }
 
   @override
   State<StatefulWidget> createState() {
@@ -20,6 +26,8 @@ class AddOnceTaskPage extends StatefulWidget {
 }
 
 class AddOnceTaskPageState extends State<AddOnceTaskPage> {
+  final _scafold = GlobalKey<ScaffoldState>();
+
   TextEditingController _nameController;
   TextEditingController _descriptionController;
   TextEditingController _startDateController;
@@ -54,7 +62,7 @@ class AddOnceTaskPageState extends State<AddOnceTaskPage> {
 
     _month_dayController = TextEditingController(
         text:
-            (t.infos == null ? '1' : t.infos['dayOfMonth']?.toString()) ?? '1');
+        (t.infos == null ? '1' : t.infos['dayOfMonth']?.toString()) ?? '1');
 
     _startDateController.addListener(() => setState(() {}));
     _endDateController.addListener(() => setState(() {}));
@@ -78,7 +86,7 @@ class AddOnceTaskPageState extends State<AddOnceTaskPage> {
       return 'تاریخ پایان باید بیشتر از زمان حال باشد.';
 
     if (widget.task.type == ViewableTaskType.month) {
-      if (widget.task.infos != null || widget.task.infos['dayOfMonth'] == null)
+      if (widget.task.infos == null || widget.task.infos['dayOfMonth'] == null)
         return 'روز ماه تعیین نشده است.';
       final value = int.tryParse(widget.task.infos['dayOfMonth']);
       if (value == null || value < 1 || value > 31)
@@ -104,27 +112,44 @@ class AddOnceTaskPageState extends State<AddOnceTaskPage> {
     return '$date $time';
   }
 
-  _submit(context) async {
+
+  TaskBaseTable _getRelatedRepository() {
+    switch (widget.task.type) {
+      case ViewableTaskType.once:
+        return onceTaskTable;
+      case ViewableTaskType.week:
+        return weekTaskTable;
+      case ViewableTaskType.month:
+        return monthTaskTable;
+    }
+  }
+
+  _submit() async {
     widget.task.name = _nameController.text;
     widget.task.start = this._computeStart();
     widget.task.end = this._computeEnd();
     widget.task.estimate = double.tryParse(_estimateController.text);
     widget.task.description = _descriptionController.text;
+    widget.task.infos = {};
+    if (_month_dayController.text != null)
+      widget.task.infos['dayOfMonth'] = _month_dayController.text;
+    if (_weekOrMonth_hourController.text != null)
+      widget.task.infos['hour'] = _weekOrMonth_hourController.text;
 
     final error = this._validateJsonTask();
     if (error != null) {
-      Scaffold.of(context).showSnackBar(
+      _scafold.currentState.showSnackBar(
           SnackBar(backgroundColor: Colors.red, content: Text(error)));
       return;
     }
 
-    await onceTaskTable.insertOrUpdate(widget.task.toJson());
+    await _getRelatedRepository().insertOrUpdate(widget.task.toJson());
     Navigator.pop(context, true);
-    Scaffold.of(context).showSnackBar(SnackBar(
+    _scafold.currentState.showSnackBar(SnackBar(
         backgroundColor: Colors.green, content: Text('با موفیت ثبت شد.')));
   }
 
-  List<Widget> _buildTaskBaseFields() {
+  List<Widget> _buildTaskBaseFields(context) {
     return [
       TextInputField('عنوان', controller: this._nameController),
       DateInputField('تاریخ شروع', controller: this._startDateController),
@@ -138,14 +163,7 @@ class AddOnceTaskPageState extends State<AddOnceTaskPage> {
       TextInputField('تعداد ساعات',
           keyboardType: TextInputType.number,
           controller: this._estimateController),
-      TextInputField('توضیح', controller: this._descriptionController),
-      Container(
-          margin: const EdgeInsets.all(30),
-          child: RaisedButton(
-              child: Text('ثبت'),
-              onPressed: () {
-                this._submit(context);
-              }))
+      TextInputField('توضیح', controller: this._descriptionController)
     ];
   }
 
@@ -162,7 +180,11 @@ class AddOnceTaskPageState extends State<AddOnceTaskPage> {
         return [
           TimeInputField('ساعت اجرا',
               controller: this._weekOrMonth_hourController),
-          TextInputField('روز ماه', controller: this._month_dayController),
+          TextInputField(
+            'روز ماه',
+            controller: this._month_dayController,
+            keyboardType: TextInputType.number,
+          ),
         ];
     }
     return [];
@@ -171,21 +193,36 @@ class AddOnceTaskPageState extends State<AddOnceTaskPage> {
   _buildBodyContent() {
     return Builder(
         builder: ((context) => Column(children: [
-              ..._buildTaskBaseFields(),
-              ..._buildSpecialFields(),
-            ])));
+          ..._buildTaskBaseFields(context),
+          ..._buildSpecialFields(),
+        ])));
+  }
+
+  _buildAppBar() {
+    return AppBar(
+      title: Text(
+        widget.task.id == null
+            ? 'ایجاد ${ViewableTaskTypeNames[widget.task.type]}'
+            : 'ویرایش تسک ${widget.task.name}',
+        style: TextStyle(color: Colors.white),
+      ),
+      actions: <Widget>[
+        IconButton(
+          icon: Icon(Icons.check_circle),
+          onPressed: () {
+            this._submit();
+          },
+        )
+      ],
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scafold,
       extendBody: true,
-      appBar: AppBar(
-        title: Text(
-          '${widget.task == null ? 'ایجاد' : 'ویرایش'} تسک جدید',
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
+      appBar: _buildAppBar(),
       body: _buildBodyContent(),
     );
   }

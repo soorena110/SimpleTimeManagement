@@ -10,6 +10,8 @@ abstract class TaskBaseTable {
 
   String getSqlTableName();
 
+  void initTable();
+
   Future<Iterable<Map<String, dynamic>>> queryAllTasks() async {
     print('ESC[36m ===> ${getSqlTableName()}.queryAllTasks');
 

@@ -21,8 +21,9 @@ class ViewableTaskListItem extends StatelessWidget {
 
     _subtitle() {
       if (this.showLastEdit && this.task.lastUpdate != null)
-        return Text('آخرین تغییر: ' +this.task.lastUpdate.replaceFirst(' ', ' ساعت '),
-        style: TextStyle(fontSize: 8, color: Colors.grey[300]));
+        return Text(
+            'آخرین تغییر: ' + this.task.lastUpdate.replaceFirst(' ', ' ساعت '),
+            style: TextStyle(fontSize: 8, color: Colors.grey[300]));
       if (this.task.estimate != null)
         return Text(this.task.getEstimateString());
       return null;

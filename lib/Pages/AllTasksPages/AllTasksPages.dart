@@ -71,7 +71,7 @@ class AllViewableTasksPageState extends State<AllViewableTasksPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: Text('همه تسک‌های تکی',
+          title: Text(ViewableTaskTypeNames[widget.taskType],
               style: TextStyle(
                 color: Colors.white,
               ))),
@@ -80,8 +80,10 @@ class AllViewableTasksPageState extends State<AllViewableTasksPage> {
           child: Icon(Icons.add),
           onPressed: () async {
             final taskIsChanged = await Navigator.push(context,
-                MaterialPageRoute(builder: (context) => AddOnceTaskPage()));
-            if (taskIsChanged) this._fetchTasksAndTheirTicks();
+                MaterialPageRoute(builder: (context) =>
+                    AddOnceTaskPage(taskType: widget.taskType,)));
+            if (taskIsChanged != null && taskIsChanged)
+              this._fetchTasksAndTheirTicks();
           }),
     );
   }

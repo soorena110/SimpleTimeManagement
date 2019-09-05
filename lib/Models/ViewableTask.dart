@@ -5,6 +5,12 @@ import 'Tick.dart';
 
 enum ViewableTaskType { once, week, month }
 
+final ViewableTaskTypeNames = {
+  ViewableTaskType.once: 'تسک تکی',
+  ViewableTaskType.week: 'تسک هفتگی',
+  ViewableTaskType.month: 'تسک ماهانه',
+};
+
 class ViewableTask extends TaskBase {
   ViewableTaskType type;
   Map<String, dynamic> infos;

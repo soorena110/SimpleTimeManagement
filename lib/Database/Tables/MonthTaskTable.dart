@@ -10,7 +10,7 @@ class _MonthTaskTable extends TaskBaseTable {
     return 'MonthTask';
   }
 
-  _MonthTaskTable() {
+  initTable() {
     databaseProvider.addTable(getSqlTableName(), [
       ...TaskBaseTable.getCommonRowsInfo(),
       Row('dayOfMonth', RowType.integer, isNullable: false, isIndexed: true),

@@ -1,7 +1,6 @@
 import 'package:sqflite/sql.dart';
 import 'package:time_river/Database/_common/Row.dart';
 import 'package:time_river/Libraries/datetime.dart';
-import 'package:time_river/Models/WeekTask.dart';
 
 import '../Provider.dart';
 import 'TaskBaseTable.dart';
@@ -9,10 +8,10 @@ import 'TaskBaseTable.dart';
 class _WeekTaskTable extends TaskBaseTable {
   @override
   String getSqlTableName() {
-    return 'MonthTask';
+    return 'WeekTask';
   }
 
-  _WeekTaskTable() {
+  initTable() {
     databaseProvider.addTable(getSqlTableName(), [
       ...TaskBaseTable.getCommonRowsInfo(),
       Row('weekday', RowType.integer, isNullable: false, isIndexed: true),

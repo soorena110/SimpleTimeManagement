@@ -1,7 +1,4 @@
-import 'package:flutter/cupertino.dart';
-import 'package:sqflite/sql.dart';
 import 'package:time_river/Database/Tables/TaskBaseTable.dart';
-import 'package:time_river/Libraries/datetime.dart';
 import 'package:time_river/Models/OnceTask.dart';
 
 import '../Provider.dart';
@@ -13,7 +10,7 @@ class _OnceTaskTable extends TaskBaseTable {
     return 'OnceTask';
   }
 
-  _OnceTaskTable() {
+  initTable() {
     databaseProvider.addTable(
         getSqlTableName(), TaskBaseTable.getCommonRowsInfo());
   }
