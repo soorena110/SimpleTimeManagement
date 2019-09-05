@@ -37,15 +37,7 @@ class TaskBase {
       };
 
   String getEstimateString() {
-    final hm = this.estimate;
-    if (hm == null) return '';
-    final h = hm.floor();
-    final m = ((hm - h) * 60).round();
-
-    var ret = '';
-    if (h != 0) ret = '${h}h';
-    if (m != 0) ret += (ret != '' ? ' & ' : '') + '${m}m';
-    return ret;
+    return convertDoubleTimeToString(this.estimate);
   }
 
   String getStartDateDiff() {

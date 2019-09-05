@@ -3,6 +3,7 @@ import 'package:time_river/Database/Tables/WeekTaskTable.dart';
 import 'package:time_river/Database/Tables/methods.dart';
 import 'package:time_river/Framework/InputFields/CheckBoxList.dart';
 import 'package:time_river/Framework/InputFields/DateInputField.dart';
+import 'package:time_river/Framework/InputFields/NumberInputField.dart';
 import 'package:time_river/Framework/InputFields/TextInputField.dart';
 import 'package:time_river/Framework/InputFields/TimeInputField.dart';
 import 'package:time_river/Libraries/datetime.dart';
@@ -56,7 +57,8 @@ class AddTaskPageState extends State<AddTaskPage> {
     _endTimeController =
         TextEditingController(text: t?.end?.split(' ')?.last ?? '24:00');
     _estimateController =
-        TextEditingController(text: t.estimate?.toString() ?? '');
+        TextEditingController(
+            text: convertDoubleTimeToString(t.estimate) ?? '');
 
     _week_weekdaysController =
         TextEditingController(text: t.infos['weekdays']?.toString() ?? '0');
@@ -127,9 +129,12 @@ class AddTaskPageState extends State<AddTaskPage> {
     widget.task.name = _nameController.text;
     widget.task.start = this._computeStart();
     widget.task.end = this._computeEnd();
-    widget.task.estimate = double.tryParse(_estimateController.text);
+    if (_estimateController.text != null && _estimateController.text != '')
+      widget.task.estimate =
+          convertStringTimeToDouble(_estimateController.text);
     widget.task.description = _descriptionController.text;
     widget.task.infos = {};
+
     if (widget.task.type == ViewableTaskType.month &&
         _month_dayController.text != null)
       widget.task.infos['dayOfMonth'] = _month_dayController.text;
@@ -169,9 +174,7 @@ class AddTaskPageState extends State<AddTaskPage> {
       this._endDateController.text != ''
           ? TimeInputField('ساعت پایان', controller: this._endTimeController)
           : Container(),
-      TextInputField('تعداد ساعات',
-          keyboardType: TextInputType.number,
-          controller: this._estimateController),
+      TimeInputField('تعداد ساعات', controller: this._estimateController),
       TextInputField('توضیح', controller: this._descriptionController)
     ];
   }
@@ -195,10 +198,11 @@ class AddTaskPageState extends State<AddTaskPage> {
         return [
           TimeInputField('ساعت اجرا',
               controller: this._weekOrMonth_startHourController),
-          TextInputField(
+          NumberInputField(
             'روز ماه',
             controller: this._month_dayController,
-            keyboardType: TextInputType.number,
+            minValue: 1,
+            maxValue: 31,
           ),
         ];
     }

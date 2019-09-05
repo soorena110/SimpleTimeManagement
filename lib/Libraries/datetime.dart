@@ -70,3 +70,21 @@ String getDiffrenceText(String dt1, String dt2) {
         ' دقیقه ' +
         (diff.inMinutes > 0 ? 'بعد' : 'پیش');
 }
+
+String convertDoubleTimeToString(double hm) {
+  if (hm == null) return null;
+  if (hm == null) return '';
+  final h = hm.floor();
+  final m = ((hm - h) * 60).round();
+
+  var ret = '${h.toString().padLeft(2, '0')}:${m.toString().padLeft(2, '0')}';
+  return ret;
+}
+
+double convertStringTimeToDouble(String hm) {
+  if (hm == null) return null;
+
+  final parts = hm.split(':');
+  final value = double.parse(parts[0]) + double.parse(parts[1]) / 60;
+  return value;
+}
