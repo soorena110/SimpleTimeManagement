@@ -10,6 +10,10 @@ class App extends StatelessWidget {
       theme: ThemeData(
           primaryColor: Colors.lightGreen[200],
           primaryIconTheme: IconThemeData(color: Colors.white),
+          appBarTheme: AppBarTheme(
+              textTheme: TextTheme(title: TextStyle(color: Colors.white,
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold))),
           floatingActionButtonTheme: FloatingActionButtonThemeData(
               backgroundColor: Colors.lightGreen[200])),
       builder: (context, child) =>

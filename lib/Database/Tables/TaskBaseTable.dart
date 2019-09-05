@@ -7,7 +7,6 @@ import '../Provider.dart';
 typedef StringCallBack = String Function();
 
 abstract class TaskBaseTable {
-
   String getSqlTableName();
 
   void initTable();
@@ -22,6 +21,11 @@ abstract class TaskBaseTable {
       print(e);
       return null;
     }
+  }
+
+  delete(int id) async {
+    print('ESC[33m ===> ${getSqlTableName()}.delete $id');
+    await databaseProvider.db.delete(getSqlTableName(), where: 'id = $id');
   }
 
   insertOrUpdate(Map<String, dynamic> task) async {

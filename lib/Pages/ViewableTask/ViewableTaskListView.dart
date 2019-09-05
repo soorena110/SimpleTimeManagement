@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:time_river/Models/ViewableTask.dart';
 
-import 'OnceTaskListItem.dart';
+import 'ViewableTaskListItem.dart';
 
 class ViewableTaskListView extends StatelessWidget {
   final List<ViewableTask> tasks;

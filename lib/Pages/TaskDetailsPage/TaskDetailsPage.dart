@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:time_river/Database/Tables/OnceTaskTable.dart';
+import 'package:time_river/Database/Tables/methods.dart';
 import 'package:time_river/Framework/CircleIcon.dart';
 import 'package:time_river/Framework/InputFields/DateInputField.dart';
 import 'package:time_river/Framework/InputFields/TextInputField.dart';
@@ -8,7 +9,7 @@ import 'package:time_river/Framework/InputFields/TimeInputField.dart';
 import 'package:time_river/Models/Tick.dart';
 import 'package:time_river/Models/ViewableTask.dart';
 import 'package:time_river/Pages/AddTaskPage/AddTaskPage.dart';
-import 'package:time_river/Pages/ViewableTask/ViewableTaskView.dart';
+import 'package:time_river/Pages/TaskDetailsPage/ViewableTaskView.dart';
 
 class TaskDetailsPage extends StatefulWidget {
   final ViewableTask task;
@@ -117,7 +118,7 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
         });
   }
 
-  Widget _tickStateFloatingButton() {
+  Widget _buildFloatingActionButton() {
     final availableTicks = TickType.values
         .where((v) => v != widget.task.tick || v == TickType.postponed);
 
@@ -141,31 +142,57 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
     );
   }
 
-  _buildFloatingActionButton() {
-    return FloatingActionButton(
-        backgroundColor: widget.task.tick?.getColor(),
-        child: Icon(Icons.edit),
-        onPressed: () async {
-          final isChanged = await Navigator.push(context,
-              MaterialPageRoute(builder: (context) {
-            return AddOnceTaskPage(task: widget.task);
-          }));
-          if (isChanged) setState(() {});
-        });
+  _buildAppBar() {
+    return AppBar(
+      backgroundColor: widget.task.tick?.getColor(),
+      title: Text(widget.task.name),
+      actions: <Widget>[
+        IconButton(
+            icon: Icon(Icons.edit),
+            onPressed: () async {
+              final isChanged = await Navigator.push(context,
+                  MaterialPageRoute(builder: (context) {
+                    return AddTaskPage(task: widget.task);
+                  }));
+              if (isChanged != null && isChanged) setState(() {});
+            }),
+        IconButton(
+          icon: Icon(Icons.delete),
+          onPressed: () {
+            showDialog(
+                context: context,
+                builder: (context) =>
+                    AlertDialog(
+                      title:
+                      Text('آیا مطمئنید میخواهید این آیتم را حذف کنید ؟'),
+                      actions: <Widget>[
+                        FlatButton(
+                            child: Text('بله'),
+                            onPressed: () async {
+                              await getRelatedRepositoryOfType(widget.task.type)
+                                  .delete(widget.task.id);
+                              Navigator.pop(context);
+                              Navigator.pop(context, true);
+                            }),
+                        FlatButton(
+                            child: Text('خیر'),
+                            onPressed: () => Navigator.pop(context)),
+                      ],
+                    ));
+          },
+        )
+      ],
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-        onWillPop: this._handlePopScopePop,
-        child: Stack(alignment: Alignment.bottomLeft, children: [
-          Scaffold(
-              appBar: AppBar(
-                  backgroundColor: widget.task.tick?.getColor(),
-                  title: Text(widget.task.name)),
-              body: ViewableTaskView(widget.task),
-              floatingActionButton: this._buildFloatingActionButton()),
-          this._tickStateFloatingButton()
-        ]));
+      onWillPop: this._handlePopScopePop,
+      child: Scaffold(
+          appBar: _buildAppBar(),
+          body: ViewableTaskView(widget.task),
+          floatingActionButton: this._buildFloatingActionButton()),
+    );
   }
 }

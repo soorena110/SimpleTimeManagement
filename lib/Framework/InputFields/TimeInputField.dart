@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '_commons.dart';
 
 class TimeInputField extends StatefulWidget {
@@ -16,7 +17,8 @@ class TimeInputField extends StatefulWidget {
 class TimeInputFieldState extends State<TimeInputField> {
   _getCurrentSelectedTime() {
     final selectedTimeString = widget.controller.text;
-    if (selectedTimeString == null) return null;
+    if (selectedTimeString == null || selectedTimeString.trim() == '')
+      return TimeOfDay(hour: 12, minute: 0);
 
     final selectedTimeParts =
         selectedTimeString.split(':').map((s) => int.parse(s)).toList();
@@ -28,7 +30,7 @@ class TimeInputFieldState extends State<TimeInputField> {
     return inputFieldContainer(TextField(
       readOnly: true,
       controller: widget.controller,
-      decoration: inputFieldDecorator('', Icons.access_time),
+      decoration: inputFieldDecorator(widget.title, Icons.access_time),
       onTap: () async {
         final newVal = await showTimePicker(
             context: context, initialTime: this._getCurrentSelectedTime());

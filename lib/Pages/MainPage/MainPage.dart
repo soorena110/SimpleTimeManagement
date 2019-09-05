@@ -133,6 +133,17 @@ class MainPageState extends State<MainPage>
         ]));
   }
 
+  _buildFloatingActionButton() {
+    return FloatingActionButton(
+        backgroundColor: this._getBackgroundColor(),
+        child: Icon(Icons.add),
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return AddTaskPage();
+          }));
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -140,13 +151,6 @@ class MainPageState extends State<MainPage>
         child: Scaffold(
             body: this._buildBody(),
             endDrawer: getMainPageDrawer(context),
-            floatingActionButton: FloatingActionButton(
-                backgroundColor: this._getBackgroundColor(),
-                child: Icon(Icons.add),
-                onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return AddOnceTaskPage();
-                  }));
-                })));
+            floatingActionButton: _buildFloatingActionButton()));
   }
 }

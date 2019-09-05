@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:time_river/Database/Tables/MonthTaskTable.dart';
-import 'package:time_river/Database/Tables/OnceTaskTable.dart';
-import 'package:time_river/Database/Tables/TaskBaseTable.dart';
 import 'package:time_river/Database/Tables/WeekTaskTable.dart';
+import 'package:time_river/Database/Tables/methods.dart';
+import 'package:time_river/Framework/InputFields/CheckBoxList.dart';
 import 'package:time_river/Framework/InputFields/DateInputField.dart';
 import 'package:time_river/Framework/InputFields/TextInputField.dart';
 import 'package:time_river/Framework/InputFields/TimeInputField.dart';
 import 'package:time_river/Libraries/datetime.dart';
 import 'package:time_river/Models/ViewableTask.dart';
 
-class AddOnceTaskPage extends StatefulWidget {
+class AddTaskPage extends StatefulWidget {
   final ViewableTask task;
 
-  AddOnceTaskPage({ViewableTask task, ViewableTaskType taskType})
+  AddTaskPage({ViewableTask task, ViewableTaskType taskType})
       : this.task =
       task ?? ViewableTask(type: taskType, infos: <String, dynamic>{}) {
     if (task == null && taskType == null)
@@ -21,11 +20,11 @@ class AddOnceTaskPage extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return AddOnceTaskPageState();
+    return AddTaskPageState();
   }
 }
 
-class AddOnceTaskPageState extends State<AddOnceTaskPage> {
+class AddTaskPageState extends State<AddTaskPage> {
   final _scafold = GlobalKey<ScaffoldState>();
 
   TextEditingController _nameController;
@@ -36,7 +35,9 @@ class AddOnceTaskPageState extends State<AddOnceTaskPage> {
   TextEditingController _endTimeController;
   TextEditingController _estimateController;
 
-  TextEditingController _weekOrMonth_hourController;
+  TextEditingController _week_weekdaysController;
+  TextEditingController _weekOrMonth_startHourController;
+  TextEditingController _weekOrMonth_endHourController;
   TextEditingController _month_dayController;
 
   @override
@@ -57,8 +58,13 @@ class AddOnceTaskPageState extends State<AddOnceTaskPage> {
     _estimateController =
         TextEditingController(text: t.estimate?.toString() ?? '');
 
-    _weekOrMonth_hourController =
-        TextEditingController(text: t.infos['hour'] ?? '');
+    _week_weekdaysController =
+        TextEditingController(text: t.infos['weekdays']?.toString() ?? '0');
+
+    _weekOrMonth_startHourController =
+        TextEditingController(text: t.infos['startHour'] ?? '');
+    _weekOrMonth_endHourController =
+        TextEditingController(text: t.infos['endHour'] ?? '');
 
     _month_dayController = TextEditingController(
         text:
@@ -93,6 +99,11 @@ class AddOnceTaskPageState extends State<AddOnceTaskPage> {
         return 'روز ماه باید از 1 تا 31 باشد.';
     }
 
+    if (widget.task.type == ViewableTaskType.week) {
+      if (widget.task.infos == null || widget.task.infos['weekdays'] == 0)
+        return 'حداقل یک روز هفته باید تعیین شده باشد.';
+    }
+
     return null;
   }
 
@@ -112,18 +123,6 @@ class AddOnceTaskPageState extends State<AddOnceTaskPage> {
     return '$date $time';
   }
 
-
-  TaskBaseTable _getRelatedRepository() {
-    switch (widget.task.type) {
-      case ViewableTaskType.once:
-        return onceTaskTable;
-      case ViewableTaskType.week:
-        return weekTaskTable;
-      case ViewableTaskType.month:
-        return monthTaskTable;
-    }
-  }
-
   _submit() async {
     widget.task.name = _nameController.text;
     widget.task.start = this._computeStart();
@@ -131,10 +130,19 @@ class AddOnceTaskPageState extends State<AddOnceTaskPage> {
     widget.task.estimate = double.tryParse(_estimateController.text);
     widget.task.description = _descriptionController.text;
     widget.task.infos = {};
-    if (_month_dayController.text != null)
+    if (widget.task.type == ViewableTaskType.month &&
+        _month_dayController.text != null)
       widget.task.infos['dayOfMonth'] = _month_dayController.text;
-    if (_weekOrMonth_hourController.text != null)
-      widget.task.infos['hour'] = _weekOrMonth_hourController.text;
+    if (widget.task.type == ViewableTaskType.month ||
+        widget.task.type == ViewableTaskType.week) {
+      if (_weekOrMonth_startHourController.text != null)
+        widget.task.infos['startHour'] = _weekOrMonth_startHourController.text;
+      if (_weekOrMonth_endHourController.text != null)
+        widget.task.infos['endHour'] = _weekOrMonth_endHourController.text;
+    }
+    if (widget.task.type == ViewableTaskType.week &&
+        _week_weekdaysController.text != null)
+      widget.task.infos['weekdays'] = int.parse(_week_weekdaysController.text);
 
     final error = this._validateJsonTask();
     if (error != null) {
@@ -143,7 +151,8 @@ class AddOnceTaskPageState extends State<AddOnceTaskPage> {
       return;
     }
 
-    await _getRelatedRepository().insertOrUpdate(widget.task.toJson());
+    await getRelatedRepositoryOfType(widget.task.type).insertOrUpdate(
+        widget.task.toJson());
     Navigator.pop(context, true);
     _scafold.currentState.showSnackBar(SnackBar(
         backgroundColor: Colors.green, content: Text('با موفیت ثبت شد.')));
@@ -173,13 +182,19 @@ class AddOnceTaskPageState extends State<AddOnceTaskPage> {
         return [];
       case ViewableTaskType.week:
         return [
-          TimeInputField('ساعت اجرا',
-              controller: this._weekOrMonth_hourController),
+          TimeInputField('ساعت شروع اجرا',
+              controller: this._weekOrMonth_startHourController),
+          TimeInputField('ساعت پایان اجرا',
+              controller: this._weekOrMonth_endHourController),
+          CheckBoxList(
+              label: 'روز',
+              controller: this._week_weekdaysController,
+              titles: weekDayNames)
         ];
       case ViewableTaskType.month:
         return [
           TimeInputField('ساعت اجرا',
-              controller: this._weekOrMonth_hourController),
+              controller: this._weekOrMonth_startHourController),
           TextInputField(
             'روز ماه',
             controller: this._month_dayController,

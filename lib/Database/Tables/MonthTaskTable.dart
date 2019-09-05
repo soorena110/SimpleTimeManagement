@@ -1,6 +1,7 @@
 import 'package:time_river/Database/Provider.dart';
 import 'package:time_river/Database/_common/Row.dart';
 
+import 'LoopingTaskBaseTable.dart';
 import 'TaskBaseTable.dart';
 
 class _MonthTaskTable extends TaskBaseTable {
@@ -12,9 +13,8 @@ class _MonthTaskTable extends TaskBaseTable {
 
   initTable() {
     databaseProvider.addTable(getSqlTableName(), [
-      ...TaskBaseTable.getCommonRowsInfo(),
+      ...LoopingTaskBaseTable.getCommonRowsInfo(),
       Row('dayOfMonth', RowType.integer, isNullable: false, isIndexed: true),
-      Row('hour', RowType.text)
     ]);
   }
 

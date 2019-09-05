@@ -1,9 +1,12 @@
-import 'package:sqflite/sql.dart';
 import 'package:time_river/Database/_common/Row.dart';
-import 'package:time_river/Libraries/datetime.dart';
 
 import '../Provider.dart';
+import 'LoopingTaskBaseTable.dart';
 import 'TaskBaseTable.dart';
+
+final weekDayNames = [
+  'شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنجشنبه', 'جمعه'
+];
 
 class _WeekTaskTable extends TaskBaseTable {
   @override
@@ -13,20 +16,9 @@ class _WeekTaskTable extends TaskBaseTable {
 
   initTable() {
     databaseProvider.addTable(getSqlTableName(), [
-      ...TaskBaseTable.getCommonRowsInfo(),
-      Row('weekday', RowType.integer, isNullable: false, isIndexed: true),
-      Row('hour', RowType.text)
+      ...LoopingTaskBaseTable.getCommonRowsInfo(),
+      Row('weekdays', RowType.integer, isNullable: false, isIndexed: true),
     ]);
-  }
-
-  insertOrUpdate(Map<String, dynamic> task) {
-    print('ESC[33m ===> WeekTaskTable.insertOrUpdate');
-    print(task);
-
-    task['lastUpdate'] = getNow();
-
-    databaseProvider.db.insert(getSqlTableName(), task,
-        conflictAlgorithm: ConflictAlgorithm.replace);
   }
 }
 
