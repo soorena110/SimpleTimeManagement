@@ -1,8 +1,11 @@
 import 'package:time_river/Database/Provider.dart';
 
-import './Tables/MonthTaskTable.dart';
-import './Tables/OnceTaskTable.dart';
-import './Tables/WeekTaskTable.dart';
+import 'Tables/Tasks/MonthTaskTable.dart';
+import 'Tables/Tasks/OnceTaskTable.dart';
+import 'Tables/Tasks/WeekTaskTable.dart';
+import 'Tables/Ticks/MonthTaskTick.dart';
+import 'Tables/Ticks/OnceTaskTick.dart';
+import 'Tables/Ticks/WeekTaskTick.dart';
 
 databaseClose() async {
   await databaseProvider.close();
@@ -10,7 +13,13 @@ databaseClose() async {
 
 databaseOpen() async {
   onceTaskTable.initTable();
+  onceTaskTickTable.initTable();
+
   weekTaskTable.initTable();
+  weekTaskTickTable.initTable();
+
   monthTaskTable.initTable();
+  monthTaskTickTable.initTable();
+
   await databaseProvider.open();
 }

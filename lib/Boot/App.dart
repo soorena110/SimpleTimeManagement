@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:time_river/Models/ViewableTask.dart';
+import 'package:time_river/Models/Task.dart';
 import 'package:time_river/Pages/AllTasksPages/AllTasksPages.dart';
 
 class App extends StatelessWidget {
@@ -18,7 +18,7 @@ class App extends StatelessWidget {
               backgroundColor: Colors.lightGreen[200])),
       builder: (context, child) =>
           Directionality(textDirection: TextDirection.rtl, child: child),
-      home: AllViewableTasksPage(ViewableTaskType.month),
+      home: AllViewableTasksPage(TaskType.month),
       debugShowCheckedModeBanner: false,
     );
   }

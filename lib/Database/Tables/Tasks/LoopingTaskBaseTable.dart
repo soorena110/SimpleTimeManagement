@@ -1,5 +1,6 @@
-import 'package:time_river/Database/Tables/TaskBaseTable.dart';
 import 'package:time_river/Database/_common/Row.dart';
+
+import 'TaskBaseTable.dart';
 
 typedef StringCallBack = String Function();
 

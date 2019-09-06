@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:time_river/Database/Tables/OnceTaskTable.dart';
-import 'package:time_river/Database/Tables/methods.dart';
 import 'package:time_river/Framework/CircleIcon.dart';
 import 'package:time_river/Framework/InputFields/DateInputField.dart';
 import 'package:time_river/Framework/InputFields/TextInputField.dart';
 import 'package:time_river/Framework/InputFields/TimeInputField.dart';
+import 'package:time_river/Models/Task.dart';
 import 'package:time_river/Models/Tick.dart';
-import 'package:time_river/Models/ViewableTask.dart';
 import 'package:time_river/Pages/AddTaskPage/AddTaskPage.dart';
 import 'package:time_river/Pages/TaskDetailsPage/ViewableTaskView.dart';
+import 'package:time_river/Services/TaskService.dart';
+import 'package:time_river/Services/methods.dart';
+
+final defaultTick = Tick(type: TickType.todo);
 
 class TaskDetailsPage extends StatefulWidget {
-  final ViewableTask task;
+  final Task task;
 
   const TaskDetailsPage(this.task);
 
@@ -36,17 +38,24 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
   _changeTick(TickType tickType) async {
     final tickDescription = tickDescriptionController.value.text;
 
+    if (widget.task.tick == null)
+      widget.task.tick =
+          Tick(taskType: widget.task.type, taskId: widget.task.id);
+
     this.setState(() {
-      widget.task.tick?.type = tickType;
-      widget.task.tick?.description =
+      widget.task.tick.type = tickType;
+      widget.task.tick.description =
           tickDescription != '' ? tickDescription : null;
-      if (widget.task.tick?.type == TickType.postponed) {
+
+      if (widget.task.tick.type == TickType.postponed) {
         widget.task.end =
             tickDateController.value.text + ' ' + tickTimeController.value.text;
       }
+
       _taskIsChanged = true;
     });
-    onceTaskTable.insertOrUpdate(widget.task.toJson());
+
+    TaskService.saveTick(widget.task.tick);
   }
 
   RaisedButton _renderTickChangeButton(TickType tickType) {
@@ -71,10 +80,10 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
         TextEditingController(text: widget.task.tick?.description);
     if (tickDateController != null) tickDateController.dispose();
     tickDateController =
-        TextEditingController(text: widget.task.end.split(' ')[0]);
+        TextEditingController(text: (widget.task.end?.split(' ') ?? [''])[0]);
     if (tickTimeController != null) tickTimeController.dispose();
-    tickTimeController =
-        TextEditingController(text: widget.task.end.split(' ')[1]);
+    tickTimeController = TextEditingController(
+        text: (widget.task.end?.split(' ') ?? ['', ''])[1]);
   }
 
   _showChangingTickDialogBox(TickType tick) {
@@ -119,32 +128,37 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
   }
 
   Widget _buildFloatingActionButton() {
+    final tick = widget.task.tick ?? defaultTick;
     final availableTicks = TickType.values
-        .where((v) => v != widget.task.tick || v == TickType.postponed);
+        .where((v) => v != tick.type || v == TickType.postponed)
+        .where((v) => v != TickType.postponed || widget.task.end != null);
 
     final subItems = availableTicks
         .map((v) => SpeedDialChild(
-            child: Icon(TickIcons[v]),
-            backgroundColor: TickColors[v],
-            label: v.toString().split('.').last,
-            labelStyle: TextStyle(fontSize: 18.0),
-            onTap: () => this._showChangingTickDialogBox(v)))
+        child: Icon(TickIcons[v]),
+        backgroundColor: TickColors[v],
+        label: v.toString().split('.').last,
+        labelStyle: TextStyle(fontSize: 18.0),
+        onTap: () => this._showChangingTickDialogBox(v)))
         .toList();
 
-    return SpeedDial(
-      child: Icon(widget.task.tick?.getIcon()),
-      backgroundColor: widget.task.tick?.getColor(),
-      foregroundColor: Colors.white,
-      marginRight: 35,
-      marginBottom: 35,
-      overlayOpacity: 0,
-      children: subItems,
-    );
+    return Directionality(
+        textDirection: TextDirection.ltr,
+        child: SpeedDial(
+          child: Icon(tick.getIcon()),
+          backgroundColor: tick.getColor(),
+          foregroundColor: Colors.white,
+          marginRight: 35,
+          marginBottom: 35,
+          overlayOpacity: 0,
+          children: subItems,
+        ));
   }
 
   _buildAppBar() {
+    final tick = widget.task.tick ?? defaultTick;
     return AppBar(
-      backgroundColor: widget.task.tick?.getColor(),
+      backgroundColor: tick.getColor(),
       title: Text(widget.task.name),
       actions: <Widget>[
         IconButton(
@@ -167,16 +181,17 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
                       Text('آیا مطمئنید میخواهید این آیتم را حذف کنید ؟'),
                       actions: <Widget>[
                         FlatButton(
-                            child: Text('بله'),
+                            child: Text('خیر'),
+                            onPressed: () => Navigator.pop(context)),
+                        FlatButton(
+                            child: Text('بله',
+                                style: TextStyle(color: Colors.orange)),
                             onPressed: () async {
                               await getRelatedRepositoryOfType(widget.task.type)
                                   .delete(widget.task.id);
                               Navigator.pop(context);
                               Navigator.pop(context, true);
                             }),
-                        FlatButton(
-                            child: Text('خیر'),
-                            onPressed: () => Navigator.pop(context)),
                       ],
                     ));
           },

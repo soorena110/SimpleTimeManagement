@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:time_river/Framework/CircleIcon.dart';
-import 'package:time_river/Models/ViewableTask.dart';
+import 'package:time_river/Models/Task.dart';
 import 'package:time_river/Pages/AllTasksPages/AllTasksPages.dart';
 
 getMainPageDrawer(context) {
@@ -15,7 +15,7 @@ getMainPageDrawer(context) {
               context,
               MaterialPageRoute(
                   builder: (context) =>
-                      AllViewableTasksPage(ViewableTaskType.once)));
+                      AllViewableTasksPage(TaskType.once)));
         },
       ),
       ListTile(
@@ -27,7 +27,7 @@ getMainPageDrawer(context) {
               context,
               MaterialPageRoute(
                   builder: (context) =>
-                      AllViewableTasksPage(ViewableTaskType.week)));
+                      AllViewableTasksPage(TaskType.week)));
         },
       ),
       ListTile(
@@ -39,7 +39,7 @@ getMainPageDrawer(context) {
               context,
               MaterialPageRoute(
                   builder: (context) =>
-                      AllViewableTasksPage(ViewableTaskType.month)));
+                      AllViewableTasksPage(TaskType.month)));
         },
       )
     ]),

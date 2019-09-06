@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:time_river/Framework/CircleIcon.dart';
 import 'package:time_river/Framework/StaggerCircle.dart';
-import 'package:time_river/Models/ViewableTask.dart';
+import 'package:time_river/Models/Task.dart';
+import 'package:time_river/Models/Tick.dart';
+
+final defaultTick = Tick(type: TickType.todo);
 
 class ViewableTaskListItem extends StatelessWidget {
-  final ViewableTask task;
+  final Task task;
   final bool showLastEdit;
 
   ViewableTaskListItem(this.task, {this.showLastEdit = false});
 
   @override
   Widget build(BuildContext context) {
+    final tick = this.task.tick ?? defaultTick;
     final _circleIcon = this.task.getIsCritical()
-        ? StaggerCircle(this.task.tick?.getIcon(), this.task.tick?.getColor())
-        : CircleIcon(this.task.tick?.getIcon(), this.task.tick?.getColor());
+        ? StaggerCircle(tick.getIcon(), tick.getColor())
+        : CircleIcon(tick.getIcon(), tick.getColor());
 
     final _trailing = Text(this.task.getRemainingTime(),
         style: TextStyle(

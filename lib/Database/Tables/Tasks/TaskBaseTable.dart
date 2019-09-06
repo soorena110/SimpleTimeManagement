@@ -1,8 +1,9 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:time_river/Database/_common/Row.dart';
 import 'package:time_river/Libraries/datetime.dart';
+import 'package:time_river/Models/Task.dart';
 
-import '../Provider.dart';
+import '../../Provider.dart';
 
 typedef StringCallBack = String Function();
 
@@ -11,12 +12,13 @@ abstract class TaskBaseTable {
 
   void initTable();
 
-  Future<Iterable<Map<String, dynamic>>> queryAllTasks() async {
+  Future<Iterable<Task>> queryAllTasks() async {
     print('ESC[36m ===> ${getSqlTableName()}.queryAllTasks');
 
     try {
-      return await databaseProvider.db
-          .query(getSqlTableName(), orderBy: 'lastUpdate DESC');
+      return (await databaseProvider.db
+          .query(getSqlTableName(), orderBy: 'lastUpdate DESC')).map((r) =>
+          Task.fromJson(r));
     } catch (e) {
       print(e);
       return null;

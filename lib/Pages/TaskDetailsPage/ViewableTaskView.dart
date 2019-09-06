@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:time_river/Database/Tables/WeekTaskTable.dart';
+import 'package:time_river/Database/Tables/Tasks/WeekTaskTable.dart';
 import 'package:time_river/Framework/InputFields/CheckBoxList.dart';
-import 'package:time_river/Models/ViewableTask.dart';
+import 'package:time_river/Models/Task.dart';
 
 class ViewableTaskView extends StatelessWidget {
-  final ViewableTask task;
+  final Task task;
 
   const ViewableTaskView(this.task);
 
@@ -30,9 +30,9 @@ class ViewableTaskView extends StatelessWidget {
     if (task.infos == null) return [];
 
     switch (task.type) {
-      case ViewableTaskType.once:
+      case TaskType.once:
         return [];
-      case ViewableTaskType.week:
+      case TaskType.week:
         return [
           task.infos['startHour'] != null &&
               task.infos['startHour'].trim() != ''
@@ -48,7 +48,7 @@ class ViewableTaskView extends StatelessWidget {
                   titles: weekDayNames, value: task.infos['weekdays'] ?? 0))
               : Container(),
         ];
-      case ViewableTaskType.month:
+      case TaskType.month:
         return [
           task.infos['startHour'] != null &&
               task.infos['startHour'].trim() != ''
@@ -67,6 +67,8 @@ class ViewableTaskView extends StatelessWidget {
   }
 
   List<Widget> _buildTickInfos() {
+    if (task.tick == null) return [];
+
     return [
       Row(children: [
         Expanded(
@@ -76,8 +78,8 @@ class ViewableTaskView extends StatelessWidget {
               margin: const EdgeInsets.all(25),
             ))
       ]),
-      task.tick?.description != null
-          ? Item('توضیح تیک : ', Text(task.tick?.description.toString()))
+      task.tick.description != null
+          ? Item('توضیح تیک : ', Text(task.tick.description.toString()))
           : Container()
     ];
   }

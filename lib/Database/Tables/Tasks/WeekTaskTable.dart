@@ -1,11 +1,17 @@
 import 'package:time_river/Database/_common/Row.dart';
 
-import '../Provider.dart';
+import '../../Provider.dart';
 import 'LoopingTaskBaseTable.dart';
 import 'TaskBaseTable.dart';
 
 final weekDayNames = [
-  'شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنجشنبه', 'جمعه'
+  'شنبه',
+  'یکشنبه',
+  'دوشنبه',
+  'سه‌شنبه',
+  'چهارشنبه',
+  'پنجشنبه',
+  'جمعه'
 ];
 
 class _WeekTaskTable extends TaskBaseTable {

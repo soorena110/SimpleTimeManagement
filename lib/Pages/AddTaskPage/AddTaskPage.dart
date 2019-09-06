@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:time_river/Database/Tables/WeekTaskTable.dart';
-import 'package:time_river/Database/Tables/methods.dart';
+import 'package:time_river/Database/Tables/Tasks/WeekTaskTable.dart';
 import 'package:time_river/Framework/InputFields/CheckBoxList.dart';
 import 'package:time_river/Framework/InputFields/DateInputField.dart';
 import 'package:time_river/Framework/InputFields/NumberInputField.dart';
 import 'package:time_river/Framework/InputFields/TextInputField.dart';
 import 'package:time_river/Framework/InputFields/TimeInputField.dart';
 import 'package:time_river/Libraries/datetime.dart';
-import 'package:time_river/Models/ViewableTask.dart';
+import 'package:time_river/Models/Task.dart';
+import 'package:time_river/Services/methods.dart';
 
 class AddTaskPage extends StatefulWidget {
-  final ViewableTask task;
+  final Task task;
 
-  AddTaskPage({ViewableTask task, ViewableTaskType taskType})
+  AddTaskPage({Task task, TaskType taskType})
       : this.task =
-      task ?? ViewableTask(type: taskType, infos: <String, dynamic>{}) {
+      task ?? Task(type: taskType, infos: <String, dynamic>{}) {
     if (task == null && taskType == null)
       throw 'Both task and taskType is empty, one of them must be filled.';
   }
@@ -56,9 +56,8 @@ class AddTaskPageState extends State<AddTaskPage> {
         TextEditingController(text: t?.end?.split(' ')?.first ?? '');
     _endTimeController =
         TextEditingController(text: t?.end?.split(' ')?.last ?? '24:00');
-    _estimateController =
-        TextEditingController(
-            text: convertDoubleTimeToString(t.estimate) ?? '');
+    _estimateController = TextEditingController(
+        text: convertDoubleTimeToString(t.estimate) ?? '');
 
     _week_weekdaysController =
         TextEditingController(text: t.infos['weekdays']?.toString() ?? '0');
@@ -93,7 +92,7 @@ class AddTaskPageState extends State<AddTaskPage> {
         compareDateTime(widget.task.end, getNow()) > 1)
       return 'تاریخ پایان باید بیشتر از زمان حال باشد.';
 
-    if (widget.task.type == ViewableTaskType.month) {
+    if (widget.task.type == TaskType.month) {
       if (widget.task.infos == null || widget.task.infos['dayOfMonth'] == null)
         return 'روز ماه تعیین نشده است.';
       final value = int.tryParse(widget.task.infos['dayOfMonth']);
@@ -101,7 +100,7 @@ class AddTaskPageState extends State<AddTaskPage> {
         return 'روز ماه باید از 1 تا 31 باشد.';
     }
 
-    if (widget.task.type == ViewableTaskType.week) {
+    if (widget.task.type == TaskType.week) {
       if (widget.task.infos == null || widget.task.infos['weekdays'] == 0)
         return 'حداقل یک روز هفته باید تعیین شده باشد.';
     }
@@ -135,17 +134,17 @@ class AddTaskPageState extends State<AddTaskPage> {
     widget.task.description = _descriptionController.text;
     widget.task.infos = {};
 
-    if (widget.task.type == ViewableTaskType.month &&
+    if (widget.task.type == TaskType.month &&
         _month_dayController.text != null)
       widget.task.infos['dayOfMonth'] = _month_dayController.text;
-    if (widget.task.type == ViewableTaskType.month ||
-        widget.task.type == ViewableTaskType.week) {
+    if (widget.task.type == TaskType.month ||
+        widget.task.type == TaskType.week) {
       if (_weekOrMonth_startHourController.text != null)
         widget.task.infos['startHour'] = _weekOrMonth_startHourController.text;
       if (_weekOrMonth_endHourController.text != null)
         widget.task.infos['endHour'] = _weekOrMonth_endHourController.text;
     }
-    if (widget.task.type == ViewableTaskType.week &&
+    if (widget.task.type == TaskType.week &&
         _week_weekdaysController.text != null)
       widget.task.infos['weekdays'] = int.parse(_week_weekdaysController.text);
 
@@ -181,9 +180,9 @@ class AddTaskPageState extends State<AddTaskPage> {
 
   List<Widget> _buildSpecialFields() {
     switch (widget.task.type) {
-      case ViewableTaskType.once:
+      case TaskType.once:
         return [];
-      case ViewableTaskType.week:
+      case TaskType.week:
         return [
           TimeInputField('ساعت شروع اجرا',
               controller: this._weekOrMonth_startHourController),
@@ -194,7 +193,7 @@ class AddTaskPageState extends State<AddTaskPage> {
               controller: this._week_weekdaysController,
               titles: weekDayNames)
         ];
-      case ViewableTaskType.month:
+      case TaskType.month:
         return [
           TimeInputField('ساعت اجرا',
               controller: this._weekOrMonth_startHourController),

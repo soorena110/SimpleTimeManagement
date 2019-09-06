@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:time_river/Database/Tables/methods.dart';
-import 'package:time_river/Models/ViewableTask.dart';
+import 'package:time_river/Models/Task.dart';
 import 'package:time_river/Pages/AddTaskPage/AddTaskPage.dart';
 import 'package:time_river/Pages/TaskDetailsPage/TaskDetailsPage.dart';
 import 'package:time_river/Pages/ViewableTask/ViewableTaskListView.dart';
+import 'package:time_river/Services/TaskService.dart';
 
 class AllViewableTasksPage extends StatefulWidget {
-  ViewableTaskType taskType;
+  TaskType taskType;
 
   AllViewableTasksPage(this.taskType);
 
@@ -17,29 +17,24 @@ class AllViewableTasksPage extends StatefulWidget {
 }
 
 class AllViewableTasksPageState extends State<AllViewableTasksPage> {
-  List<ViewableTask> showingTasks;
+  List<Task> showingTasks;
 
   @override
   void initState() {
     super.initState();
 
-    showingTasks = <ViewableTask>[];
+    showingTasks = <Task>[];
     this._fetchTasksAndTheirTicks();
   }
 
   void _fetchTasksAndTheirTicks() async {
-    final repository = getRelatedRepositoryOfType(widget.taskType);
-
-    var tasks = (await repository.queryAllTasks())
-        .map((json) => ViewableTask.fromJson(json, type: widget.taskType))
-        .toList();
-
+    var tasks = (await TaskService.getAllTasksOfType(widget.taskType)).toList();
     setState(() {
       showingTasks = tasks;
     });
   }
 
-  _selectATask(ViewableTask task) async {
+  _selectATask(Task task) async {
     final taskIsChanged = await Navigator.push(context,
         MaterialPageRoute(builder: (context) => TaskDetailsPage(task)));
 
@@ -47,10 +42,12 @@ class AllViewableTasksPageState extends State<AllViewableTasksPage> {
   }
 
   _buildBody() {
-    return ViewableTaskListView(
-        showingTasks,
-        showLastEdit: true,
-        onItemSelected: (task) => this._selectATask(task));
+    return RefreshIndicator(
+      onRefresh: () async => this._fetchTasksAndTheirTicks(),
+      child: ViewableTaskListView(showingTasks,
+          showLastEdit: true,
+          onItemSelected: (task) => this._selectATask(task)),
+    );
   }
 
   _buildFloatingActionButton() {

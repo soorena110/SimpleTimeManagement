@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:time_river/Models/ViewableTask.dart';
+import 'package:time_river/Models/Task.dart';
 
 import 'ViewableTaskListItem.dart';
 
 class ViewableTaskListView extends StatelessWidget {
-  final List<ViewableTask> tasks;
-  final void Function(ViewableTask task) onItemSelected;
+  final List<Task> tasks;
+  final void Function(Task task) onItemSelected;
   final bool showLastEdit;
 
   const ViewableTaskListView(this.tasks,
