@@ -4,12 +4,11 @@ import 'package:time_river/Models/Task.dart';
 import 'package:time_river/Pages/AddTaskPage/AddTaskPage.dart';
 
 import 'MainPageDailyTasks.dart';
-import '_appBar.dart';
 import '_drawer.dart';
 
-class MainPage extends StatefulWidget {
-  MainPage();
+enum _PresetDateRanges { today, tomorrow, week }
 
+class MainPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
     return new MainPageState();
@@ -19,6 +18,7 @@ class MainPage extends StatefulWidget {
 class MainPageState extends State<MainPage>
     with SingleTickerProviderStateMixin {
   bool _isCritical = false;
+  _PresetDateRanges _dateRange = _PresetDateRanges.today;
 
   _getBackgroundColor() {
     return this._isCritical ? Colors.orange : null;
@@ -64,8 +64,30 @@ class MainPageState extends State<MainPage>
         onStateChanged: this._handleStateChange, start: start, end: end);
   }
 
+  String _getTitle() {
+    switch (_dateRange) {
+      case _PresetDateRanges.today:
+        return 'تسک‌های امروز';
+      case _PresetDateRanges.tomorrow:
+        return 'تسک‌های فردا';
+      case _PresetDateRanges.week:
+        return 'تسک‌های این هفته';
+      default:
+        throw 'Exhaustive Check !';
+    }
+  }
+
   _buildBody() {
-    return this._getTodayView();
+    switch (_dateRange) {
+      case _PresetDateRanges.today:
+        return this._getTodayView();
+      case _PresetDateRanges.tomorrow:
+        return this._getTomorrowView();
+      case _PresetDateRanges.week:
+        return this._getCurrentWeekView();
+      default:
+        throw 'Exhaustive Check !';
+    }
   }
 
   _buildFloatingActionButton() {
@@ -79,10 +101,28 @@ class MainPageState extends State<MainPage>
         });
   }
 
+  _buildMainPageAppBar() {
+    return AppBar(
+      title: Text(_getTitle()),
+      actions: <Widget>[
+        IconButton(
+          icon: Icon(Icons.calendar_today),
+          onPressed: () {
+            setState(() {
+              final enums = _PresetDateRanges.values;
+              _dateRange =
+              enums[(enums.indexOf(_dateRange) + 1) % enums.length];
+            });
+          },
+        )
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: buildMainPageAppBar(),
+        appBar: _buildMainPageAppBar(),
         body: this._buildBody(),
         endDrawer: getMainPageDrawer(context),
         floatingActionButton: _buildFloatingActionButton());

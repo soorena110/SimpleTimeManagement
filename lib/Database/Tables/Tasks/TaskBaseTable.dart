@@ -12,12 +12,14 @@ abstract class TaskBaseTable {
 
   void initTable();
 
-  Future<Iterable<Task>> queryAllTasks() async {
+  Future<Iterable<Task>> query(
+      {String fromDate, String toDate, bool lastUpdateOrderAsc = false}) async {
     print('ESC[36m ===> ${getSqlTableName()}.queryAllTasks');
 
     try {
-      return (await databaseProvider.db
-          .query(getSqlTableName(), orderBy: 'lastUpdate DESC'))
+      return (await databaseProvider.db.query(getSqlTableName(),
+          where: getDateCondition(fromDate: fromDate, toDate: toDate),
+          orderBy: 'lastUpdate ${lastUpdateOrderAsc ? '' : 'DESC'}'))
           .map((r) => Task.fromJson(r));
     } catch (e) {
       print(e);
@@ -42,8 +44,7 @@ abstract class TaskBaseTable {
 
   getDateCondition({String fromDate, String toDate}) {
     String condition = '';
-    if (fromDate != null)
-      condition += '(end IS NULL OR end >= "$fromDate")';
+    if (fromDate != null) condition += '(end IS NULL OR end >= "$fromDate")';
     if (toDate != null)
       condition += (condition != '' ? ' AND ' : '') +
           '(start IS NULL OR start <= "$toDate")';

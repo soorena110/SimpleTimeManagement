@@ -17,8 +17,8 @@ class TaskService {
 
   static Future<Iterable<Task>> getOnceTasksWhere(
       {List<TickType> tickTypes, String fromDate, String toDate}) async {
-    List<Task> tasks =
-    (await onceTaskTable.queryTaskWhere(fromDate: fromDate, toDate: toDate))
+    List<Task> tasks = (await onceTaskTable.query(
+        fromDate: fromDate, toDate: toDate, lastUpdateOrderAsc: true))
         .toList();
 
     return await _addOnceTicksToTasks(tasks);
@@ -28,7 +28,7 @@ class TaskService {
       {List<TickType> tickType}) {
     switch (type) {
       case TaskType.once:
-        return _getAllOnceTasksWithTheirTicks(tickTypes: tickType);
+        return getOnceTasksWhere(tickTypes: tickType);
       case TaskType.week:
         return _getAllWeekTasksWithTheirTicks(
             tickType: tickType, day: getNowDate());
@@ -40,22 +40,12 @@ class TaskService {
     }
   }
 
-  static Future<Iterable<Task>> _getAllOnceTasksWithTheirTicks(
-      {List<TickType> tickTypes}) async {
-    List<Task> tasks = (await onceTaskTable.queryAllTasks()).toList();
-
-    tasks = await _addOnceTicksToTasks(tasks, tickType: tickTypes);
-    if (tickTypes != null)
-      return tasks.where((t) => tickTypes.contains(t.tick.type));
-    return tasks;
-  }
-
   static Future<Iterable<Task>> _getAllWeekTasksWithTheirTicks(
       {List<TickType> tickType,
       String day,
       String fromDay,
       String toDay}) async {
-    final tasks = (await weekTaskTable.queryAllTasks()).toList();
+    final tasks = (await weekTaskTable.query()).toList();
 
     final ticksDict = <int, Tick>{};
     final ticks = await weekTaskTickTable.queryForTaskIdAndTypeAndDay(
@@ -79,7 +69,7 @@ class TaskService {
       String day,
       String fromDay,
       String toDay}) async {
-    final tasks = (await monthTaskTable.queryAllTasks()).toList();
+    final tasks = (await monthTaskTable.query()).toList();
 
     final ticksDict = <int, Tick>{};
     final ticks = await monthTaskTickTable.queryForTaskIdAndTypeAndDay(

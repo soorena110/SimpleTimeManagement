@@ -29,6 +29,14 @@ class MainPageDailyTasksState extends State<MainPageDailyTasks> {
     this._fetchTasksAndTheirTicks();
   }
 
+  @override
+  void didUpdateWidget(MainPageDailyTasks oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (widget.start != oldWidget.start || widget.end != oldWidget.end)
+      _fetchTasksAndTheirTicks();
+  }
+
   void _fetchTasksAndTheirTicks() async {
     final todosOrPostpone = [TickType.todo, TickType.postponed];
     var tasks = await TaskService.getOnceTasksWhere(
