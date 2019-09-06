@@ -13,8 +13,7 @@ class AddTaskPage extends StatefulWidget {
   final Task task;
 
   AddTaskPage({Task task, TaskType taskType})
-      : this.task =
-      task ?? Task(type: taskType, infos: <String, dynamic>{}) {
+      : this.task = task ?? Task(type: taskType, infos: <String, dynamic>{}) {
     if (task == null && taskType == null)
       throw 'Both task and taskType is empty, one of them must be filled.';
   }
@@ -134,8 +133,7 @@ class AddTaskPageState extends State<AddTaskPage> {
     widget.task.description = _descriptionController.text;
     widget.task.infos = {};
 
-    if (widget.task.type == TaskType.month &&
-        _month_dayController.text != null)
+    if (widget.task.type == TaskType.month && _month_dayController.text != null)
       widget.task.infos['dayOfMonth'] = _month_dayController.text;
     if (widget.task.type == TaskType.month ||
         widget.task.type == TaskType.week) {
@@ -216,6 +214,25 @@ class AddTaskPageState extends State<AddTaskPage> {
         ])));
   }
 
+  _buildAppBarTaskTypeChangeIcon() {
+    if (widget.task.id != null) return Container();
+    return IconButton(
+        icon: Icon(Icons.calendar_today),
+        onPressed: () {
+          setState(() {
+            final enums = TaskType.values;
+            Navigator.pushReplacement(
+                (context),
+                MaterialPageRoute(
+                    builder: (context) =>
+                        AddTaskPage(
+                            taskType: enums[(enums.indexOf(widget.task.type) +
+                                1) %
+                                enums.length])));
+          });
+        });
+  }
+
   _buildAppBar() {
     return AppBar(
       title: Text(
@@ -225,12 +242,13 @@ class AddTaskPageState extends State<AddTaskPage> {
         style: TextStyle(color: Colors.white),
       ),
       actions: <Widget>[
+        _buildAppBarTaskTypeChangeIcon(),
         IconButton(
           icon: Icon(Icons.check_circle),
           onPressed: () {
             this._submit();
           },
-        )
+        ),
       ],
     );
   }

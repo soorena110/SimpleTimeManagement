@@ -16,7 +16,7 @@ class TaskService {
   }
 
   static Future<Iterable<Task>> getOnceTasksWhere(
-      {List<TickType> tickTypes, String fromDate, String toDate}) async {
+      {String fromDate, String toDate}) async {
     List<Task> tasks = (await onceTaskTable.query(
         fromDate: fromDate, toDate: toDate, lastUpdateOrderAsc: true))
         .toList();
@@ -24,33 +24,26 @@ class TaskService {
     return await _addOnceTicksToTasks(tasks);
   }
 
-  static Future<Iterable<Task>> getAllTasksOfType(TaskType type,
-      {List<TickType> tickType}) {
+  static Future<Iterable<Task>> getAllTasksOfType(TaskType type) {
     switch (type) {
       case TaskType.once:
-        return getOnceTasksWhere(tickTypes: tickType);
+        return getOnceTasksWhere();
       case TaskType.week:
-        return _getAllWeekTasksWithTheirTicks(
-            tickType: tickType, day: getNowDate());
+        return _getAllWeekTasksWithTheirTicks(day: getNowDate());
       case TaskType.month:
-        return _getAllMonthTasksWithTheirTicks(
-            tickType: tickType, day: getNowDate());
+        return _getAllMonthTasksWithTheirTicks(day: getNowDate());
       default:
         throw 'Exhuastive check';
     }
   }
 
   static Future<Iterable<Task>> _getAllWeekTasksWithTheirTicks(
-      {List<TickType> tickType,
-      String day,
-      String fromDay,
-      String toDay}) async {
+      {String day, String fromDay, String toDay}) async {
     final tasks = (await weekTaskTable.query()).toList();
 
     final ticksDict = <int, Tick>{};
     final ticks = await weekTaskTickTable.queryForTaskIdAndTypeAndDay(
         taskIds: tasks.map((r) => r.id),
-        types: tickType,
         day: day,
         fromDay: fromDay,
         toDay: toDay);
@@ -65,16 +58,12 @@ class TaskService {
   }
 
   static Future<Iterable<Task>> _getAllMonthTasksWithTheirTicks(
-      {List<TickType> tickType,
-      String day,
-      String fromDay,
-      String toDay}) async {
+      {String day, String fromDay, String toDay}) async {
     final tasks = (await monthTaskTable.query()).toList();
 
     final ticksDict = <int, Tick>{};
     final ticks = await monthTaskTickTable.queryForTaskIdAndTypeAndDay(
         taskIds: tasks.map((r) => r.id),
-        types: tickType,
         day: day,
         fromDay: fromDay,
         toDay: toDay);

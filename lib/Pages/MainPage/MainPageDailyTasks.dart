@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:time_river/Models/Task.dart';
-import 'package:time_river/Models/Tick.dart';
 import 'package:time_river/Pages/TaskDetailsPage/TaskDetailsPage.dart';
 import 'package:time_river/Pages/ViewableTask/ViewableTaskListView.dart';
 import 'package:time_river/Services/TaskService.dart';
@@ -38,9 +37,8 @@ class MainPageDailyTasksState extends State<MainPageDailyTasks> {
   }
 
   void _fetchTasksAndTheirTicks() async {
-    final todosOrPostpone = [TickType.todo, TickType.postponed];
     var tasks = await TaskService.getOnceTasksWhere(
-        tickTypes: todosOrPostpone, fromDate: widget.start, toDate: widget.end);
+        fromDate: widget.start, toDate: widget.end);
 
     setState(() {
       showingTasks = tasks.toList();
