@@ -15,8 +15,9 @@ final defaultTick = Tick(type: TickType.todo);
 
 class TaskDetailsPage extends StatefulWidget {
   final Task task;
+  final bool canChangeTick;
 
-  const TaskDetailsPage(this.task);
+  const TaskDetailsPage(this.task, {this.canChangeTick = true});
 
   @override
   State<StatefulWidget> createState() {
@@ -128,6 +129,9 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
   }
 
   Widget _buildFloatingActionButton() {
+    if (!widget.canChangeTick)
+      return null;
+
     final tick = widget.task.tick ?? defaultTick;
     final availableTicks = TickType.values
         .where((v) => v != tick.type || v == TickType.postponed)

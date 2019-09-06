@@ -1,3 +1,5 @@
+import 'package:time_river/Models/Task.dart';
+
 import '../../Provider.dart';
 import 'TaskBaseTable.dart';
 
@@ -12,19 +14,19 @@ class _OnceTaskTable extends TaskBaseTable {
         getSqlTableName(), TaskBaseTable.getCommonRowsInfo());
   }
 
-//  Future<Iterable<OnceTask>> queryTasksBetweenDates(
-//      String start, String end) async {
-//    print('ESC[36m ===> OnceTaskTable.queryTodayTasks');
-//
-//    try {
-//      final result = await databaseProvider.db.query(getSqlTableName(),
-//          where: 'start IS NULL OR end <= "$end" OR start > "$start"');
-//      return result.map((r) => OnceTask.fromJson(r));
-//    } catch (e) {
-//      print(e);
-//      return null;
-//    }
-//  }
+  Future<Iterable<Task>> queryTaskWhere(
+      {String fromDate, String toDate}) async {
+    print('ESC[36m ===> OnceTaskTable.queryTaskWhere');
+
+    try {
+      return (await databaseProvider.db.query(getSqlTableName(),
+          where: getDateCondition(fromDate: fromDate, toDate: toDate)))
+          .map((r) => Task.fromJson(r));
+    } catch (e) {
+      print(e);
+      return null;
+    }
+  }
 }
 
 final onceTaskTable = _OnceTaskTable();

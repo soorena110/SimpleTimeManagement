@@ -17,8 +17,8 @@ abstract class TaskBaseTable {
 
     try {
       return (await databaseProvider.db
-          .query(getSqlTableName(), orderBy: 'lastUpdate DESC')).map((r) =>
-          Task.fromJson(r));
+          .query(getSqlTableName(), orderBy: 'lastUpdate DESC'))
+          .map((r) => Task.fromJson(r));
     } catch (e) {
       print(e);
       return null;
@@ -38,6 +38,17 @@ abstract class TaskBaseTable {
 
     await databaseProvider.db.insert(getSqlTableName(), task,
         conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+
+  getDateCondition({String fromDate, String toDate}) {
+    String condition = '';
+    if (fromDate != null)
+      condition += '(end IS NULL OR end >= "$fromDate")';
+    if (toDate != null)
+      condition += (condition != '' ? ' AND ' : '') +
+          '(start IS NULL OR start <= "$toDate")';
+
+    return condition;
   }
 
   static getCommonRowsInfo() {

@@ -35,8 +35,10 @@ class AllViewableTasksPageState extends State<AllViewableTasksPage> {
   }
 
   _selectATask(Task task) async {
-    final taskIsChanged = await Navigator.push(context,
-        MaterialPageRoute(builder: (context) => TaskDetailsPage(task)));
+    final taskIsChanged = await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => TaskDetailsPage(task, canChangeTick: false)));
 
     if (taskIsChanged) this._fetchTasksAndTheirTicks();
   }

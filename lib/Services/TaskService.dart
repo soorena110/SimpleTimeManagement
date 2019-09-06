@@ -15,11 +15,20 @@ class TaskService {
     tick.id = await tickTable.insertOrUpdate(tick.toJson());
   }
 
+  static Future<Iterable<Task>> getOnceTasksWhere(
+      {List<TickType> tickTypes, String fromDate, String toDate}) async {
+    List<Task> tasks =
+    (await onceTaskTable.queryTaskWhere(fromDate: fromDate, toDate: toDate))
+        .toList();
+
+    return await _addOnceTicksToTasks(tasks);
+  }
+
   static Future<Iterable<Task>> getAllTasksOfType(TaskType type,
       {List<TickType> tickType}) {
     switch (type) {
       case TaskType.once:
-        return _getAllOnceTasksWithTheirTicks(tickType: tickType);
+        return _getAllOnceTasksWithTheirTicks(tickTypes: tickType);
       case TaskType.week:
         return _getAllWeekTasksWithTheirTicks(
             tickType: tickType, day: getNowDate());
@@ -32,19 +41,12 @@ class TaskService {
   }
 
   static Future<Iterable<Task>> _getAllOnceTasksWithTheirTicks(
-      {List<TickType> tickType}) async {
-    final tasks = (await onceTaskTable.queryAllTasks()).toList();
+      {List<TickType> tickTypes}) async {
+    List<Task> tasks = (await onceTaskTable.queryAllTasks()).toList();
 
-    final ticksDict = <int, Tick>{};
-    final ticks = await onceTaskTickTable.queryForTaskIdAndType(
-        taskIds: tasks.map((r) => r.id), types: tickType);
-    ticks.forEach((tick) => ticksDict[tick.taskId] = tick);
-
-    tasks.forEach((task) {
-      task.type = TaskType.once;
-      task.tick = ticksDict[task.id];
-    });
-
+    tasks = await _addOnceTicksToTasks(tasks, tickType: tickTypes);
+    if (tickTypes != null)
+      return tasks.where((t) => tickTypes.contains(t.tick.type));
     return tasks;
   }
 
@@ -95,6 +97,21 @@ class TaskService {
 
     return tasks;
   }
+}
+
+Future<List<Task>> _addOnceTicksToTasks(List<Task> tasks,
+    {List<TickType> tickType}) async {
+  final ticksDict = <int, Tick>{};
+  final ticks = await onceTaskTickTable.queryForTaskIdAndType(
+      taskIds: tasks.map((r) => r.id), types: tickType);
+  ticks.forEach((tick) => ticksDict[tick.taskId] = tick);
+
+  tasks.forEach((task) {
+    task.type = TaskType.once;
+    task.tick = ticksDict[task.id];
+  });
+
+  return tasks;
 }
 
 TickBaseTable _getRelatedTickRepositoryOfType(TaskType type) {

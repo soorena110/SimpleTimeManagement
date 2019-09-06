@@ -1,69 +1,58 @@
-//import 'package:flutter/material.dart';
-//import 'package:time_river/Models/OnceTask.dart';
-//
-//class MainPageDailyTasks extends StatefulWidget {
-//  final Function(bool isCritical) onStateChanged;
-//  final String start;
-//  final String end;
-//
-//  const MainPageDailyTasks({this.onStateChanged, this.start, this.end});
-//
-//  @override
-//  State<StatefulWidget> createState() {
-//    return MainPageDailyTasksState();
-//  }
-//}
-//
-//class MainPageDailyTasksState extends State<MainPageDailyTasks> {
-//  List<OnceTask> showingTasks;
-//
-//  @override
-//  void initState() {
-//    super.initState();
-//
-//    showingTasks = <OnceTask>[];
-////    this._fetchTasksAndTheirTicks();
-//  }
-//
-////  void _fetchTasksAndTheirTicks() async {
-////    final todosOrPostpone = [TickType.todo, TickType.postponed];
-////    var todayTasks =
-////    await OnceTaskTable.queryTasksBetweenDates(widget.start, widget.end);
-////    var todayTasksTodoOrPostpone =
-////    todayTasks.where((t) => todosOrPostpone.contains(t.tick)).toList();
-////
-////    todayTasksTodoOrPostpone.sort((r, s) {
-////      final endDateDiff = compareDateTime(r.end, s.end);
-////      if (endDateDiff != 0) return endDateDiff;
-////
-////      final startDateDiff = compareDateTime(r.start, s.start);
-////      if (startDateDiff != 0) return startDateDiff;
-////
-////      return ((r.estimate ?? 0) - (s.estimate ?? 0))
-////          .toInt()
-////          .sign;
-////    });
-////
-////    setState(() {
-////      showingTasks = todayTasksTodoOrPostpone;
-////    });
-////    widget.onStateChanged(
-////        showingTasks
-////            .where((t) => t.getIsCritical())
-////            .length > 0);
-////  }
-//
-////  _selectATask(OnceTask task) async {
-////    final taskIsChanged = await Navigator.push(
-////        context, MaterialPageRoute(builder: (context) => TaskDetails(task)));
-////
-////    if (taskIsChanged) this._fetchTasksAndTheirTicks();
-////  }
-//
-//  @override
-//  Widget build(BuildContext context) {
-//    return Text('sss');
-////    return OnceTaskListView(showingTasks,
-////        onItemSelected: (task) => this._selectATask(task));
-//  }
-//}
+import 'package:flutter/material.dart';
+import 'package:time_river/Models/Task.dart';
+import 'package:time_river/Models/Tick.dart';
+import 'package:time_river/Pages/TaskDetailsPage/TaskDetailsPage.dart';
+import 'package:time_river/Pages/ViewableTask/ViewableTaskListView.dart';
+import 'package:time_river/Services/TaskService.dart';
+
+class MainPageDailyTasks extends StatefulWidget {
+  final Function(bool isCritical) onStateChanged;
+  final String start;
+  final String end;
+
+  const MainPageDailyTasks({this.onStateChanged, this.start, this.end});
+
+  @override
+  State<StatefulWidget> createState() {
+    return MainPageDailyTasksState();
+  }
+}
+
+class MainPageDailyTasksState extends State<MainPageDailyTasks> {
+  List<Task> showingTasks;
+
+  @override
+  void initState() {
+    super.initState();
+
+    showingTasks = <Task>[];
+    this._fetchTasksAndTheirTicks();
+  }
+
+  void _fetchTasksAndTheirTicks() async {
+    final todosOrPostpone = [TickType.todo, TickType.postponed];
+    var tasks = await TaskService.getOnceTasksWhere(
+        tickTypes: todosOrPostpone, fromDate: widget.start, toDate: widget.end);
+
+    setState(() {
+      showingTasks = tasks.toList();
+    });
+    widget.onStateChanged(
+        showingTasks.where((t) => t.getIsCritical()).length > 0);
+  }
+
+  _selectATask(Task task) async {
+    final taskIsChanged = await Navigator.push(context,
+        MaterialPageRoute(builder: (context) => TaskDetailsPage(task)));
+
+    if (taskIsChanged) this._fetchTasksAndTheirTicks();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return RefreshIndicator(
+        onRefresh: () async => this._fetchTasksAndTheirTicks(),
+        child: ViewableTaskListView(showingTasks,
+            onItemSelected: (task) => this._selectATask(task)));
+  }
+}
