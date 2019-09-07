@@ -37,7 +37,7 @@ class MainPageDailyTasksState extends State<MainPageDailyTasks> {
   }
 
   void _fetchTasksAndTheirTicks() async {
-    var tasks = await TaskService.getOnceTasksWhere(
+    var tasks = await TaskService.getTaskWhere(
         fromDate: widget.start, toDate: widget.end);
 
     setState(() {

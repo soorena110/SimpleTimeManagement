@@ -124,7 +124,7 @@ class MainPageState extends State<MainPage>
     return Scaffold(
         appBar: _buildMainPageAppBar(),
         body: this._buildBody(),
-        endDrawer: getMainPageDrawer(context),
+        drawer: getMainPageDrawer(context),
         floatingActionButton: _buildFloatingActionButton());
   }
 }

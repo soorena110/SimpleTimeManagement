@@ -1,3 +1,5 @@
+import 'package:time_river/Database/_common/Row.dart';
+
 import '../../Provider.dart';
 import 'LoopingTaskTick.dart';
 
@@ -9,8 +11,10 @@ class _WeekTaskTickTable extends LoopingTaskTick {
 
   @override
   initTable() {
-    databaseProvider.addTable(
-        getSqlTableName(), LoopingTaskTick.getCommonRowsInfo());
+    databaseProvider.addTable(getSqlTableName(), [
+      ...LoopingTaskTick.getCommonRowsInfo(),
+      Row('day', RowType.text, isIndexed: true, isNullable: false)
+    ]);
   }
 }
 

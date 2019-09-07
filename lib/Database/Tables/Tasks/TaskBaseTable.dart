@@ -49,6 +49,7 @@ abstract class TaskBaseTable {
       condition += (condition != '' ? ' AND ' : '') +
           '(start IS NULL OR start <= "$toDate")';
 
+    if (condition == '') return null;
     return condition;
   }
 
