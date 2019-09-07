@@ -23,7 +23,10 @@ class TaskService {
     final monthTask = await _getAllMonthTasksWithTheirVirtualTicks(
         fromDate: fromDate, toDate: toDate);
 
-    return [...onceTasks, ...monthTask];
+    final weekTask = await _getAllWeekTasksWithTheirVirtualTicks(
+        fromDate: fromDate, toDate: toDate);
+
+    return [...onceTasks, ...monthTask, ...weekTask];
   }
 
   static Future<Iterable<Task>> _getAllMonthTasksWithTheirVirtualTicks(
@@ -33,6 +36,15 @@ class TaskService {
         .toList();
 
     return await _joinTasksToTheirVirtualMonthTicks(tasks);
+  }
+
+  static Future<Iterable<Task>> _getAllWeekTasksWithTheirVirtualTicks(
+      {String fromDate, String toDate}) async {
+    final tasks = (await weekTaskTable.query(
+        fromDate: fromDate, toDate: toDate, lastUpdateOrderAsc: true))
+        .toList();
+
+    return await _joinTasksToTheirVirtualWeekTicks(tasks);
   }
 
   static Future<Iterable<Task>> getAllTasksOfType(TaskType type) {
@@ -92,23 +104,18 @@ class TaskService {
 
 Future<List<Task>> _joinTasksToTheirVirtualMonthTicks(List<Task> tasks,
     {List<TickType> tickType}) async {
+  final taskIds = tasks.map((r) => r.id);
   final ticks = await monthTaskTickTable.queryForTaskIdAndTypeAndDay(
-      taskIds: tasks.map((r) => r.id), types: tickType);
+      taskIds: taskIds, types: tickType);
 
-  final ticksDict = <int, List<Tick>>{};
-  ticks.forEach((tick) {
-    if (ticksDict[tick.taskId] == null)
-      ticksDict[tick.taskId] = [tick];
-    else
-      ticksDict[tick.taskId].add(tick);
-  });
+  final ticksDict = _groupTicks(ticks);
 
   final todayParts = getNowDate().split('/');
   final todayMonthDay = int.parse(todayParts[2]);
   final currentMonth = '${todayParts[0]}/${todayParts[1]}';
 
   final oneMonthAgoParts =
-  getJalaliOf(DateTime.now().add(Duration(days: -31))).split('/');
+  getJalaliOf(DateTime.now().add(Duration(days: -30))).split('/');
   final prevMonth = '${oneMonthAgoParts[0]}/${oneMonthAgoParts[1]}';
 
   final ret = <Task>[];
@@ -119,9 +126,7 @@ Future<List<Task>> _joinTasksToTheirVirtualMonthTicks(List<Task> tasks,
     final taskDay = task.infos['dayOfMonth'];
 
     if (taskDay <= todayMonthDay) {
-      final newTask = Task.fromJson(task.toJson())
-        ..type = TaskType.month;
-
+      final newTask = _cloneTask(task);
       final ticksOfPrevMonth =
       ticks?.where((r) => r.infos['month'] == currentMonth)?.toList();
       newTask.tick = (ticksOfPrevMonth?.length ?? 0) > 0
@@ -146,6 +151,42 @@ Future<List<Task>> _joinTasksToTheirVirtualMonthTicks(List<Task> tasks,
           infos: {'month': prevMonth},
           taskType: TaskType.month);
       ret.add(task);
+    }
+  });
+
+  return ret;
+}
+
+Future<List<Task>> _joinTasksToTheirVirtualWeekTicks(List<Task> tasks,
+    {List<TickType> tickType}) async {
+  final ticks = await weekTaskTickTable.queryForTaskIdAndTypeAndDay(
+      taskIds: tasks.map((r) => r.id), types: tickType);
+
+  final ticksDict = _groupTicks(ticks);
+
+  final ret = <Task>[];
+  tasks.forEach((task) {
+    task.type = TaskType.week;
+
+    final ticks = ticksDict[task.id];
+    final weekDays = task.infos['weekdays'];
+
+    for (int i = 0; i < 7; i++) {
+      final theDay = DateTime.now().add(Duration(days: -i));
+      final weekDayNumber = (theDay.weekday + 1) % 7;
+      final weekDayBit = 1 << weekDayNumber;
+      if (weekDays & weekDayBit == 0) return;
+
+      final jalaliDay = getJalaliOf(theDay);
+      final ticksOfPrevMonth =
+      ticks?.where((r) => r.infos['day'] == jalaliDay)?.toList();
+
+      final newTask = _cloneTask(task);
+      newTask.tick = (ticksOfPrevMonth?.length ?? 0) > 0
+          ? ticksOfPrevMonth[0]
+          : Tick(
+          taskId: task.id, infos: {'day': jalaliDay}, taskType: task.type);
+      ret.add(newTask);
     }
   });
 
@@ -177,4 +218,20 @@ TickBaseTable _getRelatedTickRepositoryOfType(TaskType type) {
       return monthTaskTickTable;
   }
   return null;
+}
+
+Map<int, List<Tick>> _groupTicks(Iterable<Tick> ticks) {
+  final ticksDict = <int, List<Tick>>{};
+  ticks.forEach((tick) {
+    if (ticksDict[tick.taskId] == null)
+      ticksDict[tick.taskId] = [tick];
+    else
+      ticksDict[tick.taskId].add(tick);
+  });
+  return ticksDict;
+}
+
+Task _cloneTask(Task task) {
+  return Task.fromJson(task.toJson())
+    ..type = task.type;
 }
