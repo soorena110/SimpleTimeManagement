@@ -121,9 +121,10 @@ Future<List<Task>> _joinTasksToTheirVirtualMonthTicks(List<Task> tasks,
     if (taskDay <= todayMonthDay) {
       final newTask = Task.fromJson(task.toJson())
         ..type = TaskType.month;
+
       final ticksOfPrevMonth =
       ticks?.where((r) => r.infos['month'] == currentMonth)?.toList();
-      newTask.tick = ticksOfPrevMonth.length > 0
+      newTask.tick = (ticksOfPrevMonth?.length ?? 0) > 0
           ? ticksOfPrevMonth[0]
           : Tick(
           taskId: task.id,
@@ -138,7 +139,7 @@ Future<List<Task>> _joinTasksToTheirVirtualMonthTicks(List<Task> tasks,
             0) {
       final ticksOfPrevMonth =
       ticks?.where((r) => r.infos['month'] == prevMonth)?.toList();
-      task.tick = ticksOfPrevMonth.length > 0
+      task.tick = (ticksOfPrevMonth?.length ?? 0) > 0
           ? ticksOfPrevMonth[0]
           : Tick(
           taskId: task.id,
