@@ -12,6 +12,7 @@ class ViewableTaskView extends StatelessWidget {
     final startTime = task.getStartDateDiffText();
 
     return [
+      Item('نوع : ', Text(TaskTypeNames[task.type])),
       Item('نام : ', Text(task.name)),
       startTime != '' ? Item('شروع : ', Text(startTime)) : Container(),
       task.end != null

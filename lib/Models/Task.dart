@@ -5,7 +5,7 @@ import 'Tick.dart';
 
 enum TaskType { once, week, month }
 
-final ViewableTaskTypeNames = {
+final TaskTypeNames = {
   TaskType.once: 'تسک تکی',
   TaskType.week: 'تسک هفتگی',
   TaskType.month: 'تسک ماهانه',

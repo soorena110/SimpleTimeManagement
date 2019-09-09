@@ -250,7 +250,7 @@ class AddTaskPageState extends State<AddTaskPage> {
     return AppBar(
       title: Text(
         widget.task.id == null
-            ? 'ایجاد ${ViewableTaskTypeNames[widget.task.type]}'
+            ? 'ایجاد ${TaskTypeNames[widget.task.type]}'
             : 'ویرایش تسک ${widget.task.name}',
         style: TextStyle(color: Colors.white),
       ),

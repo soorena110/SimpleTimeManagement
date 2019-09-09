@@ -71,7 +71,7 @@ class AllViewableTasksPageState extends State<AllViewableTasksPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(ViewableTaskTypeNames[widget.taskType])),
+      appBar: AppBar(title: Text(TaskTypeNames[widget.taskType])),
       body: this._buildBody(),
       floatingActionButton: _buildFloatingActionButton(),
     );

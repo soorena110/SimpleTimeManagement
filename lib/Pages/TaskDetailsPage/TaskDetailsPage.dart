@@ -153,8 +153,8 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
           child: Icon(tick.getIcon()),
           backgroundColor: tick.getColor(),
           foregroundColor: Colors.white,
-          marginRight: 35,
-          marginBottom: 35,
+          marginRight: 50,
+          marginBottom: 25,
           overlayOpacity: 0,
           children: subItems,
         ));
