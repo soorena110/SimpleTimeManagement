@@ -47,14 +47,26 @@ class AddTaskPageState extends State<AddTaskPage> {
     final t = widget.task;
     _nameController = TextEditingController(text: t == null ? null : t.name);
     _descriptionController = TextEditingController(text: t?.description ?? '');
+
+    if ([TaskType.month, TaskType.week].contains(t.type) && t.start == null)
+      t.start = getNow();
+
     _startDateController =
-        TextEditingController(text: t?.start?.split(' ')?.first ?? '');
+        TextEditingController(text: t.start
+            ?.split(' ')
+            ?.first ?? '');
     _startTimeController =
-        TextEditingController(text: t?.start?.split(' ')?.last ?? '00:00');
+        TextEditingController(text: t.start
+            ?.split(' ')
+            ?.last ?? '00:00');
     _endDateController =
-        TextEditingController(text: t?.end?.split(' ')?.first ?? '');
+        TextEditingController(text: t.end
+            ?.split(' ')
+            ?.first ?? '');
     _endTimeController =
-        TextEditingController(text: t?.end?.split(' ')?.last ?? '24:00');
+        TextEditingController(text: t.end
+            ?.split(' ')
+            ?.last ?? '24:00');
     _estimateController = TextEditingController(
         text: convertDoubleTimeToString(t.estimate) ?? '');
 
@@ -192,14 +204,16 @@ class AddTaskPageState extends State<AddTaskPage> {
         ];
       case TaskType.month:
         return [
-          TimeInputField('ساعت اجرا',
-              controller: this._weekOrMonth_startHourController),
           NumberInputField(
             'روز ماه',
             controller: this._month_dayController,
             minValue: 1,
             maxValue: 31,
           ),
+          TimeInputField('ساعت شروع اجرا',
+              controller: this._weekOrMonth_startHourController),
+          TimeInputField('ساعت پایان اجرا',
+              controller: this._weekOrMonth_endHourController),
         ];
     }
     return [];

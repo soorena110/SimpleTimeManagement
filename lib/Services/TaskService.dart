@@ -43,7 +43,7 @@ class TaskService {
 
     final monthTask =
     await MonthTaskService.getAllMonthTasksWithTheirVirtualTicks(
-        fromDate: fromDate, toDate: toDate);
+        fromDateTime: fromDate, toDateTime: toDate);
 
     final weekTask = await WeekTaskService.getAllWeekTasksWithTheirVirtualTicks(
         fromDate: fromDate, toDate: toDate);

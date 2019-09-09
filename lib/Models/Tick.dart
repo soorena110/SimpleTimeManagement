@@ -2,17 +2,11 @@ import 'package:flutter/material.dart';
 
 import 'Task.dart';
 
-enum TickType { todo, done, canceled, postponed }
-
-const StringToTick = {
-  'todo': TickType.todo,
-  'done': TickType.done,
-  'canceled': TickType.canceled,
-  'postponed': TickType.postponed
-};
+enum TickType { todo, doing, done, canceled, postponed }
 
 const TickIcons = {
   TickType.todo: Icons.tag_faces,
+  TickType.doing: Icons.directions_run,
   TickType.done: Icons.check_circle,
   TickType.canceled: Icons.remove_circle,
   TickType.postponed: Icons.pause_circle_filled
@@ -20,6 +14,7 @@ const TickIcons = {
 
 const TickColors = {
   TickType.todo: Colors.lightGreen,
+  TickType.doing: Colors.green,
   TickType.done: Colors.cyan,
   TickType.canceled: Colors.pinkAccent,
   TickType.postponed: Colors.orange
@@ -50,8 +45,7 @@ class Tick {
         lastUpdate = json['lastUpdate'] {
     this.infos = <String, dynamic>{};
     json.forEach((key, value) {
-      if (!tickBaseKeys.contains(key))
-        infos[key] = value;
+      if (!tickBaseKeys.contains(key)) infos[key] = value;
     });
   }
 

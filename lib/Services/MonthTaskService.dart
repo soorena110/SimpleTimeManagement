@@ -8,12 +8,15 @@ import 'common.dart';
 
 class MonthTaskService {
   static Future<Iterable<Task>> getAllMonthTasksWithTheirVirtualTicks(
-      {String fromDate, String toDate}) async {
+      {String fromDateTime, String toDateTime}) async {
     final tasks = (await monthTaskTable.query(
-            fromDate: fromDate, toDate: toDate, lastUpdateOrderAsc: true))
+        fromDate: fromDateTime,
+        toDate: toDateTime,
+        lastUpdateOrderAsc: true))
         .toList();
 
-    return await _joinTasksToTheirVirtualMonthTicks(tasks);
+    return await _joinTasksToTheirVirtualMonthTicks(tasks,
+        fromDateTime: fromDateTime, toDateTime: toDateTime);
   }
 
   static Future<Iterable<Task>> getAllMonthTasksWithTheirTicks() async {
@@ -34,56 +37,52 @@ class MonthTaskService {
 }
 
 Future<List<Task>> _joinTasksToTheirVirtualMonthTicks(List<Task> tasks,
-    {List<TickType> tickType}) async {
+    {List<TickType> tickType, String fromDateTime, String toDateTime}) async {
   final taskIds = tasks.map((r) => r.id);
   final ticks = await monthTaskTickTable.queryForTaskIdAndTypeAndDay(
       taskIds: taskIds, types: tickType);
 
   final ticksDict = groupTicks(ticks);
 
-  final todayParts = getNowDate().split('/');
-  final todayMonthDay = int.parse(todayParts[2]);
-  final currentMonth = '${todayParts[0]}/${todayParts[1]}';
-
-  final oneMonthAgoParts =
-      getJalaliOf(DateTime.now().add(Duration(days: -30))).split('/');
-  final prevMonth = '${oneMonthAgoParts[0]}/${oneMonthAgoParts[1]}';
-
   final ret = <Task>[];
   tasks.forEach((task) {
     task.type = TaskType.month;
 
-    final ticks = ticksDict[task.id];
-    final taskDay = task.infos['dayOfMonth'];
+    final tickList = ticksDict[task.id];
 
-    if (taskDay <= todayMonthDay) {
-      final newTask = cloneTask(task);
-      final ticksOfPrevMonth =
-          ticks?.where((r) => r.infos['month'] == currentMonth)?.toList();
-      newTask.tick = (ticksOfPrevMonth?.length ?? 0) > 0
-          ? ticksOfPrevMonth[0]
-          : Tick(
-              taskId: task.id,
-              infos: {'month': currentMonth},
-              taskType: TaskType.month);
-      ret.add(newTask);
-    }
-
-    if (task.start == null ||
-        compareDateTime(task.start,
-                '$prevMonth/$taskDay ${task.infos['startHour'] ?? '24:00'}') >
-            0) {
-      final ticksOfPrevMonth =
-          ticks?.where((r) => r.infos['month'] == prevMonth)?.toList();
-      task.tick = (ticksOfPrevMonth?.length ?? 0) > 0
-          ? ticksOfPrevMonth[0]
-          : Tick(
-              taskId: task.id,
-              infos: {'month': prevMonth},
-              taskType: TaskType.month);
-      ret.add(task);
+    for (int i = -1; i <= 1; i++) {
+      final newTask = getTickOfMonthIfExists(i, task, tickList,
+          fromDateTime: fromDateTime, toDateTime: toDateTime);
+      if (newTask != null) ret.add(newTask);
     }
   });
 
   return ret;
+}
+
+getTickOfMonthIfExists(int addingMonth, Task task, List<Tick> tickList,
+    {String fromDateTime, String toDateTime}) {
+  final jalaliDayParts =
+  getJalaliOf(DateTime.now().add(Duration(days: addingMonth * 30))).split('/');
+
+  final dayOfMonth = task.infos['dayOfMonth'];
+  final theMonth = '${jalaliDayParts[0]}/${jalaliDayParts[1]}';
+  final theDay = '$theMonth/$dayOfMonth';
+
+  if (compareDate(theDay, toDateTime) == 1) return null;
+  if (compareDate(theDay, fromDateTime) == -1) return null;
+
+
+  final newTask = cloneTask(task);
+  final ticksOfTheMonth =
+  tickList?.where((r) => r.infos['month'] == theMonth)?.toList();
+
+  newTask.tick = (ticksOfTheMonth?.length ?? 0) > 0
+      ? ticksOfTheMonth[0]
+      : Tick(
+      taskId: task.id,
+      infos: {'month': theMonth},
+      taskType: TaskType.month);
+
+  return newTask;
 }

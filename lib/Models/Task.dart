@@ -30,12 +30,13 @@ class Task {
     this.description,
     this.estimate,
     this.lastUpdate,
-      this.type,
-      this.infos = const <String, dynamic>{},
+    this.type,
+    this.infos = const <String, dynamic>{},
     this.tick});
 
   bool getIsCritical() {
-    if ([TickType.done, TickType.canceled].contains(tick?.type)) return false;
+    if ([TickType.done, TickType.canceled, TickType.doing].contains(tick?.type))
+      return false;
 
     final realTaskEnd = computeRealTaskEndDateTime();
     if (realTaskEnd == null) return false;
@@ -51,7 +52,7 @@ class Task {
         return this.start;
 
       case TaskType.month:
-        final month = tick.infos['month'];
+        final month = (tick?.infos ?? {})['month'];
         if (month != null) {
           final startHour = tick.infos['startHour'] ?? defaultHour;
           return '$month/${infos['dayOfMonth']} $startHour';
@@ -59,7 +60,7 @@ class Task {
         return null;
 
       case TaskType.week:
-        final day = tick.infos['day'];
+        final day = (tick?.infos ?? {})['day'];
         if (day != null) {
           final startHour = tick.infos['startHour'] ?? defaultHour;
           return '$day $startHour';
@@ -142,7 +143,7 @@ class Task {
 
   @override
   String toString() {
-    return '${id ?? name}';
+    return '$id $name';
   }
 }
 

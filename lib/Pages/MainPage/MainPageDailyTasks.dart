@@ -8,8 +8,10 @@ class MainPageDailyTasks extends StatefulWidget {
   final Function(bool isCritical) onStateChanged;
   final String start;
   final String end;
+  final List<TaskType> filterTaskTypes;
 
-  const MainPageDailyTasks({this.onStateChanged, this.start, this.end});
+  const MainPageDailyTasks(
+      {this.onStateChanged, this.start, this.end, this.filterTaskTypes});
 
   @override
   State<StatefulWidget> createState() {
@@ -39,6 +41,9 @@ class MainPageDailyTasksState extends State<MainPageDailyTasks> {
   void _fetchTasksAndTheirTicks() async {
     var tasks = await TaskService.getTaskWhere(
         fromDate: widget.start, toDate: widget.end);
+
+    if (widget.filterTaskTypes != null)
+      tasks = tasks.where((task) => widget.filterTaskTypes.contains(task.type));
 
     setState(() {
       showingTasks = tasks.toList();

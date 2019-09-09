@@ -61,7 +61,10 @@ class MainPageState extends State<MainPage>
     final end = '$friday 24:00';
 
     return MainPageDailyTasks(
-        onStateChanged: this._handleStateChange, start: start, end: end);
+        onStateChanged: this._handleStateChange,
+        start: start,
+        end: end,
+        filterTaskTypes: [TaskType.once, TaskType.month]);
   }
 
   String _getTitle() {

@@ -45,30 +45,37 @@ Future<List<Task>> _joinTasksToTheirVirtualWeekTicks(List<Task> tasks,
   tasks.forEach((task) {
     task.type = TaskType.week;
 
-    final ticks = ticksDict[task.id];
-    final weekDays = task.infos['weekdays'];
+    final tickList = ticksDict[task.id];
 
-    for (int i = 0; i < 7; i++) {
-      final theDay = DateTime.now().add(Duration(days: -i));
-      final weekDayNumber = (theDay.weekday + 1) % 7;
-      final weekDayBit = 1 << weekDayNumber;
-      if (weekDays & weekDayBit == 0) continue;
-
-      final jalaliDay = getJalaliOf(theDay);
-      if (compareDate(jalaliDay, toDate) == 1) continue;
-      if (compareDate(jalaliDay, fromDate) == -1) continue;
-
-      final ticksOfPrevDays =
-          ticks?.where((r) => r.infos['day'] == jalaliDay)?.toList();
-
-      final newTask = cloneTask(task);
-      newTask.tick = (ticksOfPrevDays?.length ?? 0) > 0
-          ? ticksOfPrevDays[0]
-          : Tick(
-              taskId: task.id, infos: {'day': jalaliDay}, taskType: task.type);
-      ret.add(newTask);
+    for (int i = -6; i <= 6; i++) {
+      final newTask = getTickOfDayIfExists(i, task, tickList,
+          fromDateTime: fromDate, toDateTime: toDate);
+      if (newTask != null) ret.add(newTask);
     }
   });
 
   return ret;
+}
+
+getTickOfDayIfExists(int addingDay, Task task, List<Tick> tickList,
+    {String fromDateTime, String toDateTime}) {
+  final theDay = DateTime.now().add(Duration(days: addingDay));
+  final weekDayNumber = (theDay.weekday + 1) % 7;
+  final weekDayBit = 1 << weekDayNumber;
+  final weekDays = task.infos['weekdays'];
+  if (weekDays & weekDayBit == 0) return null;
+
+  final jalaliDay = getJalaliOf(theDay);
+  if (compareDate(jalaliDay, toDateTime) == 1) return null;
+  if (compareDate(jalaliDay, fromDateTime) == -1) return null;
+
+  final ticksOfPrevDays =
+  tickList?.where((r) => r.infos['day'] == jalaliDay)?.toList();
+
+  final newTask = cloneTask(task);
+  newTask.tick = (ticksOfPrevDays?.length ?? 0) > 0
+      ? ticksOfPrevDays[0]
+      : Tick(taskId: task.id, infos: {'day': jalaliDay}, taskType: task.type);
+
+  return newTask;
 }
