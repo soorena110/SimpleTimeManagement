@@ -22,14 +22,16 @@ abstract class TaskBaseTable {
           orderBy: 'lastUpdate ${lastUpdateOrderAsc ? '' : 'DESC'}'))
           .map((r) => Task.fromJson(r));
     } catch (e) {
-      print(e);
-      return null;
+      if (e.toString() == 'DatabaseException(error database_closed)')
+        databaseProvider.open();
+      return [];
     }
   }
 
-  delete(int id) async {
+  Future<int> delete(int id) async {
     print('ESC[33m ===> ${getSqlTableName()}.delete $id');
-    await databaseProvider.db.delete(getSqlTableName(), where: 'id = $id');
+    return await databaseProvider.db
+        .delete(getSqlTableName(), where: 'id = $id');
   }
 
   insertOrUpdate(Map<String, dynamic> task) async {

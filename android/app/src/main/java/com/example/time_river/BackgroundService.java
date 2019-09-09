@@ -24,17 +24,15 @@ public class BackgroundService extends Service {
 
         handler = new Handler();
         runnable = () -> {
-            Toast.makeText(context, "Service is still running", Toast.LENGTH_LONG).show();
-            handler.postDelayed(runnable, 50000);
+            MainActivity.callFlutter();
+            handler.postDelayed(runnable, 60000);
         };
 
-        handler.postDelayed(runnable, 15000);
+        handler.postDelayed(runnable, 5000);
     }
 
     @Override
     public void onDestroy() {
-        /* IF YOU WANT THIS SERVICE KILLED WITH THE APP THEN UNCOMMENT THE FOLLOWING LINE */
-        //handler.removeCallbacks(runnable);
         Toast.makeText(this, "Service stopped", Toast.LENGTH_LONG).show();
     }
 

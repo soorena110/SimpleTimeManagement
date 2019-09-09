@@ -35,43 +35,79 @@ class Task {
     this.tick});
 
   bool getIsCritical() {
-    if (this.end == null) return false;
+    if ([TickType.done, TickType.canceled].contains(tick?.type)) return false;
+
+    final realTaskEnd = computeRealTaskEndDateTime();
+    if (realTaskEnd == null) return false;
 
     final now = getNow();
-    final remainingTime = getDateTimeDiff(this.end, now).inMinutes;
-    return remainingTime - (estimate ?? 0) * 60 < 30;
+    final remainingTime = getDateTimeDiff(realTaskEnd, now).inMinutes;
+    return remainingTime - (estimate ?? 0) * 60 < 20;
   }
 
-  String getRemainingTime() {
-    var ret = this.getEndDateDiff();
+  String computeRealTaskDateTime(String defaultHour) {
+    switch (this.type) {
+      case TaskType.once:
+        return this.start;
 
-    if (this.start != null) {
-      final now = getNow();
-      if (getDateDiff(this.start, now).inMilliseconds > 0)
-        ret = this.getStartDateDiff();
+      case TaskType.month:
+        final month = tick.infos['month'];
+        if (month != null) {
+          final startHour = tick.infos['startHour'] ?? defaultHour;
+          return '$month/${infos['dayOfMonth']} $startHour';
+        }
+        return null;
+
+      case TaskType.week:
+        final day = tick.infos['day'];
+        if (day != null) {
+          final startHour = tick.infos['startHour'] ?? defaultHour;
+          return '$day $startHour';
+        }
+        return null;
+
+      default:
+        throw 'Task type is not valid !';
     }
-    return ret;
+  }
+
+  String computeRealTaskStartDateTime() => computeRealTaskDateTime('00:00');
+
+  String computeRealTaskEndDateTime() => computeRealTaskDateTime('24:00');
+
+  String getRemainingTime() {
+    final realTaskStart = computeRealTaskStartDateTime();
+    if (realTaskStart != null) {
+      final now = getNow();
+      if (getDateDiff(realTaskStart, now).inMilliseconds > 0)
+        return getStartDateDiffText();
+    }
+
+    final realTaskEnd = computeRealTaskEndDateTime();
+    if (realTaskEnd != null) return getEndDateDiff();
+
+    return '';
   }
 
   String getEstimateString() {
     return convertDoubleTimeToString(this.estimate);
   }
 
-  String getStartDateDiff() {
+  String getStartDateDiffText() {
     final now = getNow();
-    if (this.start != null) {
-      final diff = getDiffrenceText(this.start, now);
-      return 'شروع: ' + diff;
-    }
+    final realTaskStart = computeRealTaskStartDateTime();
+
+    if (realTaskStart != null)
+      return 'شروع : ' + getDiffrenceText(realTaskStart, now);
     return '';
   }
 
   String getEndDateDiff() {
     final now = getNow();
-    if (this.end != null) {
-      final diff = getDiffrenceText(this.end, now);
-      return 'پایان: ' + diff;
-    }
+    final realTaskEnd = computeRealTaskStartDateTime();
+
+    if (realTaskEnd != null)
+      return 'پایان : ' + getDiffrenceText(realTaskEnd, now);
     return '';
   }
 

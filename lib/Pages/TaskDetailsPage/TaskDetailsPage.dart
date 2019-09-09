@@ -9,7 +9,6 @@ import 'package:time_river/Models/Tick.dart';
 import 'package:time_river/Pages/AddTaskPage/AddTaskPage.dart';
 import 'package:time_river/Pages/TaskDetailsPage/ViewableTaskView.dart';
 import 'package:time_river/Services/TaskService.dart';
-import 'package:time_river/Services/methods.dart';
 
 final defaultTick = Tick(type: TickType.todo);
 
@@ -129,8 +128,7 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
   }
 
   Widget _buildFloatingActionButton() {
-    if (!widget.canChangeTick)
-      return null;
+    if (!widget.canChangeTick) return null;
 
     final tick = widget.task.tick ?? defaultTick;
     final availableTicks = TickType.values
@@ -141,7 +139,10 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
         .map((v) => SpeedDialChild(
         child: Icon(TickIcons[v]),
         backgroundColor: TickColors[v],
-        label: v.toString().split('.').last,
+        label: v
+            .toString()
+            .split('.')
+            .last,
         labelStyle: TextStyle(fontSize: 18.0),
         onTap: () => this._showChangingTickDialogBox(v)))
         .toList();
@@ -191,8 +192,7 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
                             child: Text('بله',
                                 style: TextStyle(color: Colors.orange)),
                             onPressed: () async {
-                              await getRelatedRepositoryOfType(widget.task.type)
-                                  .delete(widget.task.id);
+                              await TaskService.deleteTask(widget.task);
                               Navigator.pop(context);
                               Navigator.pop(context, true);
                             }),

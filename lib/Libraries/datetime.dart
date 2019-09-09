@@ -18,12 +18,16 @@ String getNow() {
   return '${getNowDate()} $h:$m';
 }
 
-int compareDateTime(String d1, String d2) {
-  if (d1 == d2) return 0;
-  if (d1 == null) return 1;
-  if (d2 == null) return -1;
+int compareDate(String d1, String d2) {
+  return getDateDiff(d1, d2).inMilliseconds.sign;
+}
 
-  return getDateTimeDiff(d1, d2).inMilliseconds.sign;
+int compareDateTime(String dt1, String dt2) {
+  if (dt1 == dt2) return 0;
+  if (dt1 == null) return 1;
+  if (dt2 == null) return -1;
+
+  return getDateTimeDiff(dt1, dt2).inMilliseconds.sign;
 }
 
 Duration getDateTimeDiff(String d1, String d2) {

@@ -9,11 +9,11 @@ class ViewableTaskView extends StatelessWidget {
   const ViewableTaskView(this.task);
 
   List<Widget> _buildCommonInfos() {
+    final startTime = task.getStartDateDiffText();
+
     return [
       Item('نام : ', Text(task.name)),
-      task.start != null
-          ? Item('شروع : ', Text(task.getStartDateDiff()))
-          : Container(),
+      startTime != '' ? Item('شروع : ', Text(startTime)) : Container(),
       task.end != null
           ? Item('پایان : ', Text(task.getEndDateDiff()))
           : Container(),
@@ -80,6 +80,12 @@ class ViewableTaskView extends StatelessWidget {
       ]),
       task.tick.description != null
           ? Item('توضیح تیک : ', Text(task.tick.description.toString()))
+          : Container(),
+      task.tick.infos['day'] != null
+          ? Item('برای روز : ', Text(task.tick.infos['day']))
+          : Container(),
+      task.tick.infos['month'] != null
+          ? Item('برای ماه : ', Text(task.tick.infos['month']))
           : Container()
     ];
   }

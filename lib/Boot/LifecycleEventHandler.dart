@@ -1,23 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:time_river/Database/init.dart';
+import 'package:time_river/Services/TaskService.dart';
 
 import 'NotificationCenter.dart';
 
-const methodChannel = const MethodChannel('com.example');
+const methodChannel = const MethodChannel('com.example.timerTick');
 var lightsOn = false;
 
 class LifecycleEventHandler extends WidgetsBindingObserver {
   LifecycleEventHandler() {
+    TaskService.onChanged = checkCriticalSituation;
     methodChannel.setMethodCallHandler((call) async {
-      print(110);
-      if (lightsOn)
-        NotificationCenter().turnFlashOff();
-      else
-        NotificationCenter().turnFlashOn();
-
-      lightsOn = !lightsOn;
+      checkCriticalSituation();
     });
+  }
+
+  checkCriticalSituation() async {
+    final tasks = await TaskService.getTodayTasks();
+    final criticalTasks = tasks.where((task) => task.getIsCritical()).toList();
+    if (criticalTasks.length > 0)
+      NotificationCenter().turnFlashOn();
+    else
+      NotificationCenter().turnFlashOff();
   }
 
   @override

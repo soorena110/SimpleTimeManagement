@@ -1,13 +1,15 @@
 import 'package:time_river/Database/_common/Row.dart';
+import 'package:time_river/Models/Task.dart';
 
 import '../../Provider.dart';
 import 'LoopingTaskTick.dart';
 
 class _WeekTaskTickTable extends LoopingTaskTick {
   @override
-  String getSqlTableName() {
-    return 'WeekTaskTick';
-  }
+  String getSqlTableName() => 'WeekTaskTick';
+
+  @override
+  TaskType getTaskType() => TaskType.week;
 
   @override
   initTable() {

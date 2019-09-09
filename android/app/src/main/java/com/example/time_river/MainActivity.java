@@ -10,7 +10,7 @@ import io.flutter.view.FlutterView;
 
 public class MainActivity extends FlutterActivity {
 
-    private static final String CHANNEL = "com.example";
+    private static final String CHANNEL = "com.example.timerTick";
     private static FlutterView flutterView;
 
     @Override

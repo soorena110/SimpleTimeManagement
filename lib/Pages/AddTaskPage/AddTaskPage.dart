@@ -7,7 +7,7 @@ import 'package:time_river/Framework/InputFields/TextInputField.dart';
 import 'package:time_river/Framework/InputFields/TimeInputField.dart';
 import 'package:time_river/Libraries/datetime.dart';
 import 'package:time_river/Models/Task.dart';
-import 'package:time_river/Services/methods.dart';
+import 'package:time_river/Services/TaskService.dart';
 
 class AddTaskPage extends StatefulWidget {
   final Task task;
@@ -153,8 +153,7 @@ class AddTaskPageState extends State<AddTaskPage> {
       return;
     }
 
-    await getRelatedRepositoryOfType(widget.task.type)
-        .insertOrUpdate(widget.task.toJson());
+    await TaskService.saveTask(widget.task);
     Navigator.pop(context, true);
     _scafold.currentState.showSnackBar(SnackBar(
         backgroundColor: Colors.green, content: Text('با موفیت ثبت شد.')));
