@@ -107,6 +107,7 @@ class MainPageState extends State<MainPage>
   _buildMainPageAppBar() {
     return AppBar(
       title: Text(_getTitle()),
+      backgroundColor: this._getBackgroundColor(),
       actions: <Widget>[
         IconButton(
           icon: Icon(Icons.calendar_today),

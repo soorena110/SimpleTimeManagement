@@ -49,33 +49,24 @@ class Tick {
     });
   }
 
-  IconData getIcon() {
-    return TickIcons[type];
-  }
+  IconData getIcon() => TickIcons[type];
 
-  Color getColor() {
-    return TickColors[type];
-  }
+  Color getColor() => TickColors[type];
 
-  String getTickName() {
-    return type.toString().split('.')[1];
-  }
+  String getTickName() => type.toString().split('.')[1];
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'taskId': taskId,
-      'type': TickType.values.indexOf(type),
-      'description': description,
-      'lastUpdate': lastUpdate
-    }
-      ..addAll(infos);
-  }
+  Map<String, dynamic> toJson() =>
+      {
+        'id': id,
+        'taskId': taskId,
+        'type': TickType.values.indexOf(type),
+        'description': description,
+        'lastUpdate': lastUpdate
+      }
+        ..addAll(infos);
 
   @override
-  String toString() {
-    return '$taskId --- $type';
-  }
+  String toString() => '$taskId --- $type';
 }
 
 const tickBaseKeys = const [

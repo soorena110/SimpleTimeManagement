@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:time_river/Libraries/datetime.dart';
 import 'package:time_river/Models/Task.dart';
 import 'package:time_river/Pages/TaskDetailsPage/TaskDetailsPage.dart';
 import 'package:time_river/Pages/ViewableTask/ViewableTaskListView.dart';
@@ -46,7 +47,16 @@ class MainPageDailyTasksState extends State<MainPageDailyTasks> {
       tasks = tasks.where((task) => widget.filterTaskTypes.contains(task.type));
 
     setState(() {
-      showingTasks = tasks.toList();
+      showingTasks = tasks.toList()
+        ..sort((a, b) {
+          final aDate = a.computeRealTaskEndDateTime();
+          final bDate = b.computeRealTaskEndDateTime();
+          if (aDate == null) return 1;
+          if (bDate == null) return -1;
+          final firstCompare = compareDateTime(aDate, bDate);
+          if (firstCompare != 0) return firstCompare;
+          return compareDateTime(a.lastUpdate, b.lastUpdate);
+        });
     });
     widget.onStateChanged(
         showingTasks.where((t) => t.getIsCritical()).length > 0);

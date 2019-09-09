@@ -1,3 +1,4 @@
+import 'package:time_river/Database/Tables/Tasks/WeekTaskTable.dart';
 import 'package:time_river/Libraries/datetime.dart';
 
 import 'Tick.dart';
@@ -90,9 +91,7 @@ class Task {
     return '';
   }
 
-  String getEstimateString() {
-    return convertDoubleTimeToString(this.estimate);
-  }
+  String getEstimateString() => convertDoubleTimeToString(this.estimate);
 
   String getStartDateDiffText() {
     final now = getNow();
@@ -105,11 +104,31 @@ class Task {
 
   String getEndDateDiff() {
     final now = getNow();
-    final realTaskEnd = computeRealTaskStartDateTime();
+    final realTaskEnd = computeRealTaskEndDateTime();
 
     if (realTaskEnd != null)
       return 'پایان : ' + getDiffrenceText(realTaskEnd, now);
     return '';
+  }
+
+  String getMoreInfo() {
+    switch (type) {
+      case TaskType.once:
+        return null;
+      case TaskType.week:
+        final String day = tick.infos['day'];
+        final weekDay = getGregorian(day).weekday + 1 % 7;
+        return weekDayNames[weekDay];
+      case TaskType.month:
+        if (tick == null) return null;
+        final month = int.parse(tick.infos['month']
+            .split('/')
+            .last);
+        return '$month/${infos['dayOfMonth'].toString()}';
+
+      default:
+        throw 'Task type is not valid !';
+    }
   }
 
   Map<String, dynamic> toJson() {

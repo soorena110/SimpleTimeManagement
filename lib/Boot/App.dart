@@ -4,7 +4,7 @@ import 'package:time_river/Pages/MainPage/MainPage.dart';
 import 'ExitCheck.dart';
 
 final theme = ThemeData(
-    primaryColor: Colors.lightGreen[200],
+    primaryColor: Colors.lightGreen,
     primaryIconTheme: IconThemeData(color: Colors.white),
     tabBarTheme: TabBarTheme(labelColor: Colors.white),
     appBarTheme: AppBarTheme(
@@ -14,7 +14,7 @@ final theme = ThemeData(
                 fontSize: 22,
                 fontWeight: FontWeight.bold))),
     floatingActionButtonTheme:
-    FloatingActionButtonThemeData(backgroundColor: Colors.lightGreen[200]));
+    FloatingActionButtonThemeData(backgroundColor: Colors.lightGreen));
 
 class App extends StatelessWidget {
 

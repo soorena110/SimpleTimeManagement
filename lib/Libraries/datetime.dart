@@ -11,6 +11,11 @@ String getJalaliOf(DateTime datetime) {
   return '${j.year}/$m/$d';
 }
 
+DateTime getGregorian(String jalali) {
+  final jalaliParts = jalali.split('/').map((jp) => int.parse(jp)).toList();
+  return Jalali(jalaliParts[0], jalaliParts[1], jalaliParts[2]).toDateTime();
+}
+
 String getNow() {
   final now = DateTime.now();
   final h = now.hour.toString().padLeft(2, '0');
