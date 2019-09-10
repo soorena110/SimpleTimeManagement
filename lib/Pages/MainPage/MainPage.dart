@@ -18,6 +18,7 @@ class MainPage extends StatefulWidget {
 class MainPageState extends State<MainPage>
     with SingleTickerProviderStateMixin {
   bool _isCritical = false;
+  bool _showDoneOrCanceled = false;
   _PresetDateRanges _dateRange = _PresetDateRanges.today;
 
   _getBackgroundColor() {
@@ -36,7 +37,10 @@ class MainPageState extends State<MainPage>
     final end = '$today 24:00';
 
     return MainPageDailyTasks(
-        onStateChanged: this._handleStateChange, start: start, end: end);
+        showDoneOrCanceled: _showDoneOrCanceled,
+        onStateChanged: this._handleStateChange,
+        start: start,
+        end: end);
   }
 
   _getTomorrowView() {
@@ -45,7 +49,10 @@ class MainPageState extends State<MainPage>
     final end = '$tomorrow 24:00';
 
     return MainPageDailyTasks(
-        onStateChanged: this._handleStateChange, start: start, end: end);
+        showDoneOrCanceled: _showDoneOrCanceled,
+        onStateChanged: this._handleStateChange,
+        start: start,
+        end: end);
   }
 
   _getCurrentWeekView() {
@@ -61,6 +68,7 @@ class MainPageState extends State<MainPage>
     final end = '$friday 24:00';
 
     return MainPageDailyTasks(
+        showDoneOrCanceled: _showDoneOrCanceled,
         onStateChanged: this._handleStateChange,
         start: start,
         end: end,
@@ -116,6 +124,15 @@ class MainPageState extends State<MainPage>
               final enums = _PresetDateRanges.values;
               _dateRange =
               enums[(enums.indexOf(_dateRange) + 1) % enums.length];
+            });
+          },
+        ),
+        IconButton(
+          icon: Icon(
+              _showDoneOrCanceled ? Icons.visibility : Icons.visibility_off),
+          onPressed: () {
+            setState(() {
+              _showDoneOrCanceled = !_showDoneOrCanceled;
             });
           },
         )
