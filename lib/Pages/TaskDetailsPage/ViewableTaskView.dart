@@ -9,15 +9,15 @@ class ViewableTaskView extends StatelessWidget {
   const ViewableTaskView(this.task);
 
   List<Widget> _buildCommonInfos() {
-    final startTime = task.getStartDateDiffText();
+    final startTime = task.computeRealTaskStartDateTime();
+    final endTime = task.computeRealTaskEndDateTime();
 
     return [
       Item('نوع : ', Text(TaskTypeNames[task.type])),
       Item('نام : ', Text(task.name)),
-      startTime != '' ? Item('شروع : ', Text(startTime)) : Container(),
-      task.end != null
-          ? Item('پایان : ', Text(task.getEndDateDiff()))
-          : Container(),
+      startTime != null ? Item('شروع : ', Text(startTime)) : Container(),
+      endTime != null ? Item('پایان : ', Text(endTime)) : Container(),
+
       task.estimate != null
           ? Item('تعداد ساعت : ', Text(task.getEstimateString()))
           : Container(),

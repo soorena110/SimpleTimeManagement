@@ -47,24 +47,28 @@ class Task {
     return remainingTime - (estimate ?? 0) * 60 < 20;
   }
 
-  String computeRealTaskDateTime(String defaultHour) {
+  String computeRealTaskDateTime([bool isStartNotEnd = false]) {
+    String defaultHour = isStartNotEnd ? '00:00' : '24:00';
+
     switch (this.type) {
       case TaskType.once:
-        return this.start;
+        return isStartNotEnd ? this.start : this.end;
 
       case TaskType.month:
         final month = (tick?.infos ?? {})['month'];
         if (month != null) {
-          final startHour = tick.infos['startHour'] ?? defaultHour;
-          return '$month/${infos['dayOfMonth']} $startHour';
+          final theHour = tick.infos[isStartNotEnd ? 'startHour' : 'endHour'] ??
+              defaultHour;
+          return '$month/${infos['dayOfMonth']} $theHour';
         }
         return null;
 
       case TaskType.week:
         final day = (tick?.infos ?? {})['day'];
         if (day != null) {
-          final startHour = tick.infos['startHour'] ?? defaultHour;
-          return '$day $startHour';
+          final theHour = tick.infos[isStartNotEnd ? 'startHour' : 'endHour'] ??
+              defaultHour;
+          return '$day $theHour';
         }
         return null;
 
@@ -73,9 +77,9 @@ class Task {
     }
   }
 
-  String computeRealTaskStartDateTime() => computeRealTaskDateTime('00:00');
+  String computeRealTaskStartDateTime() => computeRealTaskDateTime(true);
 
-  String computeRealTaskEndDateTime() => computeRealTaskDateTime('24:00');
+  String computeRealTaskEndDateTime() => computeRealTaskDateTime(false);
 
   String getRemainingTime() {
     final realTaskStart = computeRealTaskStartDateTime();
