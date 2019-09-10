@@ -6,8 +6,8 @@ Timer flashingTimer;
 
 class NotificationCenter {
 
-  static blink() {
-    Lamp.flash(Duration(seconds: 1));
+  static blink() async {
+    await Lamp.flash(Duration(seconds: 1));
     print('>===> blink');
   }
 
