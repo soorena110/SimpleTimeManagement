@@ -11,6 +11,8 @@ class _Provider {
   final List<String> _registeredInitSqls = [];
 
   open() async {
+    if (db != null && db.isOpen)
+      return;
     String path = join(await getDatabasesPath(), dbName);
     db = await openDatabase(path, version: _version, onCreate: _onCreate);
   }
