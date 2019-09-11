@@ -5,6 +5,7 @@ import 'package:time_river/Services/TaskService.dart';
 import 'Boot/App.dart';
 import 'Boot/BackgroundService.dart';
 import 'Boot/LifecycleEventHandler.dart';
+import 'Boot/ServerSyncManager.dart';
 import 'Database/init.dart';
 
 void main() async {
@@ -14,6 +15,8 @@ void main() async {
   await AndroidAlarmManager.initialize();
 
   runApp(App());
+
+  ServerSyncManager.sync();
 
   await BackgroundService.searchCriticalSituationInDatabase();
   await BackgroundService.stop();

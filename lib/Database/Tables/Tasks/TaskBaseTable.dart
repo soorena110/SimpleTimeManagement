@@ -12,6 +12,20 @@ abstract class TaskBaseTable {
 
   void initTable();
 
+  Future<Iterable<Task>> getAllTasksUpdatedAfter(String lastUpdate) async {
+    try {
+      return (await databaseProvider.db.query(
+        getSqlTableName(),
+        where: 'lastUpdate > $lastUpdate',
+      ))
+          .map((r) => Task.fromJson(r));
+    } catch (e) {
+      if (e.toString() == 'DatabaseException(error database_closed)')
+        databaseProvider.open();
+      return [];
+    }
+  }
+
   Future<Iterable<Task>> query(
       {String fromDate, String toDate, bool lastUpdateOrderAsc = false}) async {
     print('ESC[36m ===> ${getSqlTableName()}.queryAllTasks');

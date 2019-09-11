@@ -15,6 +15,21 @@ abstract class TickBaseTable {
 
   void initTable();
 
+
+  Future<Iterable<Task>> getAllTicksUpdatedAfter(String lastUpdate) async {
+    try {
+      return (await databaseProvider.db.query(
+        getSqlTableName(),
+        where: 'lastUpdate > $lastUpdate',
+      ))
+          .map((r) => Task.fromJson(r));
+    } catch (e) {
+      if (e.toString() == 'DatabaseException(error database_closed)')
+        databaseProvider.open();
+      return [];
+    }
+  }
+
   getConditionForIdsAndTypes(
       {Iterable<int> taskIds, Iterable<TickType> types}) {
     String condition = '';

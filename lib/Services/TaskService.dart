@@ -1,3 +1,9 @@
+import 'package:time_river/Database/Tables/Tasks/MonthTaskTable.dart';
+import 'package:time_river/Database/Tables/Tasks/OnceTaskTable.dart';
+import 'package:time_river/Database/Tables/Tasks/WeekTaskTable.dart';
+import 'package:time_river/Database/Tables/Ticks/MonthTaskTick.dart';
+import 'package:time_river/Database/Tables/Ticks/OnceTaskTick.dart';
+import 'package:time_river/Database/Tables/Ticks/WeekTaskTick.dart';
 import 'package:time_river/Libraries/datetime.dart';
 import 'package:time_river/Models/Task.dart';
 import 'package:time_river/Models/Tick.dart';
@@ -31,13 +37,31 @@ class TaskService {
     if (TaskService.onChanged != null) TaskService.onChanged();
   }
 
+
+  static Future<Iterable<Task>> getAllTasksUpdatedAfter(
+      String lastUpdate) async {
+    return [
+      ...await onceTaskTable.getAllTasksUpdatedAfter(lastUpdate),
+      ...await weekTaskTable.getAllTasksUpdatedAfter(lastUpdate),
+      ...await monthTaskTable.getAllTasksUpdatedAfter(lastUpdate),
+    ];
+  }
+
+  static Future<Iterable<Task>> getAllTicksUpdatedAfter(
+      String lastUpdate) async {
+    return [
+      ...await onceTaskTickTable.getAllTicksUpdatedAfter(lastUpdate),
+      ...await weekTaskTickTable.getAllTicksUpdatedAfter(lastUpdate),
+      ...await monthTaskTickTable.getAllTicksUpdatedAfter(lastUpdate),
+    ];
+  }
+
   static Future<Iterable<Task>> getTodayTasks() {
     final today = getNowDate();
     return getTaskWhere(fromDate: '$today 00:00', toDate: '$today 24:00');
   }
 
-  static Future<Iterable<Task>> getTaskWhere(
-      {String fromDate, String toDate}) async {
+  static Future<Iterable<Task>> getTaskWhere({String fromDate, String toDate}) async {
     final onceTasks = await OnceTaskService.getOnceTasksWithTheirTicks(
         fromDateTime: fromDate, toDateTime: toDate);
 
