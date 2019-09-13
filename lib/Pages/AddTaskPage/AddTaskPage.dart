@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:time_river/Database/Tables/Tasks/WeekTaskTable.dart';
 import 'package:time_river/Framework/InputFields/CheckBoxList.dart';
 import 'package:time_river/Framework/InputFields/DateInputField.dart';
 import 'package:time_river/Framework/InputFields/NumberInputField.dart';
@@ -80,7 +79,7 @@ class AddTaskPageState extends State<AddTaskPage> {
 
     _month_dayController = TextEditingController(
         text:
-        (t.infos == null ? '1' : t.infos['dayOfMonth']?.toString()) ?? '1');
+        (t.infos == null ? '1' : t.infos['monthday']?.toString()) ?? '1');
 
     _startDateController.addListener(() => setState(() {}));
     _endDateController.addListener(() => setState(() {}));
@@ -104,9 +103,9 @@ class AddTaskPageState extends State<AddTaskPage> {
       return 'تاریخ پایان باید بیشتر از زمان حال باشد.';
 
     if (widget.task.type == TaskType.month) {
-      if (widget.task.infos == null || widget.task.infos['dayOfMonth'] == null)
+      if (widget.task.infos == null || widget.task.infos['monthday'] == null)
         return 'روز ماه تعیین نشده است.';
-      final value = int.tryParse(widget.task.infos['dayOfMonth']);
+      final value = int.tryParse(widget.task.infos['monthday']);
       if (value == null || value < 1 || value > 31)
         return 'روز ماه باید از 1 تا 31 باشد.';
     }
@@ -146,7 +145,7 @@ class AddTaskPageState extends State<AddTaskPage> {
     widget.task.infos = {};
 
     if (widget.task.type == TaskType.month && _month_dayController.text != null)
-      widget.task.infos['dayOfMonth'] = _month_dayController.text;
+      widget.task.infos['monthday'] = _month_dayController.text;
     if (widget.task.type == TaskType.month ||
         widget.task.type == TaskType.week) {
       if (_weekOrMonth_startHourController.text != null)

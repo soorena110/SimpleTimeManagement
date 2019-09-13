@@ -1,7 +1,16 @@
-import 'package:time_river/Database/Tables/Tasks/WeekTaskTable.dart';
 import 'package:time_river/Libraries/datetime.dart';
 
 import 'Tick.dart';
+
+final weekDayNames = [
+  'شنبه',
+  'یکشنبه',
+  'دوشنبه',
+  'سه‌شنبه',
+  'چهارشنبه',
+  'پنجشنبه',
+  'جمعه'
+];
 
 enum TaskType { once, week, month }
 
@@ -59,7 +68,7 @@ class Task {
         if (month != null) {
           final theHour = tick.infos[isStartNotEnd ? 'startHour' : 'endHour'] ??
               defaultHour;
-          return '$month/${infos['dayOfMonth']} $theHour';
+          return '$month/${infos['monthday']} $theHour';
         }
         return null;
 
@@ -121,14 +130,14 @@ class Task {
         return null;
       case TaskType.week:
         final String day = tick.infos['day'];
-        final weekDay = getGregorian(day).weekday + 1 % 7;
+        final weekDay = (getGregorian(day).weekday + 1) % 7;
         return weekDayNames[weekDay];
       case TaskType.month:
         if (tick == null) return null;
         final month = int.parse(tick.infos['month']
             .split('/')
             .last);
-        return '$month/${infos['dayOfMonth'].toString()}';
+        return '$month/${infos['monthday'].toString()}';
 
       default:
         throw 'Task type is not valid !';
@@ -143,12 +152,13 @@ class Task {
       'start': start,
       'end': end,
       'estimate': estimate,
+      'type': TaskType.values.indexOf(type),
       'lastUpdate': getNow()
     }
       ..addAll(infos);
   }
 
-  Task.fromJson(Map<String, dynamic> json, {this.type})
+  Task.fromJson(Map<String, dynamic> json)
       : id = json['id'],
         name = json['name'],
         description = json['description'],
@@ -157,6 +167,7 @@ class Task {
         estimate = json['estimate'] is String
             ? double.parse(json['estimate'])
             : json['estimate'],
+        type = TaskType.values[json['type']],
         lastUpdate = json['lastUpdate'] {
     this.infos = <String, dynamic>{};
     json.forEach((key, value) {
@@ -166,7 +177,7 @@ class Task {
 
   @override
   String toString() {
-    return '$id $name';
+    return '$id $type $name';
   }
 }
 
@@ -177,5 +188,6 @@ const taskBaseKeys = const [
   'end',
   'description',
   'estimate',
+  'type',
   'lastUpdate'
 ];

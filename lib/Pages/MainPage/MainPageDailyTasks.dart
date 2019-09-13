@@ -46,7 +46,7 @@ class MainPageDailyTasksState extends State<MainPageDailyTasks> {
 
   void _fetchTasksAndTheirTicks() async {
     var tasks = await TaskService.getTaskWhere(
-        fromDate: widget.start, toDate: widget.end);
+        fromDateTime: widget.start, toDateTime: widget.end);
 
     if (widget.filterTaskTypes != null)
       tasks = tasks.where((task) => widget.filterTaskTypes.contains(task.type));

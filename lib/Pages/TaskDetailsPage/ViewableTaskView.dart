@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:time_river/Database/Tables/Tasks/WeekTaskTable.dart';
 import 'package:time_river/Framework/InputFields/CheckBoxList.dart';
 import 'package:time_river/Models/Task.dart';
 
@@ -17,7 +16,6 @@ class ViewableTaskView extends StatelessWidget {
       Item('نام : ', Text(task.name)),
       startTime != null ? Item('شروع : ', Text(startTime)) : Container(),
       endTime != null ? Item('پایان : ', Text(endTime)) : Container(),
-
       task.estimate != null
           ? Item('تعداد ساعت : ', Text(task.getEstimateString()))
           : Container(),
@@ -58,8 +56,8 @@ class ViewableTaskView extends StatelessWidget {
           task.infos['endHour'] != null && task.infos['endHour'].trim() != ''
               ? Item('ساعت پایان اجرا : ', Text(task.infos['endHour']))
               : Container(),
-          task.infos['dayOfMonth'] != null
-              ? Item('روز ماه : ', Text(task.infos['dayOfMonth'].toString()))
+          task.infos['monthday'] != null
+              ? Item('روز ماه : ', Text(task.infos['monthday'].toString()))
               : Container(),
         ];
       default:

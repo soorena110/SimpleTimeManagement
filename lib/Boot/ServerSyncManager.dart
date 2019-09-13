@@ -1,8 +1,4 @@
-import 'dart:convert';
-
-import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:time_river/Services/TaskService.dart';
 
 class ServerSyncManager {
   static String lastSyncDateTime;
@@ -24,21 +20,22 @@ class ServerSyncManager {
   }
 
   static sync() async {
-    final lastUpdate = getLastSyncDateTime();
+    final lastUpdate = await getLastSyncDateTime();
 
-    final tasks = TaskService.getAllTasksUpdatedAfter(lastUpdate);
-    await http.post('http://time.sainapedia.ir/tasks', body: {'tasks': tasks});
-
-    final ticks = TaskService.getAllTicksUpdatedAfter(lastUpdate);
-    await http.post('http://time.sainapedia.ir/ticks', body: {'tasks': ticks});
-
-    final taskHttpResponse = await http
-        .get('http://time.sainapedia.ir/tasks?fromLastUpdate=$lastUpdate');
-    final fetchedTasks = json.decode(taskHttpResponse.body);
-
-    final tickHttpResponse = await http
-        .get('http://time.sainapedia.ir/ticks?fromLastUpdate=$lastUpdate');
-    final fetchedTicks = json.decode(tickHttpResponse.body);
+//    final tasks = await TaskService.getAllTasksUpdatedAfter(lastUpdate);
+//    await http.post('http://time.sainapedia.ir/tasks',
+//        body: jsonEncode(tasks));
+//
+//    final ticks = await TaskService.getAllTicksUpdatedAfter(lastUpdate);
+//    await http.post('http://time.sainapedia.ir/ticks', body: jsonEncode(tasks));
+//
+//    final taskHttpResponse = await http
+//        .get('http://time.sainapedia.ir/tasks?fromLastUpdate=$lastUpdate');
+//    final fetchedTasks = json.decode(taskHttpResponse.body);
+//
+//    final tickHttpResponse = await http
+//        .get('http://time.sainapedia.ir/ticks?fromLastUpdate=$lastUpdate');
+//    final fetchedTicks = json.decode(tickHttpResponse.body);
 
 //    await setLastSyncDateTime(getNow());
   }

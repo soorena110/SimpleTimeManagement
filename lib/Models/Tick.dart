@@ -37,12 +37,13 @@ class Tick {
     this.taskType,
     this.infos = const {}});
 
-  Tick.fromJson(Map<String, dynamic> json, this.taskType)
+  Tick.fromJson(Map<String, dynamic> json)
       : id = json['id'],
         taskId = json['taskId'],
         type = TickType.values[json['type']],
         description = json['description'],
-        lastUpdate = json['lastUpdate'] {
+        lastUpdate = json['lastUpdate'],
+        taskType = TaskType.values[json['taskType']]{
     this.infos = <String, dynamic>{};
     json.forEach((key, value) {
       if (!tickBaseKeys.contains(key)) infos[key] = value;
