@@ -12,16 +12,19 @@ class _TickTable extends TableBase {
   get columnsInfo =>
       [
         Row('id', RowType.integer,
-            isPrimaryKey: true, isAutoIncrement: true, isUnique: true),
+            isNullable: false,
+            isPrimaryKey: true,
+            isAutoIncrement: true,
+            isUnique: true),
         Row('taskId', RowType.integer, isNullable: false, isIndexed: true),
         Row('type', RowType.integer, isNullable: false, isIndexed: true),
         Row('description', RowType.text, isNullable: true),
 
         // week ↓
-        Row('day', RowType.text, isIndexed: true, isNullable: false),
+        Row('day', RowType.text, isIndexed: true, isNullable: true),
 
         // month ↓
-        Row('month', RowType.text, isIndexed: true, isNullable: false),
+        Row('month', RowType.text, isIndexed: true, isNullable: true),
 
         Row('taskType', RowType.integer, isNullable: false, isIndexed: true),
         Row('lastUpdate', RowType.text, isIndexed: true, isNullable: false),

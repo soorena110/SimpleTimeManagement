@@ -26,6 +26,7 @@ abstract class TableBase {
 
     json['lastUpdate'] = getNow();
 
+    await databaseProvider.open();
     return await databaseProvider.db
         .insert(tableName, json, conflictAlgorithm: ConflictAlgorithm.replace);
   }

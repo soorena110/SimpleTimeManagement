@@ -23,7 +23,7 @@ class TaskService {
   }
 
   static saveTick(Tick tick) async {
-    tick.id = await taskTable.insertOrUpdate(tick.toJson());
+    tick.id = await tickTable.insertOrUpdate(tick.toJson());
 
     if (TaskService.onChanged != null) TaskService.onChanged();
   }
@@ -53,19 +53,19 @@ class TaskService {
 
     final onceTasks = tasks.where((t) => t.type == TaskType.once);
     final onceTicks =
-    ticks.where((t) => onceTasks.map((t) => t.id).contains(t.id));
+    ticks.where((t) => onceTasks.map((t) => t.id).contains(t.taskId));
     final onceTaskWithTick = await _addOnceTicksToTasks(onceTasks, onceTicks);
 
     final monthTask = tasks.where((t) => t.type == TaskType.month);
     final monthTicks =
-    ticks.where((t) => monthTask.map((t) => t.id).contains(t.id));
+    ticks.where((t) => monthTask.map((t) => t.id).contains(t.taskId));
     final monthTaskWithTick = await _joinTasksToTheirVirtualMonthTicks(
         monthTask, monthTicks,
         fromDateTime: fromDateTime, toDateTime: toDateTime);
 
     final weekTask = tasks.where((t) => t.type == TaskType.week);
     final weekTicks =
-    ticks.where((t) => weekTask.map((t) => t.id).contains(t.id));
+    ticks.where((t) => weekTask.map((t) => t.id).contains(t.taskId));
     final weekTaskWithTick = await _joinTasksToTheirVirtualWeekTicks(
         weekTask, weekTicks,
         fromDateTime: fromDateTime, toDateTime: toDateTime);

@@ -43,7 +43,7 @@ class Tick {
         type = TickType.values[json['type']],
         description = json['description'],
         lastUpdate = json['lastUpdate'],
-        taskType = TaskType.values[json['taskType']]{
+        taskType = TaskType.values[json['taskType']] {
     this.infos = <String, dynamic>{};
     json.forEach((key, value) {
       if (!tickBaseKeys.contains(key)) infos[key] = value;
@@ -62,7 +62,8 @@ class Tick {
         'taskId': taskId,
         'type': TickType.values.indexOf(type),
         'description': description,
-        'lastUpdate': lastUpdate
+        'lastUpdate': lastUpdate,
+        'taskType': TaskType.values.indexOf(taskType)
       }
         ..addAll(infos);
 
@@ -75,5 +76,6 @@ const tickBaseKeys = const [
   'taskId',
   'type',
   'description',
-  'lastUpdate'
+  'lastUpdate',
+  'taskType'
 ];

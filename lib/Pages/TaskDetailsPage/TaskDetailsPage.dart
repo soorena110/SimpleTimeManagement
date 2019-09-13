@@ -210,7 +210,7 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
       onWillPop: this._handlePopScopePop,
       child: Scaffold(
           appBar: _buildAppBar(),
-          body: ViewableTaskView(widget.task),
+          body: SingleChildScrollView(child: ViewableTaskView(widget.task)),
           floatingActionButton: this._buildFloatingActionButton()),
     );
   }
