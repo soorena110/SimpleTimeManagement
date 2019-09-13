@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:time_river/Database/Tables/Tasks/TaskTable.dart';
-import 'package:time_river/Database/Tables/Ticks/TickBaseTable.dart';
+import 'package:time_river/Database/Tables/TaskTable.dart';
+import 'package:time_river/Database/Tables/TickTable.dart';
 import 'package:time_river/Libraries/datetime.dart';
 import 'package:time_river/Services/TaskService.dart';
 

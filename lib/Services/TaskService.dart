@@ -1,5 +1,5 @@
-import 'package:time_river/Database/Tables/Tasks/TaskTable.dart';
-import 'package:time_river/Database/Tables/Ticks/TickBaseTable.dart';
+import 'package:time_river/Database/Tables/TaskTable.dart';
+import 'package:time_river/Database/Tables/TickTable.dart';
 import 'package:time_river/Libraries/datetime.dart';
 import 'package:time_river/Models/Task.dart';
 import 'package:time_river/Models/Tick.dart';
@@ -31,7 +31,7 @@ class TaskService {
   static Future<Iterable<Task>> getAllTasksUpdatedAfter(String lastUpdate) =>
       taskTable.getAllTasksUpdatedAfter(lastUpdate);
 
-  static Future<Iterable<Task>> getAllTicksUpdatedAfter(String lastUpdate) =>
+  static Future<Iterable<Tick>> getAllTicksUpdatedAfter(String lastUpdate) =>
       tickTable.getAllTicksUpdatedAfter(lastUpdate);
 
   static Future<Iterable<Task>> getTodayTasks() {
