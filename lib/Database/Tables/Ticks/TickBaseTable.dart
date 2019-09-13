@@ -6,11 +6,25 @@ import 'package:time_river/Models/Tick.dart';
 
 import '../../Provider.dart';
 
-
 String tableName = 'Ticks';
+final columnsInfo = [
+  Row('id', RowType.integer,
+      isPrimaryKey: true, isAutoIncrement: true, isUnique: true),
+  Row('taskId', RowType.integer, isNullable: false, isIndexed: true),
+  Row('type', RowType.integer, isNullable: false, isIndexed: true),
+  Row('description', RowType.text, isNullable: true),
+
+  // week ↓
+  Row('day', RowType.text, isIndexed: true, isNullable: false),
+
+  // month ↓
+  Row('month', RowType.text, isIndexed: true, isNullable: false),
+
+  Row('taskType', RowType.integer, isNullable: false, isIndexed: true),
+  Row('lastUpdate', RowType.text, isIndexed: true, isNullable: false),
+];
 
 class _TickBaseTable {
-
   Future<Iterable<Task>> getAllTicksUpdatedAfter(String lastUpdate) async {
     try {
       return (await databaseProvider.db.query(
@@ -49,14 +63,15 @@ class _TickBaseTable {
     return query.map((json) => Tick.fromJson(json));
   }
 
+
   insertOrUpdate(Map<String, dynamic> json) async {
     print('ESC[36m ===> $tableName.insertOrUpdate');
     print(json);
 
     json['lastUpdate'] = getNow();
 
-    return await databaseProvider.db.insert(tableName, json,
-        conflictAlgorithm: ConflictAlgorithm.replace);
+    return await databaseProvider.db
+        .insert(tableName, json, conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   Future<int> deleteForTaskId(int taskId) async {
@@ -66,27 +81,7 @@ class _TickBaseTable {
   }
 
   initTable() {
-    databaseProvider.addTable(
-        tableName, getCommonRowsInfo());
-  }
-
-  List<Row> getCommonRowsInfo() {
-    return [
-      Row('id', RowType.integer,
-          isPrimaryKey: true, isAutoIncrement: true, isUnique: true),
-      Row('taskId', RowType.integer, isNullable: false, isIndexed: true),
-      Row('type', RowType.integer, isNullable: false, isIndexed: true),
-      Row('description', RowType.text, isNullable: true),
-
-      // week ↓
-      Row('day', RowType.text, isIndexed: true, isNullable: false),
-
-      // month ↓
-      Row('month', RowType.text, isIndexed: true, isNullable: false),
-
-      Row('taskType', RowType.integer, isNullable: false, isIndexed: true),
-      Row('lastUpdate', RowType.text, isIndexed: true, isNullable: false),
-    ];
+    databaseProvider.addTable(tableName, columnsInfo);
   }
 }
 

@@ -6,6 +6,31 @@ import 'package:time_river/Models/Task.dart';
 import '../../Provider.dart';
 
 const String tableName = "Tasks";
+final columnsInfo = [
+  Row('id', RowType.integer,
+      isPrimaryKey: true,
+      isAutoIncrement: true,
+      isUnique: true,
+      isNullable: true),
+  Row('name', RowType.text),
+  Row('start', RowType.text, isNullable: true, isIndexed: true),
+  Row('end', RowType.text, isNullable: true, isIndexed: true),
+  Row('estimate', RowType.real, isNullable: true),
+  Row('description', RowType.text, isNullable: true),
+
+  // week ↓
+  Row('weekdays', RowType.integer, isNullable: true, isIndexed: true),
+
+  // month ↓
+  Row('monthday', RowType.integer, isNullable: true, isIndexed: true),
+
+  // week or month↓
+  Row('startHour', RowType.text, isNullable: true),
+  Row('endHour', RowType.text, isNullable: true),
+
+  Row('type', RowType.integer, isNullable: false, isIndexed: true),
+  Row('lastUpdate', RowType.text, isNullable: false, isIndexed: true),
+];
 
 class _TaskTable {
   Future<Iterable<Task>> getAllTasksUpdatedAfter(String lastUpdate) async {
@@ -73,35 +98,7 @@ class _TaskTable {
   }
 
   initTable() {
-    databaseProvider.addTable(tableName, getCommonRowsInfo());
-  }
-
-  getCommonRowsInfo() {
-    return [
-      Row('id', RowType.integer,
-          isPrimaryKey: true,
-          isAutoIncrement: true,
-          isUnique: true,
-          isNullable: true),
-      Row('name', RowType.text),
-      Row('start', RowType.text, isNullable: true, isIndexed: true),
-      Row('end', RowType.text, isNullable: true, isIndexed: true),
-      Row('estimate', RowType.real, isNullable: true),
-      Row('description', RowType.text, isNullable: true),
-
-      // week ↓
-      Row('weekdays', RowType.integer, isNullable: true, isIndexed: true),
-
-      // month ↓
-      Row('monthday', RowType.integer, isNullable: true, isIndexed: true),
-
-      // week or month↓
-      Row('startHour', RowType.text, isNullable: true),
-      Row('endHour', RowType.text, isNullable: true),
-
-      Row('type', RowType.integer, isNullable: false, isIndexed: true),
-      Row('lastUpdate', RowType.text, isNullable: false, isIndexed: true),
-    ];
+    databaseProvider.addTable(tableName, columnsInfo);
   }
 }
 
