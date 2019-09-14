@@ -32,8 +32,11 @@ class MainPageState extends State<MainPage>
   }
 
   _getTodayView() {
+    final lastWeek = getJalaliOf(DateTime.now()
+      ..add(Duration(days: -7)));
+    final start = '$lastWeek 00:00';
+
     final today = getNowDate();
-    final start = '$today 00:00';
     final end = '$today 24:00';
 
     return MainPageDailyTasks(

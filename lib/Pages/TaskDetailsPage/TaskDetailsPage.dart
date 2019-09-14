@@ -35,7 +35,7 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
     return false;
   }
 
-  _changeTick(TickType tickType) async {
+  _changeTickInfo(TickType tickType) async {
     final tickDescription = tickDescriptionController.value.text;
 
     if (widget.task.tick == null)
@@ -47,11 +47,23 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
       widget.task.tick.description =
           tickDescription != '' ? tickDescription : null;
 
-      if (widget.task.tick.type == TickType.postponed) {
-        widget.task.end =
-            tickDateController.value.text + ' ' + tickTimeController.value.text;
-      }
+      final postponeTime =
+          tickDateController.value.text + ' ' + tickTimeController.value.text;
+      widget.task.tick.infos['postponeEnd'] = postponeTime;
 
+      _taskIsChanged = true;
+    });
+
+    TaskService.saveTick(widget.task.tick);
+  }
+
+  _changeTick(TickType tickType) async {
+    if (widget.task.tick == null)
+      widget.task.tick =
+          Tick(taskType: widget.task.type, taskId: widget.task.id);
+
+    this.setState(() {
+      widget.task.tick.type = tickType;
       _taskIsChanged = true;
     });
 
@@ -69,7 +81,7 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
             ]),
         color: TickColors[tickType],
         onPressed: () {
-          this._changeTick(tickType);
+          this._changeTickInfo(tickType);
           Navigator.pop(context);
         });
   }
@@ -144,7 +156,10 @@ class TaskDetailsPageState extends State<TaskDetailsPage> {
             .split('.')
             .last,
         labelStyle: TextStyle(fontSize: 18.0),
-        onTap: () => this._showChangingTickDialogBox(v)))
+        onTap: () =>
+        v != TickType.postponed
+            ? this._changeTick(v)
+            : this._showChangingTickDialogBox(v)))
         .toList();
 
     return Directionality(

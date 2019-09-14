@@ -66,8 +66,8 @@ class Task {
       case TaskType.month:
         final month = (tick?.infos ?? {})['month'];
         if (month != null) {
-          final theHour = tick.infos[isStartNotEnd ? 'startHour' : 'endHour'] ??
-              defaultHour;
+          String theHour = infos[isStartNotEnd ? 'startHour' : 'endHour'];
+          if (theHour == null || theHour.length < 5) theHour = defaultHour;
           return '$month/${infos['monthday']} $theHour';
         }
         return null;
@@ -75,8 +75,8 @@ class Task {
       case TaskType.week:
         final day = (tick?.infos ?? {})['day'];
         if (day != null) {
-          final theHour = tick.infos[isStartNotEnd ? 'startHour' : 'endHour'] ??
-              defaultHour;
+          String theHour = infos[isStartNotEnd ? 'startHour' : 'endHour'];
+          if (theHour == null || theHour.length < 5) theHour = defaultHour;
           return '$day $theHour';
         }
         return null;
@@ -94,7 +94,7 @@ class Task {
     final realTaskStart = computeRealTaskStartDateTime();
     if (realTaskStart != null) {
       final now = getNow();
-      if (getDateDiff(realTaskStart, now).inMilliseconds > 0)
+      if (getDateTimeDiff(realTaskStart, now).inMilliseconds > 0)
         return getStartDateDiffText();
     }
 

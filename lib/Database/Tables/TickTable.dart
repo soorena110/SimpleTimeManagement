@@ -19,6 +19,7 @@ class _TickTable extends TableBase {
         Row('taskId', RowType.integer, isNullable: false, isIndexed: true),
         Row('type', RowType.integer, isNullable: false, isIndexed: true),
         Row('description', RowType.text, isNullable: true),
+        Row('taskType', RowType.integer, isNullable: false, isIndexed: true),
 
         // week ↓
         Row('day', RowType.text, isIndexed: true, isNullable: true),
@@ -26,7 +27,7 @@ class _TickTable extends TableBase {
         // month ↓
         Row('month', RowType.text, isIndexed: true, isNullable: true),
 
-        Row('taskType', RowType.integer, isNullable: false, isIndexed: true),
+        Row('postponeEnd', RowType.text, isNullable: true, isIndexed: true),
         Row('lastUpdate', RowType.text, isIndexed: true, isNullable: false),
       ];
 

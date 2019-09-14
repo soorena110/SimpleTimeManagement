@@ -18,8 +18,8 @@ class Table {
     return rows
         .where((r) => r.isIndexed)
         .map((r) =>
-    'CREATE ${r.isUnique ? 'UNIQUE INDEX' : 'INDEX'} ${this.name}_${r
-        .name} ON $name (${r.name})')
+    "CREATE ${r.isUnique ? 'UNIQUE INDEX' : 'INDEX'} '${name}_${r
+        .name}' ON '$name' ('${r.name})'")
         .join(';');
   }
 

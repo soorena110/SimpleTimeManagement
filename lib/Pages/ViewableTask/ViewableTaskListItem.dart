@@ -19,9 +19,14 @@ class ViewableTaskListItem extends StatelessWidget {
         ? StaggerCircle(tick.getIcon(), tick.getColor())
         : CircleIcon(tick.getIcon(), tick.getColor());
 
-    final _trailing = Text(this.task.getRemainingTime(),
-        style: TextStyle(
-            color: this.task.getIsCritical() ? Colors.deepOrange : null));
+    _trailing() {
+      final trailing = this.task.getRemainingTime();
+      return Text(trailing,
+          style: TextStyle(
+              color: this.task.getIsCritical()
+                  ? Colors.deepOrange
+                  : trailing.contains('شروع') ? Colors.grey[300] : null));
+    }
 
     _subtitle() {
       if (this.showLastEdit && this.task.lastUpdate != null)
@@ -43,7 +48,7 @@ class ViewableTaskListItem extends StatelessWidget {
         child: ListTile(
             title: Text(task.name),
             leading: _circleIcon,
-            trailing: _trailing,
+            trailing: _trailing(),
             subtitle: _subtitle()));
   }
 }
